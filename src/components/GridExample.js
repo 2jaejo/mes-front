@@ -109,12 +109,15 @@ const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel=
 
   // 행 선택 설정
   const rowSelection = useMemo(() => {
+    const tp = rowSel === "singleRow" ? false : true;
     return { 
       mode: rowSel, // singleRow, multiRow
       headerCheckbox: true,
-      checkboxes: (rowSel === "singleRow" ? false : true),
-      enableClickSelection: true, // 클릭 선택 가능
-      enableSelectionWithoutKeys:true, // 간은 행 클릭시 선택,취소
+      checkboxes: tp,
+      enableClickSelection: !tp, // singleRow일때 클릭 선택 가능
+      enableSelectionWithoutKeys:true, // 같은 행 클릭시 선택,취소
+      // rowMultiSelectWithClick: false, // 일반 클릭으로는 선택 안 되게 함
+      // suppressRowClickSelection: true,  // 행 클릭 시 선택 방지
     };
   },[rowSel]);
 

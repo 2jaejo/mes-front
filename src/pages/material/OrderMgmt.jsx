@@ -11,7 +11,17 @@ import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
 
 
-const Main = () => {
+const Main = ({ props={} }) => {
+
+  // 컴포넌트로 사용했을때 ref 받기
+  const [modalForm, setModalForm] = useState(props.current);
+  const modalFormChange = (e) => {
+    const { name, value } = e.target;
+    setModalForm(prev => ({ ...prev, [name]: value }));
+    if(props.current){
+      props.current[name] = value;
+    }
+  };
 
   // 모달 ref
   const modalRef = useRef();  
@@ -96,6 +106,7 @@ const Main = () => {
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
         getData2(selectedRows[0]);
+        modalFormChange({ target: {name:"sel_row", value:selectedRows[0]} });
       };
 
     });
@@ -285,6 +296,7 @@ const Main = () => {
       
       // 그리드 설정2
       setColumnDefs2([
+        { headerName: "발주번호", field: "purchase_id", sortable: false, editable: false, align:"center"},
         { headerName: "진행상태", field: "status", sortable: false, editable: true, align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -817,16 +829,22 @@ const ModalComponent = ({ form }) => {
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
+      console.log("cellValueChanged");
+      console.log(ev);
+
       const col = ev.colDef.field;
       if(col === "quantity" || col === "unit_price"){
-        console.log("cellValueChanged");
-        console.log(ev);
-
         const supply = parseInt(ev.data.quantity) * parseInt(ev.data.unit_price);
         const tax = supply * 0.1 ;
         const total = supply + tax ;
+
         ev.node.setDataValue("supply_price", supply);
         ev.node.setDataValue("tax", tax);
+        ev.node.setDataValue("total_price", total);
+      }
+
+      if(col === "tax"){
+        const total = parseInt(ev.data.supply_price) + parseInt(ev.data.tax);
         ev.node.setDataValue("total_price", total);
       }
 
@@ -861,7 +879,7 @@ const ModalComponent = ({ form }) => {
         { headerName: "공급가", field: "supply_price", sortable: false, editable: false, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "부가세", field: "tax", sortable: false, editable: false, align:"right", cellDataType: 'number',
+        { headerName: "부가세", field: "tax", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
         { headerName: "합계", field: "total_price", sortable: false, editable: false, align:"right", cellDataType: 'number',
@@ -1039,11 +1057,7 @@ const ModalComponent = ({ form }) => {
     
   };
 
-  
-  // 추가
-  const addData = (params) => {
-    
-  };
+
 
   return (
     <div style={{ height: '50vh', width:'70vw', display: 'flex', flexDirection: 'column' }}>
@@ -1052,7 +1066,7 @@ const ModalComponent = ({ form }) => {
 
       <div className="mb-2 bg-light">
         <Row className="">
-          <Col className="d-flex gap-2">
+          <Col className="d-flex gap-2 overflow-auto">
             <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -1164,7 +1178,8 @@ const ModalComponent = ({ form }) => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}  
+              // pageSize={10}  
+              pagination={false}
             />
           </Col>
 
