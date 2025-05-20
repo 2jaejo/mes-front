@@ -39,13 +39,13 @@ import BomMgmt from "pages/master/BomMgmt";
 import CodeMgmt from "pages/master/CodeMgmt";
 
 // 자재관리
-import OrderMgmt from "pages/material/OrderMgmt"; 
-import PurchaseReceiveMgmt from "pages/material/PurchaseReceiveMgmt"; 
-import EtcReceiveMgmt from "pages/material/EtcReceiveMgmt"; 
+import PurchaseMgmt from "pages/material/PurchaseMgmt"; 
+import ReceiveMgmt from "pages/material/ReceiveMgmt"; 
+import ReceiveEtcMgmt from "pages/material/ReceiveEtcMgmt"; 
 import ReceiveReturnMgmt from "pages/material/ReceiveReturnMgmt"; 
 import ReceiveHistory from "pages/material/ReceiveHistory"; 
-import ProcessReleaseMgmt from "pages/material/ProcessReleaseMgmt"; 
-import EtcReleaseMgmt from "pages/material/EtcReleaseMgmt"; 
+import ReleaseMgmt from "pages/material/ReleaseMgmt"; 
+import ReleaseEtcMgmt from "pages/material/ReleaseEtcMgmt"; 
 import ReleaseReturnMgmt from "pages/material/ReleaseReturnMgmt"; 
 import ReleaseHistory from "pages/material/ReleaseHistory"; 
 
@@ -143,7 +143,20 @@ function Main() {
     setTabs(updatedTabs); // 탭 제거
     // 현재 활성화된 탭이 닫힌 경우, 다른 탭을 활성화
     if (activeTab === menu) {
-      setActiveTab(updatedTabs.length > 0 ? updatedTabs[0].id : null);
+      setActiveTab(updatedTabs.length > 0 ? updatedTabs.at(-1).id : null);
+    }
+  };
+
+  // 첫 번째 탭 제외 모두 삭제
+  const removeAllExceptFirstTab = () => {
+    if (tabs.length <= 1) return; // 탭이 1개 이하면 삭제할 게 없음
+
+    const firstTab = tabs[0];
+    setTabs([firstTab]); // 첫 번째 탭만 유지
+
+    // 현재 탭이 삭제된 탭 중 하나였다면 첫 번째 탭으로 활성화 변경
+    if (activeTab !== firstTab.id) {
+      setActiveTab(firstTab.id);
     }
   };
 
@@ -174,20 +187,20 @@ function Main() {
         return <CodeMgmt />;
 
       // 자재관리
-      case "OrderMgmt":
-        return <OrderMgmt />;
-      case "PurchaseReceiveMgmt":
-        return <PurchaseReceiveMgmt />;
-      case "EtcReceiveMgmt":
-        return <EtcReceiveMgmt />;
+      case "PurchaseMgmt":
+        return <PurchaseMgmt />;
+      case "ReceiveMgmt":
+        return <ReceiveMgmt />;
+      case "ReceiveEtcMgmt":
+        return <ReceiveEtcMgmt />;
       case "ReceiveReturnMgmt":
         return <ReceiveReturnMgmt />;
       case "ReceiveHistory":
         return <ReceiveHistory />;
-      case "ProcessReleaseMgmt":
-        return <ProcessReleaseMgmt />;
-      case "EtcReleaseMgmt":
-        return <EtcReleaseMgmt />;
+      case "ReleaseMgmt":
+        return <ReleaseMgmt />;
+      case "ReleaseEtcMgmt":
+        return <ReleaseEtcMgmt />;
       case "ReleaseReturnMgmt":
         return <ReleaseReturnMgmt />;
       case "ReleaseHistory":

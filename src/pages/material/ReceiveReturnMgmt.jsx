@@ -9,7 +9,7 @@ import { MainContentStyle } from "css/CommonStyle";
 import SearchItemComponent from "components/SearchItemComponent";
 import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
-import PurchaseReceiveComponent from "./PurchaseReceiveMgmt";
+import PurchaseReceiveComponent from "./ReceiveMgmt";
 
 
 const Main = () => {

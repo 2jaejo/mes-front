@@ -1,139 +1,315 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import { Row, Col, Form, Button, Table } from 'react-bootstrap';
+import { MainContentStyle } from "css/CommonStyle";
 
-const LoginHistory = () => {
-  const gridRef = useRef();  
+
+const Main = () => {
+
+  const selectedRow = useRef(0);
+
+  // 검색창 입력필드
+  const [form, setForm] = useState({
+     item_code : ''
+    , item_name : ''
+  });
+
+  // 검색창 입력필드 변경 저장
+  const formChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }; 
+  
+
+  // 모달 ref
   const modalRef = useRef();  
   const modalRef2 = useRef();  
-
-  const [loading, setLoading] = useState(false);
-  const [rowData, setRowData] = useState();
-  const [columnDefs] = useState([
-    { headerName: "아이디", field: "user_id", sortable: true, filter: true, },
-    { headerName: "아이피", field: "ip_address", sortable: true, },
-    { headerName: "접속정보", field: "user_agent", sortable: true, minWidth:800 },
-    { headerName: "접속시간", field: "login_dt", sortable: true, },
-    { headerName: "성공여부", field: "success", sortable: true, },
-  ]);
-
-
-  const [form, setForm] = useState({
-      user_id: '',
-      ip_address: '',
-      login_dt: '',
-    });
   
-    const handleChange = (e) => {
-      console.log(e.target.name, e.target.value);
-      setForm({ ...form, [e.target.name]: e.target.value });
-    };
+  // selectbox
+  const selectBox = useRef({}); 
+
+  // grid
+  const gridRef = useRef();  
+  const [loading, setLoading] = useState(false);
+  const [rowData, setRowData] = useState([]);
+  const [columnDefs, setColumnDefs] = useState([]);
+
+  const gridRef2 = useRef();  
+  const [loading2, setLoading2] = useState(false);
+  const [rowData2, setRowData2] = useState([]);
+  const [columnDefs2, setColumnDefs2] = useState([]);
+
+  // 그리드 onGridReady
+  const onGridReady = (params) => {
+    console.log("onGridReady");
+    gridRef.current = params.api; // Grid API 저장
+
+    // 행 클릭 이벤트
+    params.api.addEventListener("rowClicked", (ev) => {
+      console.log("rowClicked");
+      console.log(ev);
+    });
+
+    // 선택 변경 이벤트
+    params.api.addEventListener("selectionChanged", (ev) => {
+      console.log("selectionChanged");
+      console.log(ev);
+
+      const selectedRows = ev.api.getSelectedRows();
+      if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
+        getData2(selectedRows[0]);
+      };
+
+    });
+
+    // 셀 값 변경 이벤트
+    params.api.addEventListener("cellValueChanged", (ev) => {
+      console.log("cellValueChanged");
+      console.log(ev);
+    });
+  };
+
+  // 그리드 onGridReady2
+  const onGridReady2 = (params) => {
+    console.log("onGridReady2");
+    gridRef2.current = params.api; // Grid API 저장
+
+    // 행 클릭 이벤트
+    params.api.addEventListener("rowClicked", (ev) => {
+      console.log("rowClicked");
+      console.log(ev);
+    });
+
+    // 선택 변경 이벤트
+    params.api.addEventListener("selectionChanged", (ev) => {
+      console.log("selectionChanged");
+      console.log(ev);
+    });
+
+    // 셀 값 변경 이벤트
+    params.api.addEventListener("cellValueChanged", (ev) => {
+      console.log("cellValueChanged");
+      console.log(ev);
+    });
+  };
+
+
+  // 초기화
+  useEffect(()=>{
+    console.log("useEffect");
     
+    const init = {
+      code: ['cd010']
+    };
+
+    axiosInstance
+    .post(`/api/getDropDown`, JSON.stringify(init))
+    .then((res) => {
+      selectBox.current = res.data;
+
+      setColumnDefs([
+        { headerName: "자재코드", field: "item_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
+        { headerName: "자재명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "창고", field: "warehouse_id", sortable: true, editable: false, align:"center"},
+        { headerName: "LOT", field: "lot_no", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "단위", field: "unit", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center"},
+        { headerName: "수량", field: "quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
+      ]);
+
+      setColumnDefs2([
+        { headerName: "변경일시", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
+        { headerName: "자재코드", field: "item_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
+        { headerName: "자재명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "변경수량", field: "changed_quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "변경타입", field: "change_type", sortable: false, editable: false, align:"center"},
+      ]);
+
+      getData();
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+    });  
+
+  },[]);
+  
+
+  // 그리드 데이터 변경 감지
+  // useEffect(()=>{
+  //   form.current['sel_row'] = rowData;
+  // }, [rowData])
+
+  
+  // grid cell code_name 변환
+  const moneyFormatter = (params) => {
+    if (params.value == null) return '';
+    const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+    return num;
+  };
 
 
   // 조회
   const getData = (params) => {
     console.log("getData");
 
+    setRowData([]);
     setLoading(true);
     
-    const startTime = Date.now(); // 요청 전 시간 기록
     axiosInstance
-    .post(`/users/getLogs`, JSON.stringify(form))
+    .post(`/api/getInventory`, JSON.stringify(form))
     .then((res) => {
-      const endTime = Date.now(); // 응답 시간을 측정
-      const responseTime = endTime - startTime; // 응답 시간 (밀리초)
-      const delay = responseTime < 300 ? 300 - responseTime : 0; // 응답 시간이 0.5초보다 빠르면 남은 시간만큼 지연
-      
-      // 지연 후 응답을 출력
-      setTimeout(async () => {
-        setRowData(res.data);
-        setLoading(false);
-      }, delay);
-        
+      setRowData(res.data);
     })
-    .catch((error) => console.error("Error fetching data:", error));
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+    })
+    .finally(() =>{
+      setLoading(false);
+      
+      // 그리드 행 선택
+      let sel = selectedRow.current;
+      if(typeof params === "number") sel = params;
+      gridRef.current.forEachNode((node) => {
+        if (node.rowIndex === sel) {
+          node.setSelected(true);
+        }
+      });
+    });
     
   };
 
+  // 조회2
+  const getData2 = (params) => {
+    console.log("getData2");
 
-
-  // onGridReady에서 이벤트 리스너 추가
-  const onGridReady = (params) => {
-    gridRef.current = params.api; // Grid API 저장
-    getData();
-
-    // 셀 값 변경 이벤트
-    params.api.addEventListener("cellValueChanged", (ev) => {
+    setRowData2([]);
+    setLoading2(true);
+    
+    axiosInstance
+    .post(`/api/getInventoryDet`, JSON.stringify(params))
+    .then((res) => {
+      setRowData2(res.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+    })
+    .finally(() =>{
+      setLoading2(false);
       
-      
+      // // 그리드 행 선택
+      // let sel = selectedRow.current;
+      // if(typeof params === "number") sel = params;
+      // gridRef.current.forEachNode((node) => {
+      //   if (node.rowIndex === sel) {
+      //     node.setSelected(true);
+      //   }
+      // });
     });
     
-    // 선택 변경 이벤트
-    params.api.addEventListener("selectionChanged", (ev) => {
-      console.log(ev);
-    });
-
   };
 
-  
+ 
+
+
+
+
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
-
-      <div className="p-2 mb-2 border bg-light">
-       
-        <Row className="">
-          <Col className="d-flex gap-2">
-            <Form.Control 
-              type="text"
-              size="sm" 
-              className="w-auto"
-              name="user_id" 
-              value={form.user_id}
-              onChange={handleChange}
-              placeholder="아이디" 
-            />
-            <Form.Control
-              type="text" 
-              size="sm" 
-              className="w-auto" 
-              name="ip_address"
-              value={form.ip_address}
-              onChange={handleChange}
-              placeholder="아이피" 
-            />
-            <Form.Control 
-              type="date"
-              size="sm" 
-              className="w-auto" 
-              name="login_dt"
-              value={form.login_dt}
-              onChange={handleChange}
-              placeholder="접속일자"
-            />
-            <Button size="sm" variant="secondary" onClick={getData}>검색</Button>
-          </Col>
-          
-        </Row>
-
-      </div>
-      
-      <GridExample 
-        columnDefs={columnDefs}
-        rowData={rowData}
-        onGridReady={onGridReady} 
-        loading={loading}
-        rowNum={true}
-        rowSel={"singleRow"}
-      />
-      
+    <div style={MainContentStyle}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
+
+      <div className="bg-light">
+        <Row className="">
+          <Col className="">
+            <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
+              <tbody>
+                <tr>
+                  <th className="bg-light text-end align-middle">자재</th>
+                  <td className="">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="text"
+                        name="item_code"
+                        value={form.item_code}
+                        onChange={formChange}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder="CODE"
+                      />
+                      <Form.Control 
+                        type="text"
+                        name="item_name"
+                        value={form.item_name}
+                        onChange={formChange}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder="NAME"
+                      />
+                    </div>
+                  </td>
+                  <td className="">
+                    <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
+                  </td>
+                  
+                </tr>
+              </tbody>
+            </Table>
+
+          </Col>
+        </Row>
+      </div>
+
+      <div className="h-100">
+        <Row  className="h-100">
+          <Col className="h-100 pe-0 d-flex flex-column" xs={12} md={5}>
+            <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
+              <span className="fw-bold">자재 목록</span>
+              
+            </div>
+
+            <GridExample 
+              columnDefs={columnDefs}
+              rowData={rowData}
+              onGridReady={onGridReady} 
+              loading={loading}
+              rowNum={true}
+              rowSel={"singleRow"}
+              pagination={true}
+              // pageSize={10}
+              // pinnedBottomRowData={pinnedBottomRowData}  
+            />
+          </Col>
+
+          <Col className="h-100 d-flex flex-column" xs={12} md={7}>
+            <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
+              <span className="fw-bold">변경 내역</span>
+              
+            </div>
+
+            <GridExample 
+              columnDefs={columnDefs2}
+              rowData={rowData2}
+              onGridReady={onGridReady2} 
+              loading={loading2}
+              rowNum={true}
+              rowSel={"singleRow"}
+              pagination={true}
+              // pageSize={10}
+              // pinnedBottomRowData={pinnedBottomRowData}  
+            />
+          </Col>
+
+        </Row>
+      </div>
+
     </div>
   );
-}
+};
 
-export default LoginHistory;
+
+export default Main;
