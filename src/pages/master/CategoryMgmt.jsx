@@ -10,8 +10,8 @@ const Main = () => {
   const modalRef = useRef();  
   const modalRef2 = useRef();  
 
-  const [loading, setLoading] = useState(false);
-  const [loading2, setLoading2] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
 
   // 대분류 그리드 레퍼
   const gridRef = useRef();  

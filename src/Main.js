@@ -120,14 +120,15 @@ function Main() {
 
   // 탭 추가
   const addTab = (menu, title) => {
-    // 탭이 15개 이상일 경우 추가 불가
-    if(tabs.length > 15) {
-      alert("탭은 최대 15개까지 열 수 있습니다.");
-      return;
-    }
-
+    
     const exists = tabs.some(item => item.id === menu);
     if (!exists) {
+      // 탭이 15개 이상일 경우 추가 불가
+      if(tabs.length > 15) {
+        alert("탭은 최대 15개까지 열 수 있습니다.");
+        return;
+      }
+      
       setTabs([...tabs, {id:menu, title:title}]); // 새로운 탭 추가
       setTabContents({
         ...tabContents,

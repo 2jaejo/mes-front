@@ -217,8 +217,8 @@ const Main = ({ props={} }) => {
 
       // 그리드 설정
       setColumnDefs([
-        { headerName: "등록일자", field: "request_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
-        { headerName: "수주번호", field: "purchase_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
+        { headerName: "등록일자", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "수주번호", field: "order_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
         { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
         { headerName: "수주일자", field: "order_date", sortable: true, editable: false, filter: "agDateColumnFilter", align:"center",
@@ -296,7 +296,7 @@ const Main = ({ props={} }) => {
       
       // 그리드 설정2
       setColumnDefs2([
-        { headerName: "수주번호", field: "purchase_id", sortable: false, editable: false, align:"center"},
+        { headerName: "수주번호", field: "order_id", sortable: false, editable: false, align:"center"},
         { headerName: "진행상태", field: "status", sortable: false, editable: true, align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -388,7 +388,7 @@ const Main = ({ props={} }) => {
           valueFormatter: (params) => moneyFormatter(params)
         }, 
         { headerName: "입고검사여부", field: "incoming_inspection", sortable: false, editable: false, align:"center"}, 
-        { headerName: "입고수량", field: "received_qty", sortable: false, 
+        { headerName: "출고수량", field: "delivery_qty", sortable: false, 
           align:"right", 
           editable: (params) => !params.node.rowPinned, 
           cellRendererSelector: (params) => {
@@ -467,7 +467,7 @@ const Main = ({ props={} }) => {
     setLoading(true);
     
     axiosInstance
-    .post(`/api/getOrder`, JSON.stringify(form))
+    .post(`/api/getSalesOrder`, JSON.stringify(form))
     .then((res) => {
       setRowData(res.data);
     })
@@ -501,7 +501,7 @@ const Main = ({ props={} }) => {
     setLoading2(true);
 
     axiosInstance
-    .post(`/api/getOrderDet`, JSON.stringify(params))
+    .post(`/api/getSalesOrderDet`, JSON.stringify(params))
     .then((res) => {
       setRowData2(res.data);
     
@@ -522,7 +522,7 @@ const Main = ({ props={} }) => {
     console.log("setData");
 
     axiosInstance
-      .post("api/setOrder", JSON.stringify(params))
+      .post("api/setSalesOrder", JSON.stringify(params))
       .then((res) => {
         getData(selectedRow.current);
       })
@@ -537,7 +537,7 @@ const Main = ({ props={} }) => {
     console.log("setData2");
 
     axiosInstance
-      .post("api/setOrderDet", JSON.stringify(params))
+      .post("api/setSalesOrderDet", JSON.stringify(params))
       .then((res) => {
         getData(selectedRow.current);
       })
@@ -598,7 +598,7 @@ const Main = ({ props={} }) => {
         }
 
         axiosInstance
-          .post(`/api/addOrder`, JSON.stringify(formRef.current))
+          .post(`/api/addSalesOrder`, JSON.stringify(formRef.current))
           .then((res) => {
             getData();
             modalRef.current.close();
