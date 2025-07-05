@@ -4,136 +4,51 @@ import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { Row, Col, Form, Button } from 'react-bootstrap';
+import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const LoginHistory = () => {
-  const gridRef = useRef();  
-  const modalRef = useRef();  
-  const modalRef2 = useRef();  
-
-  const [loading, setLoading] = useState(false);
-  const [rowData, setRowData] = useState();
-  const [columnDefs] = useState([
-    { headerName: "아이디", field: "user_id", sortable: true, filter: true, },
-    { headerName: "아이피", field: "ip_address", sortable: true, },
-    { headerName: "접속정보", field: "user_agent", sortable: true, minWidth:800 },
-    { headerName: "접속시간", field: "login_dt", sortable: true, },
-    { headerName: "성공여부", field: "success", sortable: true, },
+const Main = () => {
+  
+  const [data, setData] = useState([
+    { name: 'Page A', '양품': 4000, '불량': 240, '가동시간': 2400 },
+    { name: 'Page B', '양품': 3000, '불량': 139, '가동시간': 2210 },
+    { name: 'Page C', '양품': 2000, '불량': 980, '가동시간': 2290 },
+    { name: 'Page D', '양품': 2780, '불량': 390, '가동시간': 2000 },
+    { name: 'Page E', '양품': 1890, '불량': 480, '가동시간': 2181 },
+    { name: 'Page F', '양품': 2390, '불량': 380, '가동시간': 2500 },
+    { name: 'Page G', '양품': 3490, '불량': 430, '가동시간': 2100 },
+    { name: 'Page H', '양품': 3490, '불량': 430, '가동시간': 2100 },
+    { name: 'Page I', '양품': 3490, '불량': 430, '가동시간': 2100 },
+    { name: 'Page J', '양품': 3490, '불량': 430, '가동시간': 2100 },
+    { name: 'Page K', '양품': 3490, '불량': 430, '가동시간': 2100 },
+    { name: 'Page L', '양품': 3490, '불량': 430, '가동시간': 2100 }
   ]);
 
-
-  const [form, setForm] = useState({
-      user_id: '',
-      ip_address: '',
-      login_dt: '',
-    });
-  
-    const handleChange = (e) => {
-      console.log(e.target.name, e.target.value);
-      setForm({ ...form, [e.target.name]: e.target.value });
-    };
-    
-
-
-  // 조회
-  const getData = (params) => {
-    console.log("getData");
-
-    setLoading(true);
-    
-    const startTime = Date.now(); // 요청 전 시간 기록
-    axiosInstance
-    .post(`/users/getLogs`, JSON.stringify(form))
-    .then((res) => {
-      const endTime = Date.now(); // 응답 시간을 측정
-      const responseTime = endTime - startTime; // 응답 시간 (밀리초)
-      const delay = responseTime < 300 ? 300 - responseTime : 0; // 응답 시간이 0.5초보다 빠르면 남은 시간만큼 지연
-      
-      // 지연 후 응답을 출력
-      setTimeout(async () => {
-        setRowData(res.data);
-        setLoading(false);
-      }, delay);
-        
-    })
-    .catch((error) => console.error("Error fetching data:", error));
-    
-  };
-
-
-
-  // onGridReady에서 이벤트 리스너 추가
-  const onGridReady = (params) => {
-    gridRef.current = params.api; // Grid API 저장
-    getData();
-
-    // 셀 값 변경 이벤트
-    params.api.addEventListener("cellValueChanged", (ev) => {
-      
-      
-    });
-    
-    // 선택 변경 이벤트
-    params.api.addEventListener("selectionChanged", (ev) => {
-      console.log(ev);
-    });
-
+  const ExampleBarChart = () => {
+    return (
+      <ResponsiveContainer width="100%" height={'100%'}>
+        <BarChart
+          data={data}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis type="number" domain={[0, 'dataMax + 1000']} />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="양품" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
+          <Bar dataKey="불량" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+          <Bar dataKey="가동시간" fill="blue" activeBar={<Rectangle fill="green" stroke="red" />} />
+        </BarChart>
+      </ResponsiveContainer>
+    );
   };
 
   
   return (
     <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
-
-      <div className="p-2 mb-2 border bg-light">
-       
-        <Row className="">
-          <Col className="d-flex gap-2">
-            <Form.Control 
-              type="text"
-              size="sm" 
-              className="w-auto"
-              name="user_id" 
-              value={form.user_id}
-              onChange={handleChange}
-              placeholder="아이디" 
-            />
-            <Form.Control
-              type="text" 
-              size="sm" 
-              className="w-auto" 
-              name="ip_address"
-              value={form.ip_address}
-              onChange={handleChange}
-              placeholder="아이피" 
-            />
-            <Form.Control 
-              type="date"
-              size="sm" 
-              className="w-auto" 
-              name="login_dt"
-              value={form.login_dt}
-              onChange={handleChange}
-              placeholder="접속일자"
-            />
-            <Button size="sm" variant="secondary" onClick={getData}>검색</Button>
-          </Col>
-          
-        </Row>
-
-      </div>
-      
-      <GridExample 
-        columnDefs={columnDefs}
-        rowData={rowData}
-        onGridReady={onGridReady} 
-        loading={loading}
-        rowNum={true}
-        rowSel={"singleRow"}
-      />
-      
-      <Modal ref={modalRef} />
-      <Modal ref={modalRef2} />
+      <ExampleBarChart />
     </div>
   );
 }
 
-export default LoginHistory;
+export default Main;

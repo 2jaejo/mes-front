@@ -54,12 +54,11 @@ const Main = () => {
   ];
 
 
-
   let grid_col2 = [
     { headerName: "순서", field: "sort", sortable: false, editable: false, align:"center"},
     { headerName: "공정코드", field: "process_code", sortable: false, editable: false, align:"center"},
     { headerName: "공정명", field: "process_name", sortable: false, editable: false, align:"left"}, 
-    { headerName: "소요시간(분)", field: "expected_time_min", sortable: false, editable: true, align:"right"}, 
+    { headerName: "소요시간", field: "expected_time_min", sortable: false, editable: true, align:"right"}, 
     { headerName: "필수여부", field: "is_optional", sortable: false, editable: true, align:"center",
       backgroundColor: "#a7d1ff29",
       cellRenderer: 'agCheckboxCellRenderer',
@@ -209,7 +208,7 @@ const Main = () => {
   const DEFAULT_FORM = (init={}) => ({
      router_code: ''
     , router_name: ''
-    , item_code: ''
+    , item_dotno: ''
     , item_name: ''
     , use_yn : 'Y'
     , comment: ''
@@ -343,7 +342,7 @@ const Main = () => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
         
-        if(formRef.current.item_code === "" || formRef.current.item_code === undefined){
+        if(formRef.current.item_dotno === "" || formRef.current.item_dotno === undefined){
           modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
           return;
         }
@@ -600,9 +599,8 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
 
   // 추가 모달 폼 초기화
   const DEFAULT_FORM = (init={}) => ({
-    item_code: ''
+    item_dotno: ''
     , item_name: ''
-    , use_yn: 'Y'
     , ...init
   });
 
@@ -729,7 +727,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
       onConfirm: (res) => { 
         const sel_row = formRef.current;
         if(sel_row.length > 0){
-          modalFormChange( {target:{name:"item_code",value:sel_row[0].item_code}} );
+          modalFormChange( {target:{name:"item_dotno",value:sel_row[0].item_dotno}} );
           modalFormChange( {target:{name:"item_name",value:sel_row[0].item_name}} );
           modalRef.current.close();
         }
@@ -763,8 +761,8 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
             <td className="">
               <Form.Control 
                 type="text"
-                name="item_code"
-                value={modalForm.item_code}
+                name="item_dotno"
+                value={modalForm.item_dotno}
                 onChange={modalFormChange}
                 size="sm" 
                 className="w-auto"
@@ -904,7 +902,7 @@ const ModalForm2 = ({ form={}, onChangeHandler }) => {
 
 
   let grid_col4 = [
-    { headerName: "품목코드", field: "item_code", sortable: true, editable: false, align:"center"},
+    { headerName: "품목코드", field: "item_dotno", sortable: true, editable: false, align:"center"},
     { headerName: "품목명", field: "item_name", sortable: true, editable: false, align:"left"},
   ];
   
@@ -993,8 +991,8 @@ const ModalForm2 = ({ form={}, onChangeHandler }) => {
             <td className="">
               <Form.Control 
                 type="text"
-                name="item_code"
-                value={modalForm.item_code}
+                name="item_dotno"
+                value={modalForm.item_dotno}
                 onChange={modalFormChange}
                 size="sm" 
                 className="w-auto"

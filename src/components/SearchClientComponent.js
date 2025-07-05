@@ -191,48 +191,7 @@ const Main = ({ form }) => {
                     </div>
                   </td>
 
-                  <th className="bg-light text-end align-middle">거래처유형</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Select 
-                        name="client_type" 
-                        value={form.client_type} 
-                        onChange={modalFormChange}
-                        size="sm"
-                        className="w-auto"
-                      >
-                        <option value="">전체</option>
-                        {(selectBox.current.common?.['cd001'] || [])
-                          .filter(opt => opt.use_yn === 'Y')
-                          .map(opt => (
-                            <option key={opt.code} value={opt.code}>
-                              {opt.code_name}
-                            </option>
-                        ))}
-                      </Form.Select>
-                    </div>
-                  </td>
-
-                  <th className="bg-light text-end align-middle">사용여부</th>
-                  <td className="">
-                    
-                    <Form.Select 
-                      name="use_yn" 
-                      value={form.use_yn} 
-                      onChange={modalFormChange}
-                      size="sm"
-                      className="w-auto"
-                    >
-                      <option value="">전체</option>
-                      {(selectBox.current.common?.['cd010'] || [])
-                        .filter(opt => opt.use_yn === 'Y')
-                        .map(opt => (
-                          <option key={opt.code} value={opt.code}>
-                            {opt.code_name}
-                          </option>
-                      ))}
-                    </Form.Select>
-                  </td>
+              
                   <td className="">
                     <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
                   </td>

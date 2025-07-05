@@ -29,7 +29,9 @@ import Home from "pages/Home";
 // 기준정보관리
 import CategoryMgmt from "pages/master/CategoryMgmt";
 import ItemMgmt from "pages/master/ItemMgmt";
+import RawMgmt from "pages/master/RawMgmt";
 import PriceMgmt from "pages/master/PriceMgmt";
+import ClientMgmt from "pages/master/ClientMgmt";
 import VendorMgmt from "pages/master/VendorMgmt";
 import ProcessMgmt from "pages/master/ProcessMgmt";
 import EquipmentMgmt from "pages/master/EquipmentMgmt";
@@ -170,8 +172,12 @@ function Main() {
         return <CategoryMgmt />;
       case "ItemMgmt":
         return <ItemMgmt />;
+      case "RawMgmt":
+        return <RawMgmt />;
       case "PriceMgmt":
         return <PriceMgmt />;
+      case "ClientMgmt":
+        return <ClientMgmt />;
       case "VendorMgmt":
         return <VendorMgmt />;
       case "ProcessMgmt":

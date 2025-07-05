@@ -1,139 +1,107 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from 'react';
+import VisTimeline from 'components/VisTimeline';
+import dayjs from 'dayjs'
 
-import axiosInstance from "utils/Axios";
-import GridExample from "components/GridExample";
-import Modal from "components/Modal";
-import { Row, Col, Form, Button } from 'react-bootstrap';
+const Main = () => {
 
-const LoginHistory = () => {
-  const gridRef = useRef();  
-  const modalRef = useRef();  
-  const modalRef2 = useRef();  
+  const [items, setItems] = useState([]);
+  const [items2, setItems2] = useState([]);
+  const [items3, setItems3] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [groups2, setGroups2] = useState([]);
+  const [groups3, setGroups3] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-  const [rowData, setRowData] = useState();
-  const [columnDefs] = useState([
-    { headerName: "아이디", field: "user_id", sortable: true, filter: true, },
-    { headerName: "아이피", field: "ip_address", sortable: true, },
-    { headerName: "접속정보", field: "user_agent", sortable: true, minWidth:800 },
-    { headerName: "접속시간", field: "login_dt", sortable: true, },
-    { headerName: "성공여부", field: "success", sortable: true, },
-  ]);
+  useEffect(() => {
+    setItems([
+      { id: 1, group:1, content: '11x25 SS 개별 무지 오렌지 6187 200P_팩', start: dayjs().add(0, 'day').hour(9).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-primary'},
+      { id: 2, group:2, content: '디앙 11/25 SS (PLA 1P) 100개입 유백색', start: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(14).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-danger'},
+      { id: 3, group:3, content: '마트용_디앙 스무디 11/21 SS 15개입', start: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(12).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-warning'},
+      { id: 4, group:4, content: '작업 D', start: dayjs().add(0, 'day').hour(13).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(15).minute(0).format('YYYY-MM-DD HH:mm:ss')},
+    ]);
+    setItems2([
+      { id: 5, group:5, content: '11x25 SS 개별 무지 오렌지 6187 200P_팩', start: dayjs().add(0, 'day').hour(9).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(10).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-primary'},
+      { id: 6, group:6, content: '디앙 11/25 SS (PLA 1P) 100개입 유백색', start: dayjs().add(0, 'day').hour(10).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-danger'},
+      { id: 7, group:7, content: '작업 G', start: dayjs().add(0, 'day').hour(12).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(13).minute(0).format('YYYY-MM-DD HH:mm:ss')},
+      { id: 8, group:8, content: '작업 H', start: dayjs().add(0, 'day').hour(14).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(16).minute(0).format('YYYY-MM-DD HH:mm:ss')},
+   ]);
+    setItems3([
+      { id: 9, group:9, content: '11x25 SS 개별 무지 오렌지 6187 200P_팩', start: dayjs().add(0, 'day').hour(9).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(10).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-primary'},
+      { id: 10, group:10, content: '디앙 11/25 SS (PLA 1P) 100개입 유백색', start: dayjs().add(0, 'day').hour(10).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-danger'},
+      { id: 11, group:11, content: '마트용_디앙 스무디 11/21 SS 15개입', start: dayjs().add(0, 'day').hour(12).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(13).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-warning'},
+      { id: 12, group:12, content: '작업 L', start: dayjs().add(0, 'day').hour(14).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(16).minute(0).format('YYYY-MM-DD HH:mm:ss')}
+    ]);
+
+    setGroups([
+      { id: 1, content: '압출기 A' },
+      { id: 2, content: '압출기 B' },
+      { id: 3, content: '압출기 C' },
+      { id: 4, content: '압출기 D' },
+    ]);
+    setGroups2([
+      { id: 5, content: '가공기 E' },
+      { id: 6, content: '가공기 F' },
+      { id: 7, content: '가공기 G' },
+      { id: 8, content: '가공기 H' },
+    ]);
+    setGroups3([
+      { id: 9, content: '포장기 I' },
+      { id: 10, content: '포장기 J' },
+      { id: 11, content: '포장기 K' },
+      { id: 12, content: '포장기 L' }
+    ]);
+
+ 
+
+  }, []);
 
 
-  const [form, setForm] = useState({
-      user_id: '',
-      ip_address: '',
-      login_dt: '',
-    });
-  
-    const handleChange = (e) => {
-      console.log(e.target.name, e.target.value);
-      setForm({ ...form, [e.target.name]: e.target.value });
-    };
-    
-
-
-  // 조회
-  const getData = (params) => {
-    console.log("getData");
-
-    setLoading(true);
-    
-    const startTime = Date.now(); // 요청 전 시간 기록
-    axiosInstance
-    .post(`/users/getLogs`, JSON.stringify(form))
-    .then((res) => {
-      const endTime = Date.now(); // 응답 시간을 측정
-      const responseTime = endTime - startTime; // 응답 시간 (밀리초)
-      const delay = responseTime < 300 ? 300 - responseTime : 0; // 응답 시간이 0.5초보다 빠르면 남은 시간만큼 지연
-      
-      // 지연 후 응답을 출력
-      setTimeout(async () => {
-        setRowData(res.data);
-        setLoading(false);
-      }, delay);
-        
-    })
-    .catch((error) => console.error("Error fetching data:", error));
-    
+  const options = {
+    start: dayjs().startOf('day').toDate(),
+    end: dayjs().add(1, 'day').endOf('day').toDate(), 
+    min: dayjs().startOf('day').toDate(),
+    max: dayjs().add(2, 'day').endOf('day').toDate(), 
+    stack: true,
+    editable: true,
+    orientation: 'top',
+    showCurrentTime: true, // 현재시간 세로줄
+    showTooltips: true, // 툴팁 표시
+    zoomMin: 1000 * 60 * 60 * 24 * 1,
+    zoomMax: 1000 * 60 * 60 * 24 * 1.5,
+    timeAxis: { scale: 'hour', step: 1 }, // (필요시 강제 설정)
+    format: {
+      minorLabels: {
+        millisecond:'SSS',
+        second:     's',
+        minute:     'HH:mm',
+        hour:       'HH:mm',
+        weekday:    'ddd D',
+        day:        'D',
+        week:       'w',
+        month:      'MMM',
+        year:       'YYYY'
+      },
+      majorLabels: {
+        millisecond:'HH:mm:ss',
+        second:     'HH:mm:ss',
+        minute:     'YYYY-MM-DD',
+        hour:       'YYYY-MM-DD',
+        weekday:    'YYYY-MM-DD',
+        day:        'YYYY-MM-DD',
+        week:       'YYYY-MM-DD',
+        month:      'YYYY-MM-DD',
+        year:       'YYYY-MM-DD'
+      }
+    }
   };
 
-
-
-  // onGridReady에서 이벤트 리스너 추가
-  const onGridReady = (params) => {
-    gridRef.current = params.api; // Grid API 저장
-    getData();
-
-    // 셀 값 변경 이벤트
-    params.api.addEventListener("cellValueChanged", (ev) => {
-      
-      
-    });
-    
-    // 선택 변경 이벤트
-    params.api.addEventListener("selectionChanged", (ev) => {
-      console.log(ev);
-    });
-
-  };
-
-  
   return (
     <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
-
-      <div className="p-2 mb-2 border bg-light">
-       
-        <Row className="">
-          <Col className="d-flex gap-2">
-            <Form.Control 
-              type="text"
-              size="sm" 
-              className="w-auto"
-              name="user_id" 
-              value={form.user_id}
-              onChange={handleChange}
-              placeholder="아이디" 
-            />
-            <Form.Control
-              type="text" 
-              size="sm" 
-              className="w-auto" 
-              name="ip_address"
-              value={form.ip_address}
-              onChange={handleChange}
-              placeholder="아이피" 
-            />
-            <Form.Control 
-              type="date"
-              size="sm" 
-              className="w-auto" 
-              name="login_dt"
-              value={form.login_dt}
-              onChange={handleChange}
-              placeholder="접속일자"
-            />
-            <Button size="sm" variant="secondary" onClick={getData}>검색</Button>
-          </Col>
-          
-        </Row>
-
-      </div>
-      
-      <GridExample 
-        columnDefs={columnDefs}
-        rowData={rowData}
-        onGridReady={onGridReady} 
-        loading={loading}
-        rowNum={true}
-        rowSel={"singleRow"}
-      />
-      
-      <Modal ref={modalRef} />
-      <Modal ref={modalRef2} />
+      <h2>설비 작업 스케줄</h2>
+      <VisTimeline items={items} options={options} groups={groups} />
+      <VisTimeline items={items2} options={options} groups={groups2} />
+      <VisTimeline items={items3} options={options} groups={groups3} />
     </div>
   );
-}
+};
 
-export default LoginHistory;
+export default Main;

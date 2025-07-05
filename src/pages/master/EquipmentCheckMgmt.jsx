@@ -51,7 +51,7 @@ const Main = () => {
     
     const init = {
       category: '',
-      code: ['cd007', 'cd008', 'cd009', 'cd010']
+      code: ['cd007', 'cd008', 'cd009', 'cd010', 'cd011']
     };
 
     axiosInstance
@@ -63,8 +63,8 @@ const Main = () => {
       setColumnDefs([
         { headerName: "설비코드", field: "equipment_code", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter"},
         { headerName: "설비명", field: "equipment_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter" },
-        { headerName: "설비유형", field: "equipment_type", sortable: true, editable: false, align:"center", filter: "agTextColumnFilter", 
-          valueFormatter:(params)=> typeFormatter(params,'cd008')
+        { headerName: "공정유형", field: "equipment_type", sortable: true, editable: false, align:"center", filter: "agTextColumnFilter", 
+          valueFormatter:(params)=> typeFormatter(params,'cd011')
         },
         { headerName: "상태", field: "status", sortable: true, editable: false, align:"center", 
           cellEditor: "agSelectCellEditor",
@@ -489,7 +489,7 @@ const Main = () => {
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
-                  <th className="bg-light text-end align-middle">설비유형</th>
+                  <th className="bg-light text-end align-middle">공정유형</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Select 

@@ -10,6 +10,10 @@ const MyPage = () => {
   
 
   const [form, setForm] = useState({
+    user_id: '',
+    user_nm: '',
+    pw: '',
+    pw_chk: '',
     email: '',
     phone: '',
     addr: '',
@@ -34,6 +38,11 @@ const MyPage = () => {
   };
 
   const apply = (params) => {
+    if (form.pw !== form.pw_chk) {
+      modalRef2.current.open({ title:"알림", message:"비밀번호가 일치하지 않습니다.", cancelText:""});
+      return;
+    }
+
     axiosInstance
       .post("/users/setUserInfo", JSON.stringify(form))
       .then((res) => {
@@ -52,6 +61,64 @@ const MyPage = () => {
           <Col className="d-flex gap-2 align-items-center">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }}>
               <tbody>
+                <tr>
+                  <th className="bg-light text-end align-middle">아이디</th>
+                  <td>
+                    <Form.Control 
+                      type="text"
+                      name="user_id"
+                      value={form.user_id ?? ''}
+                      onChange={handleChange}
+                      size="sm" 
+                      className="w-auto"
+                      disabled
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">이름</th>
+                  <td>
+                    <Form.Control 
+                      type="text"
+                      name="user_nm"
+                      value={form.user_nm ?? ''}
+                      onChange={handleChange}
+                      size="sm" 
+                      className="w-auto"
+                      disabled
+                    />
+                  </td>
+                </tr>
+    
+                <tr>
+                  <th className="bg-light text-end align-middle">비밀번호</th>
+                  <td>
+                    <Form.Control 
+                      type="password"
+                      name="pw"
+                      value={form.pw ?? ''}
+                      onChange={handleChange}
+                      size="sm" 
+                      className="w-auto"
+                    />
+                  </td>
+                </tr>
+    
+                <tr>
+                  <th className="bg-light text-end align-middle">비밀번호 확인</th>
+                  <td>
+                    <Form.Control 
+                      type="password"
+                      name="pw_chk"
+                      value={form.pw_chk ?? ''}
+                      onChange={handleChange}
+                      size="sm" 
+                      className="w-auto"
+                    />
+                  </td>
+                </tr>
+    
+                
                 <tr>
                   <th className="bg-light text-end align-middle">이메일</th>
                   <td>

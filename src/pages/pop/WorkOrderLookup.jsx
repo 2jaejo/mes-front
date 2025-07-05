@@ -1,139 +1,61 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from 'react';
 
-import axiosInstance from "utils/Axios";
-import GridExample from "components/GridExample";
-import Modal from "components/Modal";
-import { Row, Col, Form, Button } from 'react-bootstrap';
+const MesPopScreen = () => {
+  const [goodQty, setGoodQty] = useState(0);
+  const [badQty, setBadQty] = useState(0);
+  const [totalQty, setTotalQty] = useState(0);
 
-const LoginHistory = () => {
-  const gridRef = useRef();  
-  const modalRef = useRef();  
-  const modalRef2 = useRef();  
-
-  const [loading, setLoading] = useState(false);
-  const [rowData, setRowData] = useState();
-  const [columnDefs] = useState([
-    { headerName: "아이디", field: "user_id", sortable: true, filter: true, },
-    { headerName: "아이피", field: "ip_address", sortable: true, },
-    { headerName: "접속정보", field: "user_agent", sortable: true, minWidth:800 },
-    { headerName: "접속시간", field: "login_dt", sortable: true, },
-    { headerName: "성공여부", field: "success", sortable: true, },
-  ]);
-
-
-  const [form, setForm] = useState({
-      user_id: '',
-      ip_address: '',
-      login_dt: '',
-    });
-  
-    const handleChange = (e) => {
-      console.log(e.target.name, e.target.value);
-      setForm({ ...form, [e.target.name]: e.target.value });
-    };
-    
-
-
-  // 조회
-  const getData = (params) => {
-    console.log("getData");
-
-    setLoading(true);
-    
-    const startTime = Date.now(); // 요청 전 시간 기록
-    axiosInstance
-    .post(`/users/getLogs`, JSON.stringify(form))
-    .then((res) => {
-      const endTime = Date.now(); // 응답 시간을 측정
-      const responseTime = endTime - startTime; // 응답 시간 (밀리초)
-      const delay = responseTime < 300 ? 300 - responseTime : 0; // 응답 시간이 0.5초보다 빠르면 남은 시간만큼 지연
-      
-      // 지연 후 응답을 출력
-      setTimeout(async () => {
-        setRowData(res.data);
-        setLoading(false);
-      }, delay);
-        
-    })
-    .catch((error) => console.error("Error fetching data:", error));
-    
+  const handleStart = () => {
+    alert("작업 시작!");
   };
 
-
-
-  // onGridReady에서 이벤트 리스너 추가
-  const onGridReady = (params) => {
-    gridRef.current = params.api; // Grid API 저장
-    getData();
-
-    // 셀 값 변경 이벤트
-    params.api.addEventListener("cellValueChanged", (ev) => {
-      
-      
-    });
-    
-    // 선택 변경 이벤트
-    params.api.addEventListener("selectionChanged", (ev) => {
-      console.log(ev);
-    });
-
+  const handleComplete = () => {
+    alert("작업 완료!");
   };
 
-  
+  const handleSubmit = () => {
+    setTotalQty(goodQty + badQty);
+  };
+
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ padding: 20, fontFamily: 'sans-serif', backgroundColor: '#f5f5f5', height: '100vh' }}>
+      <h2 style={{ marginBottom: 20 }}>MES 작업자 POP</h2>
 
-      <div className="p-2 mb-2 border bg-light">
-       
-        <Row className="">
-          <Col className="d-flex gap-2">
-            <Form.Control 
-              type="text"
-              size="sm" 
-              className="w-auto"
-              name="user_id" 
-              value={form.user_id}
-              onChange={handleChange}
-              placeholder="아이디" 
-            />
-            <Form.Control
-              type="text" 
-              size="sm" 
-              className="w-auto" 
-              name="ip_address"
-              value={form.ip_address}
-              onChange={handleChange}
-              placeholder="아이피" 
-            />
-            <Form.Control 
-              type="date"
-              size="sm" 
-              className="w-auto" 
-              name="login_dt"
-              value={form.login_dt}
-              onChange={handleChange}
-              placeholder="접속일자"
-            />
-            <Button size="sm" variant="secondary" onClick={getData}>검색</Button>
-          </Col>
-          
-        </Row>
-
+      <div style={{ border: '1px solid #333', padding: 15, marginBottom: 20, backgroundColor: '#fff' }}>
+        <h3>작업지시 정보</h3>
+        <p>작업지시번호: <strong>2025010714</strong></p>
+        <p>작업시작: <strong>2025-02-04 08:16:02</strong></p>
+        <p>품목명: <strong>test</strong></p>
+        <p>규격: <strong>PLA(내외) / 흑색 / 0.90 x 730</strong></p>
+        <p>목표수량: <strong>8,400 EA</strong></p>
       </div>
-      
-      <GridExample 
-        columnDefs={columnDefs}
-        rowData={rowData}
-        onGridReady={onGridReady} 
-        loading={loading}
-        rowNum={true}
-        rowSel={"singleRow"}
-      />
-      
-      <Modal ref={modalRef} />
-      <Modal ref={modalRef2} />
+
+      <div style={{ border: '1px solid #333', padding: 15, marginBottom: 20, backgroundColor: '#fff' }}>
+        <h3>생산 실적 입력</h3>
+
+        <div style={{ marginBottom: 10 }}>
+          <label>양품수량: </label>
+          <input type="number" value={goodQty} onChange={(e) => setGoodQty(Number(e.target.value))} />
+        </div>
+
+        <div style={{ marginBottom: 10 }}>
+          <label>불량수량: </label>
+          <input type="number" value={badQty} onChange={(e) => setBadQty(Number(e.target.value))} />
+        </div>
+
+        <button onClick={handleSubmit} style={{ marginTop: 10 }}>실적 등록</button>
+
+        <div style={{ marginTop: 15 }}>
+          <p>누적생산: <strong>{totalQty}</strong> EA</p>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 20 }}>
+        <button onClick={handleStart} style={{ fontSize: 20, padding: '20px 40px', backgroundColor: '#4caf50', color: '#fff' }}>작업시작</button>
+        <button onClick={handleComplete} style={{ fontSize: 20, padding: '20px 40px', backgroundColor: '#f44336', color: '#fff' }}>작업완료</button>
+      </div>
     </div>
   );
-}
+};
 
-export default LoginHistory;
+export default MesPopScreen;

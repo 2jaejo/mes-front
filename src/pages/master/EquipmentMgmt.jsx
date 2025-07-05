@@ -36,7 +36,7 @@ const Main = () => {
     
     const init = {
       category: '',
-      code: ['cd007', 'cd008', 'cd009', 'cd010']
+      code: ['cd007', 'cd008', 'cd009', 'cd010','cd011']
     };
 
     axiosInstance
@@ -48,17 +48,10 @@ const Main = () => {
       setColumnDefs([
         { headerName: "설비코드", field: "equipment_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left"},
         { headerName: "설비명", field: "equipment_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left"},
-        { headerName: "설비유형", field: "equipment_type", sortable: true, editable: false, align:"center", valueFormatter:(params)=> typeFormatter(params,'cd008')},
+        { headerName: "설비유형", field: "equipment_type", sortable: true, editable: false, align:"center", valueFormatter:(params)=> typeFormatter(params,'cd011')},
         { headerName: "제조사", field: "manufacturer", sortable: false, editable: false, align:"center"},
         { headerName: "모델명", field: "model", sortable: false, editable: false, align:"left"},
         { headerName: "설치일", field: "install_date", sortable: false, editable: true, align:"center"},
-        { headerName: "설치위치", field: "location", sortable: false, editable: true, align:"center",
-          cellEditor: "agSelectCellEditor",
-          cellEditorParams: {
-            values: selectBox.current.common?.['cd009'].map((item) => item.code) ?? [],
-          },
-          valueFormatter: (params) => typeFormatter(params,'cd009'),
-        },
         { headerName: "상태", 
           field: "status", 
           sortable: false, 
@@ -193,7 +186,7 @@ const Main = () => {
                   size="sm"
                   className="w-100"
                 >
-                  {(selectBox.current.common?.['cd008'] || [])
+                  {(selectBox.current.common?.['cd011'] || [])
                     .filter(opt => opt.use_yn === 'Y')
                     .map(opt => (
                       <option key={opt.code} value={opt.code}>
@@ -381,7 +374,7 @@ const Main = () => {
     });
 
     modalRef.current.open({
-      title: "단가 추가",
+      title: "설비 추가",
       message: "추가하시겠습니까?",
       content: <ModalForm form={formRef.current} onChangeHandler={formRefChange} />,
       onCancel: ()=>{
@@ -530,7 +523,7 @@ const Main = () => {
                         style={{minWidth: '100px'}}
                       >
                         <option value="">전체</option>
-                        {(selectBox.current.common?.['cd008'] || [])
+                        {(selectBox.current.common?.['cd011'] || [])
                           .filter(opt => opt.use_yn === 'Y')
                           .map(opt => (
                             <option key={opt.code} value={opt.code}>

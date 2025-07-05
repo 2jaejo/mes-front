@@ -49,68 +49,31 @@ const Main = () => {
   
 
   const col_a = [
-    { headerName: "품목대분류", field: "item_group_a", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-      valueFormatter: (params) => categoryAFormatter(params),
-    },
-    { headerName: "품목소분류", field: "item_group_b", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-      valueFormatter: (params) => categoryBFormatter(params),
-    },
-    { headerName: "품목코드", field: "item_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "품목명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-    { headerName: "품목유형", field: "item_type", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-      cellEditor: "agSelectCellEditor",
-      cellEditorParams: {
-        values: selectBox.current.common?.['cd006']?.map((item) => item.code) ?? [],
-      },
-      valueFormatter: (params) => commonTypeFormatter(params, 'cd006'),
-    },
-    { headerName: "기준단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-      cellEditor: "agSelectCellEditor",
-      cellEditorParams: {
-        values: selectBox.current.common?.['cd004']?.map((item) => item.code) ?? [],
-      },
-      valueFormatter: (params) => commonTypeFormatter(params, 'cd004'),
-    },
-    { headerName: "거래처", field: "client_list", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-    { headerName: "단가", field: "standard_price", sortable: true, editable: false, align:"right", 
-      valueFormatter: (params) => {
-        const value = parseFloat(params.value);
-        return isNaN(value) ? '' : `${value.toLocaleString()}`;
-      },
-    },
-    { 
-      headerName: "사용여부", 
-      field: "use_yn", 
-      sortable: false, 
-      editable: false,
-      align:"center",
-      maxWidth:80,
-      // backgroundColor: "#a7d1ff29",
-      cellRenderer: 'agCheckboxCellRenderer',
-      cellRendererParams: {
-        disabled: true,
-      },
-       // Y/N 값을 true/false로 변환하여 체크박스 표시
-      valueGetter: (params) => {
-        return params.data.use_yn === 'Y';
-      },
-
-      // 체크박스 변경 시 true/false → Y/N 으로 반영
-      valueSetter: (params) => {
-        const newValue = params.newValue ? 'Y' : 'N';
-        if (params.data.use_yn !== newValue) {
-          params.data.use_yn = newValue;
-          return true; // 값이 바뀐 경우만 true
-        }
-        return false; // 변경 없음
-      },
-    },
-    { headerName: "비고", field: "comment", sortable: true, editable: false, align:"left", minWidth:300},
+    
+    { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "품번", field: "item_dotno", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
+    { headerName: "상품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
+    { headerName: "상태", field: "item_status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "소비자가", field: "sellprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "매입공급가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "매입부가세", field: "vtax_buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "매입가", field: "tax_buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "과세유형", field: "tax_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "매입유형", field: "buy_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "기본매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "배송유형", field: "trans_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "팩킹구분", field: "item_plus_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "출고창고", field: "storage_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "브랜드", field: "brand_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "상품구분", field: "item_part_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "등록일", field: "reg_date", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "등록자", field: "reg_admin_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
   ];
 
 
   let grid_col2 = [
-    { headerName: "품목코드", field: "item_code", sortable: false, editable: false, align:"center"},
+    { headerName: "품목코드", field: "item_dotno", sortable: false, editable: false, align:"center"},
     { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left"}, 
     { headerName: "자재코드", field: "material_code", sortable: false, editable: false, align:"center"},
     { headerName: "자재명", field: "material_name", sortable: false, editable: false, align:"left"}, 
@@ -214,8 +177,6 @@ const Main = () => {
       // 그리드 설정
       setColumnDefs(col_a);
 
-      form.item_type = (selectBox.current.common?.['cd006'] || []).filter(opt => opt.use_yn === 'Y' && opt.opt1 !== '1')[0].code;
-
       getData();
     })
     .catch((error) => {
@@ -229,14 +190,8 @@ const Main = () => {
 
   // 검색창 입력필드
   const [form, setForm] = useState({
-    item_type:'',
-    item_group_a:'',
-    item_group_b:'',
-    use_yn: '',
-    item_code:'',
+    item_dotno:'',
     item_name:'',
-    client_code:'',
-    client_name:''
   });
 
 
@@ -256,14 +211,8 @@ const Main = () => {
 
   // 추가 모달 기본값
   const DEFAULT_FORM = (init={}) => ({
-    item_type:'',
-    item_group_a:'',
-    item_group_b:'',
-    use_yn: '',
-    item_code:'',
-    item_name:'',
-    client_code:'',
-    client_name:''
+    item_dotno:''
+    , item_name:''
     , ...init
   });
 
@@ -345,9 +294,7 @@ const Main = () => {
     console.log("addData");
 
     // 폼 초기화
-    formRef.current = DEFAULT_FORM({
-      item_type: (selectBox.current.common?.['cd006'] || []).filter(opt => opt.use_yn === 'Y' && opt.opt1 === '1')[0].code
-    });
+    formRef.current = DEFAULT_FORM();
 
     modalRef.current.open({
       title: "BOM 추가",
@@ -367,8 +314,8 @@ const Main = () => {
         }
 
         const data = {
-          item_code: gridRef.current.getSelectedRows()[0].item_code,
-          material_code: formRef.current.sel_row.item_code
+          item_dotno: gridRef.current.getSelectedRows()[0].item_dotno,
+          material_code: formRef.current.sel_row.item_dotno
         }
 
         axiosInstance
@@ -440,90 +387,7 @@ const Main = () => {
       <div className="bg-light">
         <Row className="">
           <Col className="">
-            <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
-              <tbody>
-                <tr>
-                  <th className="bg-light text-end align-middle">품목유형</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Select 
-                        name="item_type" 
-                        value={form.item_type} 
-                        onChange={handleChange}
-                        size="sm"
-                        className="w-auto"
-                        style={{minWidth:100}}
-                      >
-                        {/* <option value="">전체</option> */}
-                        {(selectBox.current.common?.['cd006'] || [])
-                          .filter(opt => opt.use_yn === 'Y' && opt.opt1 !== '1' )
-                          .map(opt => (
-                            <option key={opt.code} value={opt.code}>
-                              {opt.code_name}
-                            </option>
-                        ))}
-                      </Form.Select>               
-                    </div>
-                  </td>
-                  <th className="bg-light text-end align-middle">품목분류</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Select 
-                        name="item_group_a" 
-                        value={form.item_group_a} 
-                        onChange={handleChange}
-                        size="sm"
-                        className="w-auto"
-                        style={{minWidth:100}}
-                      >
-                        <option value="">전체</option>
-                        {(selectBox.current.category?.item_group_a || [])
-                          .filter(opt => opt.use_yn === 'Y')
-                          .map(opt => (
-                            <option key={opt.category_id} value={opt.category_id}>
-                              {opt.category_nm}
-                            </option>
-                        ))}
-                      </Form.Select>
-                      <Form.Select 
-                        name="item_group_b" 
-                        value={form.item_group_b} 
-                        onChange={handleChange}
-                        size="sm"
-                        className="w-auto"
-                        style={{minWidth:100}}
-                      >
-                        <option value="">전체</option>
-                        {(selectBox.current.category?.['item_group_b'][form.item_group_a] || [])
-                          .filter(opt => opt.use_yn === 'Y')
-                          .map(opt => (
-                            <option key={opt.category_id} value={opt.category_id}>
-                              {opt.category_nm}
-                            </option>
-                        ))}
-                      </Form.Select>
-                      
-                    </div>
-                  </td>
-                  <th className="bg-light text-end align-middle">사용여부</th>
-                  <td className="">
-                    
-                    <Form.Select 
-                      name="use_yn" 
-                      value={form.use_yn} 
-                      onChange={handleChange}
-                      size="sm"
-                      className="w-auto"
-                      style={{minWidth:100}}
-                    >
-                      <option value="">전체</option>
-                      <option value="y">사용</option>
-                      <option value="n">미사용</option>
-                    </Form.Select>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
+            
 
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
@@ -533,12 +397,12 @@ const Main = () => {
                     <div className="d-flex gap-2">
                       <Form.Control 
                         type="text"
-                        name="item_code"
-                        value={form.item_code}
+                        name="item_dotno"
+                        value={form.item_dotno}
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="품번"
                       />
                       <Form.Control 
                         type="text"
@@ -547,7 +411,7 @@ const Main = () => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="상품명"
                       />
                     </div>
                   </td>
@@ -555,33 +419,7 @@ const Main = () => {
                     <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
                   </td>
 
-                  <th className="bg-light text-end align-middle">거래처</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Control 
-                        type="text"
-                        name="client_code"
-                        value={form.client_code}
-                        onChange={handleChange}
-                        size="sm" 
-                        className="w-auto"
-                        placeholder="CODE"
-                      />
-                      <Form.Control 
-                        type="text"
-                        name="client_name"
-                        value={form.client_name}
-                        onChange={handleChange}
-                        size="sm" 
-                        className="w-auto"
-                        placeholder="NAME"
-                      />
-                    </div>
-                  </td>
-                  <td className="">
-                    <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
-                  </td>
-
+                  
                 </tr>
                 
               </tbody>
@@ -720,21 +558,9 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
   
 
   const col_a = [
-    { headerName: "품목대분류", field: "item_group_a", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-      valueFormatter: (params) => categoryAFormatter(params),
-    },
-    { headerName: "품목소분류", field: "item_group_b", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-      valueFormatter: (params) => categoryBFormatter(params),
-    },
-    { headerName: "품목코드", field: "item_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
+    
+    { headerName: "품목코드", field: "item_dotno", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
     { headerName: "품목명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-    { headerName: "품목유형", field: "item_type", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-      cellEditor: "agSelectCellEditor",
-      cellEditorParams: {
-        values: selectBox.current.common?.['cd006']?.map((item) => item.code) ?? [],
-      },
-      valueFormatter: (params) => commonTypeFormatter(params, 'cd006'),
-    },
     { headerName: "기준단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
       cellEditor: "agSelectCellEditor",
       cellEditorParams: {
@@ -742,40 +568,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
       },
       valueFormatter: (params) => commonTypeFormatter(params, 'cd004'),
     },
-    { headerName: "거래처", field: "client_list", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-    { headerName: "단가", field: "standard_price", sortable: true, editable: false, align:"right", 
-      valueFormatter: (params) => {
-        const value = parseFloat(params.value);
-        return isNaN(value) ? '' : `${value.toLocaleString()}`;
-      },
-    },
-    { 
-      headerName: "사용여부", 
-      field: "use_yn", 
-      sortable: false, 
-      editable: false,
-      align:"center",
-      maxWidth:80,
-      // backgroundColor: "#a7d1ff29",
-      cellRenderer: 'agCheckboxCellRenderer',
-      cellRendererParams: {
-        disabled: true,
-      },
-       // Y/N 값을 true/false로 변환하여 체크박스 표시
-      valueGetter: (params) => {
-        return params.data.use_yn === 'Y';
-      },
-
-      // 체크박스 변경 시 true/false → Y/N 으로 반영
-      valueSetter: (params) => {
-        const newValue = params.newValue ? 'Y' : 'N';
-        if (params.data.use_yn !== newValue) {
-          params.data.use_yn = newValue;
-          return true; // 값이 바뀐 경우만 true
-        }
-        return false; // 변경 없음
-      },
-    },
+    { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
     { headerName: "비고", field: "comment", sortable: true, editable: false, align:"left", minWidth:300},
   ];
 
@@ -853,91 +646,6 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
       <div className="bg-light">
         <Row className="">
           <Col className="">
-          
-            <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
-              <tbody>
-                <tr>
-                  <th className="bg-light text-end align-middle">품목유형</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Select 
-                        name="item_type" 
-                        value={form.item_type} 
-                        onChange={modalFormChange}
-                        size="sm"
-                        className="w-auto"
-                        style={{minWidth:100}}
-                      >
-                        {/* <option value="">전체</option> */}
-                        {(selectBox.current.common?.['cd006'] || [])
-                          .filter(opt => opt.use_yn === 'Y' && opt.opt1 === '1')
-                          .map(opt => (
-                            <option key={opt.code} value={opt.code}>
-                              {opt.code_name}
-                            </option>
-                        ))}
-                      </Form.Select>               
-                    </div>
-                  </td>
-                  <th className="bg-light text-end align-middle">품목분류</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Select 
-                        name="item_group_a" 
-                        value={form.item_group_a} 
-                        onChange={modalFormChange}
-                        size="sm"
-                        className="w-auto"
-                        style={{minWidth:100}}
-                      >
-                        <option value="">전체</option>
-                        {(selectBox.current.category?.item_group_a || [])
-                          .filter(opt => opt.use_yn === 'Y')
-                          .map(opt => (
-                            <option key={opt.category_id} value={opt.category_id}>
-                              {opt.category_nm}
-                            </option>
-                        ))}
-                      </Form.Select>
-                      <Form.Select 
-                        name="item_group_b" 
-                        value={form.item_group_b} 
-                        onChange={modalFormChange}
-                        size="sm"
-                        className="w-auto"
-                        style={{minWidth:100}}
-                      >
-                        <option value="">전체</option>
-                        {(selectBox.current.category?.['item_group_b'][form.item_group_a] || [])
-                          .filter(opt => opt.use_yn === 'Y')
-                          .map(opt => (
-                            <option key={opt.category_id} value={opt.category_id}>
-                              {opt.category_nm}
-                            </option>
-                        ))}
-                      </Form.Select>
-                      
-                    </div>
-                  </td>
-                  <th className="bg-light text-end align-middle">사용여부</th>
-                  <td className="">
-                    
-                    <Form.Select 
-                      name="use_yn" 
-                      value={form.use_yn} 
-                      onChange={modalFormChange}
-                      size="sm"
-                      className="w-auto"
-                      style={{minWidth:100}}
-                    >
-                      <option value="">전체</option>
-                      <option value="y">사용</option>
-                      <option value="n">미사용</option>
-                    </Form.Select>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
 
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
@@ -947,8 +655,8 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                     <div className="d-flex gap-2">
                       <Form.Control 
                         type="text"
-                        name="item_code"
-                        value={form.item_code}
+                        name="item_dotno"
+                        value={form.item_dotno}
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
@@ -968,34 +676,6 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                   <td className="">
                     <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
                   </td>
-
-                  <th className="bg-light text-end align-middle">거래처</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Control 
-                        type="text"
-                        name="client_code"
-                        value={form.client_code}
-                        onChange={modalFormChange}
-                        size="sm" 
-                        className="w-auto"
-                        placeholder="CODE"
-                      />
-                      <Form.Control 
-                        type="text"
-                        name="client_name"
-                        value={form.client_name}
-                        onChange={modalFormChange}
-                        size="sm" 
-                        className="w-auto"
-                        placeholder="NAME"
-                      />
-                    </div>
-                  </td>
-                  <td className="">
-                    <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
-                  </td>
-
                 </tr>
                 
               </tbody>

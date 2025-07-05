@@ -7,6 +7,7 @@ import Modal from "components/Modal";
 import { MainContentStyle } from "css/CommonStyle";
 
 import SearchItemComponent from "components/SearchItemComponent";
+import SearchRawComponent from "components/SearchRawComponent";
 import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
 import OrderComponent from "./PurchaseMgmt";
@@ -219,11 +220,11 @@ const Main = ({ props={} }) => {
 
       // 그리드 설정
       setColumnDefs([
-        { headerName: "발주번호", field: "purchase_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "입고번호", field: "receipt_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
+        { headerName: "발주번호", field: "purchase_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:200},
+        { headerName: "입고번호", field: "receipt_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:200},
         { headerName: "입고일자", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left",
+        { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:200,
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -252,7 +253,7 @@ const Main = ({ props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "공급가", field: "supply_price", sortable: true, editable: false, align:"right",
+        { headerName: "매입가", field: "total_price", sortable: true, editable: false, align:"right",
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -267,53 +268,17 @@ const Main = ({ props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "부가세", field: "tax", sortable: true, editable: false, align:"right",
-          cellRendererSelector: (params) => {
-            if (params.node.rowPinned) {
-              return {
-                component: ()=>{
-                  return (
-                    <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-                  );
-                }
-              };
-            }
-            return undefined;
-          },
-          valueFormatter: (params) => moneyFormatter(params)
-        },
-        { headerName: "합계", field: "total_price", sortable: true, editable: false, align:"right",
-          cellRendererSelector: (params) => {
-            if (params.node.rowPinned) {
-              return {
-                component: ()=>{
-                  return (
-                    <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-                  );
-                }
-              };
-            }
-            return undefined;
-          },
-          valueFormatter: (params) => moneyFormatter(params)
-        },
-        // { headerName: "발주상태", field: "status", sortable: true, editable: (params) => !params.node.rowPinned, filter: "agTextColumnFilter",  align:"center",
-        //   cellEditor: "agSelectCellEditor",
-        //   cellEditorParams: {
-        //     values: selectBox.current.common?.['cd012']?.map((item) => item.code) ?? [],
-        //   },
-        //   valueFormatter: (params) => commonTypeFormatter(params, 'cd012'),
-        // },
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"},
         { headerName: "담당자", field: "manager", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", minWidth:200},
       ]);
       
       // 그리드 설정2
       setColumnDefs2([
-        { headerName: "입고번호", field: "receipt_id", sortable: false, editable: false, align:"center"},
+        { headerName: "입고번호", field: "receipt_id", sortable: false, editable: false, align:"center", width: 200},
         { headerName: "진행상태", field: "status", sortable: false, editable: false, align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -321,10 +286,23 @@ const Main = ({ props={} }) => {
           },
           valueFormatter: (params) => commonTypeFormatter(params, 'cd013'),
         },
-        { headerName: "품목코드", field: "item_code", sortable: false, editable: false, align:"center"},
-        { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left"}, 
+        { headerName: "품목코드", field: "raw_code", sortable: false, editable: false, align:"center"},
+        { headerName: "품목명", field: "raw_name", sortable: false, editable: false, align:"left", width:200}, 
         { headerName: "기준단위", field: "base_unit", sortable: false, editable: false, align:"center"},
-        { headerName: "구매단위", field: "purchase_unit", sortable: false, editable: false, align:"center"}, 
+        { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center",
+          cellRendererSelector: (params) => {
+            if (params.node.rowPinned) {
+              return {
+                component: ()=>{
+                  return (
+                    <span>합계</span>
+                  );
+                }
+              };
+            }
+            return undefined;
+          },
+        }, 
         { headerName: "입고수량", field: "received_qty", sortable: false, 
           align:"right", 
           editable: false , 
@@ -357,36 +335,6 @@ const Main = ({ props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "공급가", field: "supply_price", sortable: false, editable: false, align:"right",
-          cellRendererSelector: (params) => {
-            if (params.node.rowPinned) {
-              return {
-                component: ()=>{
-                  return (
-                    <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-                  );
-                }
-              };
-            }
-            return undefined;
-          },
-           valueFormatter: (params) => moneyFormatter(params)
-          }, 
-        { headerName: "부가세", field: "tax", sortable: false, editable: false, align:"right", 
-          cellRendererSelector: (params) => {
-            if (params.node.rowPinned) {
-              return {
-                component: ()=>{
-                  return (
-                    <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-                  );
-                }
-              };
-            }
-            return undefined;
-          },
-          valueFormatter: (params) => moneyFormatter(params)
-        }, 
         { headerName: "합계", field: "total_price", sortable: false, editable: false, align:"right", 
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
@@ -404,8 +352,7 @@ const Main = ({ props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "입고검사여부", field: "incoming_inspection", sortable: false, editable: false, align:"center"}, 
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"}, 
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", minWidth:200}, 
       ]);
 
       getData();
@@ -448,13 +395,14 @@ const Main = ({ props={} }) => {
 
   // 추가 모달 기본값
   const DEFAULT_FORM = (init={}) => ({
+    purchase_id:'',
     client_code:'',
     client_name:'',
     user_id:'',
     user_nm:'',
-    request_date:'',
-    tax_yn: '',
+    receipt_date:'',
     comment: '',
+    sel_row:[],
     ...init
   });
 
@@ -583,7 +531,7 @@ const Main = ({ props={} }) => {
 
     // 폼 초기화
     formRef.current = DEFAULT_FORM({
-      request_date: new Date().toISOString().split('T')[0],
+      receipt_date: new Date().toISOString().split('T')[0],
     });
 
     modalRef.current.open({
@@ -608,7 +556,7 @@ const Main = ({ props={} }) => {
           return;
         }
 
-        if(!formRef.current.request_date){
+        if(!formRef.current.receipt_date){
           modalRef2.current.open({ title:"알림", message:"입고일을 입력하세요.", cancelText:"" });
           return;
         }
@@ -874,18 +822,19 @@ const ModalComponent = ({ form }) => {
       const col = ev.colDef.field;
       if(col === "quantity" || col === "unit_price"){
         const supply = parseInt(ev.data.quantity) * parseInt(ev.data.unit_price);
-        const tax = supply * 0.1 ;
-        const total = supply + tax ;
+        // const tax = supply * 0.1 ;
+        // const total = supply + tax ;
 
-        ev.node.setDataValue("supply_price", supply);
-        ev.node.setDataValue("tax", tax);
-        ev.node.setDataValue("total_price", total);
+        // ev.node.setDataValue("supply_price", supply);
+        // ev.node.setDataValue("tax", tax);
+        // ev.node.setDataValue("total_price", total);
+        ev.node.setDataValue("total_price", supply);
       }
 
-      if(col === "tax"){
-        const total = parseInt(ev.data.supply_price) + parseInt(ev.data.tax);
-        ev.node.setDataValue("total_price", total);
-      }
+      // if(col === "tax"){
+      //   const total = parseInt(ev.data.supply_price) + parseInt(ev.data.tax);
+      //   ev.node.setDataValue("total_price", total);
+      // }
 
     });
   };
@@ -905,22 +854,22 @@ const ModalComponent = ({ form }) => {
       selectBox.current = res.data;
 
       setColumnDefs([
-        { headerName: "품목코드", field: "item_code", sortable: false, editable: false, align:"center"},
-        { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left"},
+        { headerName: "품목코드", field: "raw_code", sortable: false, editable: false, align:"center"},
+        { headerName: "품목명", field: "raw_name", sortable: false, editable: false, align:"left"},
         { headerName: "기준단위", field: "base_unit", sortable: false, editable: false, align:"center"},
-        { headerName: "구매단위", field: "purchase_unit", sortable: false, editable: false, align:"center"},
+        { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"},
         { headerName: "입고수량", field: "quantity", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
         { headerName: "단가", field: "unit_price", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "공급가", field: "supply_price", sortable: false, editable: false, align:"right", cellDataType: 'number',
-          valueFormatter: (params) => moneyFormatter(params)
-        },
-        { headerName: "부가세", field: "tax", sortable: false, editable: true, align:"right", cellDataType: 'number',
-          valueFormatter: (params) => moneyFormatter(params)
-        },
+        // { headerName: "공급가", field: "supply_price", sortable: false, editable: false, align:"right", cellDataType: 'number',
+        //   valueFormatter: (params) => moneyFormatter(params)
+        // },
+        // { headerName: "부가세", field: "tax", sortable: false, editable: true, align:"right", cellDataType: 'number',
+        //   valueFormatter: (params) => moneyFormatter(params)
+        // },
         { headerName: "합계", field: "total_price", sortable: false, editable: false, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
@@ -1056,19 +1005,14 @@ const ModalComponent = ({ form }) => {
   const getData3 = (params) => {
 
     formRef3.current = {
-      item_type:'',
-      item_code:'',
-      item_name:'',
-      client_code:'',
-      client_name:'',
-      item_group_a: '',
-      item_group_b: '',
-      use_yn:'',
+      raw_code:'',
+      raw_name:'',
+    
     };
 
     modalRef.current.open({
       title: "품목 조회",
-      content: <SearchItemComponent form={formRef3} />,
+      content: <SearchRawComponent form={formRef3} />,
       onCancel: ()=>{
         modalRef.current.close();
       },
@@ -1076,14 +1020,14 @@ const ModalComponent = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         const row = formRef3.current.sel_row;
-        row.unit_price = parseInt(row.standard_price);
+        row.unit_price = parseInt(row.buyprice);
 
         if(!row){
           modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
           return;
         }
 
-        const chk = rowData.some(el => el.item_code === row.item_code);
+        const chk = rowData.some(el => el.raw_code === row.raw_code);
         if(chk) {
           modalRef2.current.open({ title:"알림", message:"이미 추가된 품목입니다.", cancelText:"" });
           return;
@@ -1102,27 +1046,46 @@ const ModalComponent = ({ form }) => {
 
     formRef4.current = {
       sel_row:{},
+      sel_row2:{},
     };
 
     modalRef.current.open({
       title: "발주 조회",
-      content: <OrderComponent props={formRef4} />,
+      content: <OrderComponent props={formRef4} style_props={{width:"80vw", height:"80vh"}} />,
       onCancel: ()=>{
         modalRef.current.close();
       },
       confirmText:"확인",
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
-        const row = formRef4.current.sel_row;
+        const row = formRef4.current;
         console.log(row);
 
-        modalFormChange({target:{name:'purchase_id', value:row.purchase_id}});
-        modalFormChange({target:{name:'client_code', value:row.client_code}});
-        modalFormChange({target:{name:'client_name', value:row.client_name}});
+        modalFormChange({target:{name:'purchase_id', value:row.sel_row.purchase_id}});
+        modalFormChange({target:{name:'client_code', value:row.sel_row.client_code}});
+        modalFormChange({target:{name:'client_name', value:row.sel_row.client_name}});
+
+        setRowData(row.sel_row2);
         
         modalRef.current.close();
       }, 
     });
+    
+  };
+
+  // 삭제
+  const delData = (params) => {
+
+    console.log("delData");
+    console.log(rowData);
+    const sel_rows = gridRef.current.getSelectedRows();
+
+    if( sel_rows.length === 0){
+      modalRef2.current.open({ title:"알림", message:"선택된 행이 없습니다.", cancelText:"" });
+    }
+
+    const sel_row_ids = sel_rows.map(item => item.raw_code);
+    setRowData(prev => prev.filter(item => !sel_row_ids.includes(item.raw_code)));
     
   };
 
@@ -1214,8 +1177,8 @@ const ModalComponent = ({ form }) => {
                     <div className="d-flex gap-2">
                       <Form.Control 
                         type="date"
-                        name="request_date"
-                        value={modalForm.request_date}
+                        name="receipt_date"
+                        value={modalForm.receipt_date}
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
@@ -1256,6 +1219,8 @@ const ModalComponent = ({ form }) => {
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">상세 목록</span>
               <Button size="sm" variant="primary" onClick={getData3}>품목조회</Button>
+              <Button size="sm" variant="danger" onClick={delData}>선택삭제</Button>
+              
             </div>
 
             <GridExample

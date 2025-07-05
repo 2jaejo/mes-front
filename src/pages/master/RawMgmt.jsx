@@ -45,11 +45,8 @@ const Main = () => {
 
   // 검색창 입력필드
   const [form, setForm] = useState({
-    item_type:'',
-    use_yn: '',
-    item_dotno:'',
-    item_name:'',
-
+    raw_code:'',
+    raw_name:'',
   });
 
   // 검색창 입력필드 변경 저장
@@ -120,168 +117,41 @@ const Main = () => {
   useEffect(()=>{
     console.log("useEffect");
     
-    const init = {
-      category: '',
-      code: ['cd004', 'cd005', 'cd006', 'cd015']
-    };
-
-    axiosInstance
-    .post(`/api/getDropDown`, JSON.stringify(init))
-    .then((res) => {
-        selectBox.current = res.data;
-
-        setColumnDefs([
-          // { headerName: "운영상품코드", field: "item_id", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-          // { headerName: "바코드", field: "barcode", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-          // { headerName: "품목코드", field: "item_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:200, },
-          // { headerName: "품목명", field: "item_name", sortable: true, editable: true, filter: "agTextColumnFilter",  align:"left", width:300,},
-          // { headerName: "품목유형", field: "item_type", sortable: true, editable: true, align:"center", width:100,
-          //   cellEditor: "agSelectCellEditor",
-          //   cellEditorParams: {
-          //     values: selectBox.current.common?.['cd006'].map((item) => item.code) ?? [],
-          //   },
-          //   valueFormatter: (params) => commonTypeFormatter(params, 'cd006'),
-          // },
-          // { headerName: "상태", field: "item_status", sortable: true, editable: true, align:"center", width:100,
-          //   cellEditor: "agSelectCellEditor",
-          //   cellEditorParams: {
-          //     values: selectBox.current.common?.['cd015'].map((item) => item.code) ?? [],
-          //   },
-          //   valueFormatter: (params) => commonTypeFormatter(params, 'cd015'),
-          // },
-          // { headerName: "기준단위", field: "base_unit", sortable: true, editable: true, filter: "agTextColumnFilter",  align:"center",
-          //   cellEditor: "agSelectCellEditor",
-          //   cellEditorParams: {
-          //     values: selectBox.current.common?.['cd004'].map((item) => item.code) ?? [],
-          //   },
-          //   valueFormatter: (params) => commonTypeFormatter(params, 'cd004'),
-          // },
-          // { headerName: "입고검사", field: "incoming_inspection", sortable: true, editable: true, align:"center", maxWidth:100,
-          //   backgroundColor: "#a7d1ff29",
-          //   cellRenderer: 'agCheckboxCellRenderer',
-          //   cellRendererParams: {
-          //     disabled: false,
-          //   },
-          //    // Y/N 값을 true/false로 변환하여 체크박스 표시
-          //   valueGetter: (params) => {
-          //     return params.data.incoming_inspection === 'Y';
-          //   },
+    setColumnDefs([
+      { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
+      { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
+      { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "매입가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "분류", field: "type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
       
-          //   // 체크박스 변경 시 true/false → Y/N 으로 반영
-          //   valueSetter: (params) => {
-          //     const newValue = params.newValue ? 'Y' : 'N';
-          //     if (params.data.incoming_inspection !== newValue) {
-          //       params.data.incoming_inspection = newValue;
-          //       return true; // 값이 바뀐 경우만 true
-          //     }
-          //     return false; // 변경 없음
-          //   },
-          // },
-          // { headerName: "출하검사", field: "outgoing_inspection", sortable: false, editable: true, align:"center", maxWidth:80,
-          //   backgroundColor: "#a7d1ff29",
-          //   cellRenderer: 'agCheckboxCellRenderer',
-          //   cellRendererParams: {
-          //     disabled: false,
-          //   },
-          //    // Y/N 값을 true/false로 변환하여 체크박스 표시
-          //   valueGetter: (params) => {
-          //     return params.data.outgoing_inspection === 'Y';
-          //   },
-      
-          //   // 체크박스 변경 시 true/false → Y/N 으로 반영
-          //   valueSetter: (params) => {
-          //     const newValue = params.newValue ? 'Y' : 'N';
-          //     if (params.data.outgoing_inspection !== newValue) {
-          //       params.data.outgoing_inspection = newValue;
-          //       return true; // 값이 바뀐 경우만 true
-          //     }
-          //     return false; // 변경 없음
-          //   },
-          // },
-          // { headerName: "검사방법", field: "inspection_method", sortable: true, editable: true, align:"center",
-          //   cellEditor: "agSelectCellEditor",
-          //   cellEditorParams: {
-          //     values: selectBox.current.common?.['cd005'].map((item) => item.code) ?? [],
-          //   },
-          //   valueFormatter: (params) => commonTypeFormatter(params, 'cd005'),
-          // },
-          // { 
-          //   headerName: "사용여부", field: "use_yn", sortable: true, editable: false, align:"center", maxWidth:100,
-          //   backgroundColor: "#a7d1ff29",
-          //   cellRenderer: 'agCheckboxCellRenderer',
-          //   cellRendererParams: {
-          //     disabled: false,
-          //   },
-          //   // Y/N 값을 true/false로 변환하여 체크박스 표시
-          //   valueGetter: (params) => {
-          //     return params.data.use_yn === 'Y';
-          //   },
-          //   // 체크박스 변경 시 true/false → Y/N 으로 반영
-          //   valueSetter: (params) => {
-          //     const newValue = params.newValue ? 'Y' : 'N';
-          //     if (params.data.use_yn !== newValue) {
-          //       params.data.use_yn = newValue;
-          //       return true; // 값이 바뀐 경우만 true
-          //     }
-          //     return false; // 변경 없음
-          //   },
-          // },
-          
-          { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "품번", field: "item_dotno", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
-          { headerName: "상품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
-          { headerName: "상태", field: "item_status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "소비자가", field: "sellprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "매입공급가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "매입부가세", field: "vtax_buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "매입가", field: "tax_buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "과세유형", field: "tax_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "매입유형", field: "buy_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "기본매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "배송유형", field: "trans_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "팩킹구분", field: "item_plus_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "출고창고", field: "storage_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "브랜드", field: "brand_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "상품구분", field: "item_part_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "등록일", field: "reg_date", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "등록자", field: "reg_admin_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    ]);
 
-          // { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left", flex:1},
-        ]);
+    getData();
 
-        getData();
-
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
-      });  
 
   },[]);
-
-
 
   // 추가 모달 기본값
   const DEFAULT_FORM = (init={}) => ({
       item_usr_code : ''
-    , bar_code : ''
-    , item_dotno : ''
-    , item_name : ''
-    , item_status_name : ''
-    , sellprice : ''
-    , buyprice : ''
-    , vtax_buyprice : ''
-    , tax_buyprice : ''
-    , tax_type_name : ''
-    , buy_type_name : ''
-    , supply_name : ''
-    , trans_type_name : ''
-    , item_plus_name : ''
-    , storage_name : ''
-    , brand_name : ''
-    , item_part_name : ''
-    , category : ''
+      , bar_code : ''
+      , raw_code : ''
+      , raw_name : ''
+      , base_unit : ''
+      , unit_size : ''
+      , buyprice : ''
+      , type_name : ''
+      , status_name : ''
+      , right_qty : ''
+      , supply_name : ''
     , ...init
   });
 
@@ -341,20 +211,20 @@ const Main = () => {
               <td>
                 <Form.Control 
                   type="text"
-                  name="item_dotno"
-                  value={modalForm.item_dotno ?? ''}
+                  name="raw_code"
+                  value={modalForm.raw_code ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
                   maxLength={21}
                 />
               </td>
-              <th className="bg-light text-end align-middle">상품명</th>
+              <th className="bg-light text-end align-middle">품번</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="item_name"
-                  value={modalForm.item_name ?? ''}
+                  name="raw_name"
+                  value={modalForm.raw_name ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -364,24 +234,24 @@ const Main = () => {
             </tr>
 
             <tr>
-              <th className="bg-light text-end align-middle">상태</th>
+              <th className="bg-light text-end align-middle">단위</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="item_status_name"
-                  value={modalForm.item_status_name ?? ''}
+                  name="base_unit"
+                  value={modalForm.base_unit ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
                   maxLength={11}
                 />
               </td>
-              <th className="bg-light text-end align-middle">소비자가</th>
+              <th className="bg-light text-end align-middle">규격</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="sellprice"
-                  value={modalForm.sellprice ?? ''}
+                  name="unit_size"
+                  value={modalForm.unit_size ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -391,7 +261,35 @@ const Main = () => {
             </tr>
 
             <tr>
-              <th className="bg-light text-end align-middle">매입공급가</th>
+              
+              <th className="bg-light text-end align-middle">분류</th>
+              <td>
+                <Form.Control 
+                  type="text"
+                  name="type_name"
+                  value={modalForm.type_name ?? ''}
+                  onChange={modalFormChange}
+                  size="sm" 
+                  className="w-auto"
+                  maxLength={11}
+                />
+              </td>
+              <th className="bg-light text-end align-middle">상태</th>
+              <td>
+                <Form.Control 
+                  type="text"
+                  name="status_name"
+                  value={modalForm.status_name ?? ''}
+                  onChange={modalFormChange}
+                  size="sm" 
+                  className="w-auto"
+                  maxLength={11}
+                />
+              </td>
+              
+            </tr>
+            <tr>
+              <th className="bg-light text-end align-middle">매입가</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -400,64 +298,10 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
-                  maxLength={11}
+                  maxLength={21}
                 />
               </td>
-              <th className="bg-light text-end align-middle">매입부가세</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="vtax_buyprice"
-                  value={modalForm.vtax_buyprice ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
-              </td>
-            </tr>
-   
-            <tr>
-              <th className="bg-light text-end align-middle">매입가</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="tax_buyprice"
-                  value={modalForm.tax_buyprice ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
-              </td>
-              <th className="bg-light text-end align-middle">과세유형</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="tax_type_name"
-                  value={modalForm.tax_type_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
-              </td>
-              
-            </tr>
-            <tr>
-              <th className="bg-light text-end align-middle">매입유형</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="buy_type_name"
-                  value={modalForm.buy_type_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
-              </td>
-              <th className="bg-light text-end align-middle">기본매입처</th>
+              <th className="bg-light text-end align-middle">매입처</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -466,81 +310,26 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
-                  maxLength={11}
+                  maxLength={21}
                 />
               </td>
             </tr>
             <tr>
-              <th className="bg-light text-end align-middle">배송유형</th>
+              <th className="bg-light text-end align-middle">안전재고</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="trans_type_name"
-                  value={modalForm.trans_type_name ?? ''}
+                  name="right_qty"
+                  value={modalForm.right_qty ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
                   maxLength={11}
                 />
               </td>
-              <th className="bg-light text-end align-middle">팩킹구분</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="item_plus_name"
-                  value={modalForm.item_plus_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
-              </td>
-              
             </tr>
-            <tr>
-              <th className="bg-light text-end align-middle">출고창고</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="storage_name"
-                  value={modalForm.storage_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
-              </td>
-              <th className="bg-light text-end align-middle">브랜드</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="brand_name"
-                  value={modalForm.brand_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
-              </td>
-              
-            </tr>
-            <tr>
-              <th className="bg-light text-end align-middle">상품구분</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="item_part_name"
-                  value={modalForm.item_part_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
-              </td>
-              
-              
-            </tr>
-           
+
+
             
 
           </tbody>
@@ -610,23 +399,17 @@ const Main = () => {
   const DEFAULT_FORM3 = (init={}) => ({
     item_usr_code : ''
     , bar_code : ''
-    , item_dotno : ''
-    , item_name : ''
-    , item_status_name : ''
-    , sellprice : ''
+    , raw_code : ''
+    , raw_name : ''
+    , base_unit : ''
+    , unit_size : ''
     , buyprice : ''
-    , vtax_buyprice : ''
-    , tax_buyprice : ''
-    , tax_type_name : ''
-    , buy_type_name : ''
+    , type_name : ''
+    , status_name : ''
+    , right_qty : ''
     , supply_name : ''
-    , trans_type_name : ''
-    , item_plus_name : ''
-    , storage_name : ''
-    , brand_name : ''
-    , item_part_name : ''
-    , reg_date : ''
-    , reg_admin_name : ''
+    , created_at : ''
+    , created_by : ''
     , category : ''
     , ...init
   });
@@ -699,8 +482,8 @@ const Main = () => {
               <td>
                 <Form.Control 
                   type="text"
-                  name="item_dotno"
-                  value={modalForm.item_dotno ?? ''}
+                  name="raw_code"
+                  value={modalForm.raw_code ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -710,12 +493,12 @@ const Main = () => {
             </tr>
 
             <tr>
-              <th className="bg-light text-end align-middle">상품명</th>
+              <th className="bg-light text-end align-middle">품명</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="item_name"
-                  value={modalForm.item_name ?? ''}
+                  name="raw_name"
+                  value={modalForm.raw_name ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -725,12 +508,12 @@ const Main = () => {
             </tr>
 
             <tr>
-              <th className="bg-light text-end align-middle">상태</th>
+              <th className="bg-light text-end align-middle">단위</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="item_status_name"
-                  value={modalForm.item_status_name ?? ''}
+                  name="base_unit"
+                  value={modalForm.base_unit ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -740,12 +523,12 @@ const Main = () => {
             </tr>
             
             <tr>
-              <th className="bg-light text-end align-middle">소비자가</th>
+              <th className="bg-light text-end align-middle">규격</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="sellprice"
-                  value={modalForm.sellprice ?? ''}
+                  name="unit_size"
+                  value={modalForm.unit_size ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -755,7 +538,7 @@ const Main = () => {
               
             </tr>
             <tr>
-              <th className="bg-light text-end align-middle">매입공급가</th>
+              <th className="bg-light text-end align-middle">매입가</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -770,12 +553,12 @@ const Main = () => {
               
             </tr>
             <tr>
-              <th className="bg-light text-end align-middle">매입부가세</th>
+              <th className="bg-light text-end align-middle">분류</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="vtax_buyprice"
-                  value={modalForm.vtax_buyprice ?? ''}
+                  name="type_name"
+                  value={modalForm.type_name ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -785,12 +568,12 @@ const Main = () => {
               
             </tr>
             <tr>
-              <th className="bg-light text-end align-middle">매입가</th>
+              <th className="bg-light text-end align-middle">상태</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="tax_buyprice"
-                  value={modalForm.tax_buyprice ?? ''}
+                  name="status_name"
+                  value={modalForm.status_name ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -800,12 +583,12 @@ const Main = () => {
               
             </tr>
             <tr>
-              <th className="bg-light text-end align-middle">과세유형</th>
+              <th className="bg-light text-end align-middle">안전재고</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="tax_type_name"
-                  value={modalForm.tax_type_name ?? ''}
+                  name="right_qty"
+                  value={modalForm.right_qty ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -815,22 +598,7 @@ const Main = () => {
               
             </tr>
             <tr>
-              <th className="bg-light text-end align-middle">매입유형</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="buy_type_name"
-                  value={modalForm.buy_type_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={1}
-                />
-              </td>
-              
-            </tr>
-            <tr>
-              <th className="bg-light text-end align-middle">기본매입처</th>
+              <th className="bg-light text-end align-middle">매입처</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -845,87 +613,12 @@ const Main = () => {
               
             </tr>
             <tr>
-              <th className="bg-light text-end align-middle">배송유형</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="trans_type_name"
-                  value={modalForm.trans_type_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={1}
-                />
-              </td>
-              
-            </tr>
-            <tr>
-              <th className="bg-light text-end align-middle">팩킹구분</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="item_plus_name"
-                  value={modalForm.item_plus_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={1}
-                />
-              </td>
-              
-            </tr>
-            <tr>
-              <th className="bg-light text-end align-middle">출고창고</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="storage_name"
-                  value={modalForm.storage_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={1}
-                />
-              </td>
-              
-            </tr>
-            <tr>
-              <th className="bg-light text-end align-middle">브랜드</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="brand_name"
-                  value={modalForm.brand_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={1}
-                />
-              </td>
-              
-            </tr>
-            <tr>
-              <th className="bg-light text-end align-middle">상품구분</th>
-              <td>
-                <Form.Control 
-                  type="text"
-                  name="item_part_name"
-                  value={modalForm.item_part_name ?? ''}
-                  onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={1}
-                />
-              </td>
-              
-            </tr>
-            <tr>
               <th className="bg-light text-end align-middle">등록일</th>
               <td>
                 <Form.Control 
                   type="text"
-                  name="reg_date"
-                  value={modalForm.reg_date ?? ''}
+                  name="created_at"
+                  value={modalForm.created_at ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -939,8 +632,8 @@ const Main = () => {
               <td>
                 <Form.Control 
                   type="text"
-                  name="reg_admin_name"
-                  value={modalForm.reg_admin_name ?? ''}
+                  name="created_by"
+                  value={modalForm.created_by ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
@@ -949,7 +642,6 @@ const Main = () => {
               </td>
               
             </tr>
-            
 
           </tbody>
         </Table>
@@ -967,7 +659,7 @@ const Main = () => {
     setLoading(true);
 
     axiosInstance
-      .post(`/api/getItem`, JSON.stringify(form))
+      .post(`/api/getRaw`, JSON.stringify(form))
       .then((res) => {
         setRowData(res.data);
         
@@ -987,7 +679,7 @@ const Main = () => {
     console.log("setData");
 
     axiosInstance
-      .post("api/setItem", JSON.stringify(params))
+      .post("api/setRaw", JSON.stringify(params))
       .then((res) => {
         
       })
@@ -1027,18 +719,18 @@ const Main = () => {
           return;
         }
 
-        if(formRef.current.item_dotno === "" || formRef.current.item_dotno === undefined){
-          modalRef2.current.open({ title:"알림", message:"품목품번 입력하세요.", cancelText:"" });
+        if(formRef.current.raw_code === "" || formRef.current.raw_code === undefined){
+          modalRef2.current.open({ title:"알림", message:"품번을 입력하세요.", cancelText:"" });
           return;
         }
         
-        if(formRef.current.item_name === ""){
+        if(formRef.current.raw_name === "" || formRef.current.raw_name === undefined){
           modalRef2.current.open({ title:"알림", message:"상품명을 입력하세요.", cancelText:"" });
           return;
         }
 
         axiosInstance
-          .post(`/api/addItem`, JSON.stringify(formRef.current))
+          .post(`/api/addRaw`, JSON.stringify(formRef.current))
           .then((res) => {
             getData();
             modalRef.current.close();
@@ -1082,7 +774,7 @@ const Main = () => {
         console.log(res);
         
         axiosInstance
-          .post(`/api/delItem`, JSON.stringify(selectRows))
+          .post(`/api/delRaw`, JSON.stringify(selectRows))
           .then((res) => {
             getData();
             modalRef.current.close();
@@ -1103,7 +795,7 @@ const Main = () => {
   const mappingData = (params) => {
     console.log("mappingData");
 
-    let data = {category: 'item'};
+    let data = {category: 'raw'};
 
     axiosInstance
       .post(`/api/excelMapping`, JSON.stringify(data))
@@ -1121,7 +813,6 @@ const Main = () => {
           .filter(([k, v]) => v && v.trim?.()) // category, null, undefined, '', '  ' 제거
           .map(([k, v]) => [v.trim(), k])
         );
-
 
         // 폼 초기화
         formRef3.current = DEFAULT_FORM3(reversed);
@@ -1199,7 +890,7 @@ const Main = () => {
           return;
         }
 
-        let data = {category: 'item'};
+        let data = {category: 'raw'};
         axiosInstance
           .post(`/api/excelMapping`, JSON.stringify(data))
           .then((res) => {
@@ -1247,7 +938,7 @@ const Main = () => {
               // return;
 
               const data = {
-                tb: 'item',
+                tb: 'raw',
                 items: mappedData
               };
        
@@ -1326,53 +1017,14 @@ const Main = () => {
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
-                  {/* <th className="bg-light text-end align-middle">품목유형</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Select 
-                        name="item_type" 
-                        value={form.item_type} 
-                        onChange={handleChange}
-                        size="sm"
-                        className="w-auto"
-                        style={{minWidth:100}}
-                      >
-                        <option value="">전체</option>
-                        {(selectBox.current.common?.['cd006'] || [])
-                          .filter(opt => opt.use_yn === 'Y')
-                          .map(opt => (
-                            <option key={opt.code} value={opt.code}>
-                              {opt.code_name}
-                            </option>
-                        ))}
-                      </Form.Select>               
-                    </div>
-                  </td>
-                  
-                  <th className="bg-light text-end align-middle">사용여부</th>
-                  <td className="">
-                    
-                    <Form.Select 
-                      name="use_yn" 
-                      value={form.use_yn} 
-                      onChange={handleChange}
-                      size="sm"
-                      className="w-auto"
-                      style={{minWidth:100}}
-                    >
-                      <option value="">전체</option>
-                      <option value="y">사용</option>
-                      <option value="n">미사용</option>
-                    </Form.Select>
-                  </td> */}
 
                   <th className="bg-light text-end align-middle">품목</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Control 
                         type="text"
-                        name="item_dotno"
-                        value={form.item_dotno}
+                        name="raw_code"
+                        value={form.raw_code}
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
@@ -1380,8 +1032,8 @@ const Main = () => {
                       />
                       <Form.Control 
                         type="text"
-                        name="item_name"
-                        value={form.item_name}
+                        name="raw_name"
+                        value={form.raw_name}
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
@@ -1399,7 +1051,7 @@ const Main = () => {
                       <Form.Control 
                         type="text"
                         name="barcode"
-                        value={barcode}
+                        value={form.barcode}
                         onChange={(e) => setBarcode(e.target.value)}
                         onKeyDown={handleKeyPress}
                         size="sm" 

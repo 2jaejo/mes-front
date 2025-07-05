@@ -8,6 +8,8 @@ import { ThemeContext } from "../utils/ThemeContext";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { NaviStyle } from "css/CommonStyle";
+
 
 const Navi = ({menu, addTab}) => {
   const { isTab, toggleTab } = useContext(GlobalContext);
@@ -29,10 +31,10 @@ const Navi = ({menu, addTab}) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   return (
-    <div className='navi d-flex justify-content-between align-items-center p-2' style={{backgroundColor:theme.bgColor}}>
+    <div className='navi d-flex justify-content-between align-items-center p-2' style={{...NaviStyle, backgroundColor:theme.bgColor}}>
     {/* <div className='navi d-flex justify-content-between align-items-center p-2' > */}
       <nav className="navbar navbar-expand p-0">
-        <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-row" >
+        <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-wrap" >
           {menuItems.map((menu, index) => (
             <li
               className="nav-item dropdown mx-3"

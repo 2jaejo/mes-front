@@ -192,7 +192,10 @@ const LoginForm = () => {
         // 로그인 성공 후 메인 페이지로 이동
         navigate('/'); 
       })
-      .catch((error) => console.error("Login failed:", error));
+      .catch((error) => {
+        console.error("Login failed:", error);
+        setErrorMessage('An error occurred. Please try again.');
+      });
 
     } catch (err) {
       console.error('Error during login:', err);
@@ -281,7 +284,7 @@ const LoginForm = () => {
             <button type="button" className={styles.buttonJoin} onClick={joinUs}>회원가입</button>
             <button type="submit" className={styles.buttonLogin}>확인</button>
           </div>
-          {errorMessage && <p>{errorMessage}</p>}
+          {errorMessage && <p className="p-2 text-danger">{errorMessage}</p>}
         </form>
       </div>
     </div>

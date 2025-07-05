@@ -4,6 +4,7 @@
   --bg-color: #ffffff;
   --text-color: #000000;
   --article-color: #b9b9b9;
+  --alpha : 0.6;
 }
 [data-theme="dark"] {
   --bg-color: #121212;
@@ -32,6 +33,13 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* PC에서는 hover 시 열리게 */
+@media (hover: hover) {
+  .navbar .dropdown:hover > .dropdown-menu {
+    display: block;
+  }
 }
 
 
@@ -296,3 +304,8 @@ li.expanded {
 }
 
 
+.bg-red{ background-color: rgb(255, 0, 0, var(--alpha)) !important; }
+.bg-orange{ background-color: rgb(255, 165, 0, var(--alpha)) !important; }
+.bg-yellow{ background-color: rgb(255, 255, 0, var(--alpha)) !important; }
+.bg-green{ background-color: rgb(0, 128, 0, var(--alpha)) !important; }
+.bg-blue{ background-color: rgb(0, 0, 255, var(--alpha)) !important; }

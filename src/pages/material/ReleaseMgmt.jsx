@@ -476,7 +476,7 @@ const Main = () => {
     console.log("setData3");
     const sel_rows = gridRef2.current.getSelectedRows();
     if(sel_rows.length === 0){
-      modalRef.current.open({ title:"알림", message:"반품 상세항목을 선택하세요.", cancelText:"" }); 
+      modalRef.current.open({ title:"알림", message:"출고 상세항목을 선택하세요.", cancelText:"" }); 
       return;
     }
 
@@ -540,7 +540,7 @@ const Main = () => {
         const arr = formRef.current.sel_row;
         const chk = arr.some(item => !item.hasOwnProperty(key) || item[key] === '' || item[key] === null || item[key] === undefined || item[key] === NaN);
         if(chk){
-          modalRef2.current.open({ title:"알림", message:"반품수량을 입력하세요.", cancelText:"" });
+          modalRef2.current.open({ title:"알림", message:"출고수량을 입력하세요.", cancelText:"" });
           return ;
         }
 
@@ -625,7 +625,7 @@ const Main = () => {
         <Row  className="h-100">
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
-              <span className="fw-bold">반품 목록</span>
+              <span className="fw-bold">출고 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
               
             </div>

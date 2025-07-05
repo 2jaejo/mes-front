@@ -6,20 +6,52 @@ import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 
 const Main = ({ form }) => {
-  console.log("SearchItemComponent");
+  console.log("SearchRawComponent");
 
   // 모달 ref
   const modalRef = useRef();  
-  
+
   // selectbox
   const selectBox = useRef({}); 
 
   const [modalForm, setModalForm] = useState(form.current);
 
   const modalFormChange = (e) => {
+    console.log(e);
     const { name, value } = e.target;
     setModalForm(prev => ({ ...prev, [name]: value }));
     form.current[name] = value;
+  };
+
+  // 바코드 스캔
+  const handleKeyPress = async (e) => {
+
+    if (e.key === 'Enter' && form.current.barcode.trim() !== '') {
+      
+      const params = {
+        barcode: form.current.barcode,
+      }
+
+      setLoading(true);
+
+      axiosInstance
+        .post(`/api/getRaw`, JSON.stringify(params))
+        .then((res) => {
+          setRowData(res.data);
+          
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        })
+        .finally(() =>{
+          setLoading(false);
+          modalFormChange({ target: { name: 'barcode', value: '' } });
+
+        });
+      
+    }
+
   };
 
   const gridRef = useRef();  
@@ -34,7 +66,7 @@ const Main = ({ form }) => {
     
     const init = {
       category: '',
-      code: ['cd006', 'cd010', 'cd011']
+      code: ['']
     };
 
     axiosInstance
@@ -43,58 +75,20 @@ const Main = ({ form }) => {
       selectBox.current = res.data;
 
       setColumnDefs([
+        { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
+        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
+        { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "매입가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "분류", field: "type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         
-        { headerName: "품목코드", field: "item_dotno", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "품목명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "품목유형", field: "item_type", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-          cellEditor: "agSelectCellEditor",
-          cellEditorParams: {
-            values: selectBox.current.common?.['cd006']?.map((item) => item.code) ?? [],
-          },
-          valueFormatter: (params) => commonTypeFormatter(params, 'cd006'),
-        },
-        { headerName: "기준단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
-          cellEditor: "agSelectCellEditor",
-          cellEditorParams: {
-            values: selectBox.current.common?.['cd004']?.map((item) => item.code) ?? [],
-          },
-          valueFormatter: (params) => commonTypeFormatter(params, 'cd004'),
-        },
-        { headerName: "거래처", field: "client_list", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "단가", field: "standard_price", sortable: true, editable: false, align:"right", 
-          valueFormatter: (params) => {
-            const value = parseFloat(params.value);
-            return isNaN(value) ? '' : `${value.toLocaleString()}`;
-          },
-        },
-        { 
-          headerName: "사용여부", 
-          field: "use_yn", 
-          sortable: false, 
-          editable: false,
-          align:"center",
-          maxWidth:80,
-          // backgroundColor: "#a7d1ff29",
-          cellRenderer: 'agCheckboxCellRenderer',
-          cellRendererParams: {
-            disabled: true,
-          },
-           // Y/N 값을 true/false로 변환하여 체크박스 표시
-          valueGetter: (params) => {
-            return params.data.use_yn === 'Y';
-          },
-    
-          // 체크박스 변경 시 true/false → Y/N 으로 반영
-          valueSetter: (params) => {
-            const newValue = params.newValue ? 'Y' : 'N';
-            if (params.data.use_yn !== newValue) {
-              params.data.use_yn = newValue;
-              return true; // 값이 바뀐 경우만 true
-            }
-            return false; // 변경 없음
-          },
-        },
-        { headerName: "비고", field: "comment", sortable: true, editable: false, align:"left", minWidth:300},
       ]);
 
       getData();
@@ -105,30 +99,6 @@ const Main = ({ form }) => {
     });  
 
   },[]);
-
-
-  
-  // grid cell code_name 변환
-  const categoryAFormatter = (params) => {
-    const arr_type = selectBox.current.category?.item_group_a || [];
-    const item = arr_type.find(el => el.category_id === params.value);
-    return item ? item.category_nm : params.value; 
-  };
-
-  // grid cell code_name 변환
-  const categoryBFormatter = (params) => {
-    const arr_type = selectBox.current.category?.item_group_b[params.data.item_group_a] || [];
-    const item = arr_type.find(el => el.category_id === params.value);
-    return item ? item.category_nm : params.value; 
-  };
-
-  // grid cell code_name 변환
-  const commonTypeFormatter = (params, cd) => {
-    const arr_type = selectBox.current.common?.[cd] || [];
-    const item = arr_type.find(el => el.code === params.value);
-    return item ? item.code_name : params.value; 
-  };
-
 
 
   // 그리드 onGridReady
@@ -153,7 +123,7 @@ const Main = ({ form }) => {
     setLoading(true);
 
     axiosInstance
-    .post(`/api/getItem`, JSON.stringify(modalForm))
+    .post(`/api/getRaw`, JSON.stringify(modalForm))
     .then((res) => {
       setRowData(res.data);
     })
@@ -175,38 +145,57 @@ const Main = ({ form }) => {
       <div className="bg-light">
         <Row className="">
           <Col className="">
-
+          
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
+
                   <th className="bg-light text-end align-middle">품목</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Control 
                         type="text"
-                        name="item_dotno"
-                        value={form.item_dotno}
+                        name="raw_code"
+                        value={modalForm.raw_code}
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="품번"
                       />
                       <Form.Control 
                         type="text"
-                        name="item_name"
-                        value={form.item_name}
+                        name="raw_name"
+                        value={modalForm.raw_name}
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="품명"
                       />
                     </div>
                   </td>
                   <td className="">
                     <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
                   </td>
+
+                  <th className="bg-light text-end align-middle">바코드</th>
+                  <td className="">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="text"
+                        name="barcode"
+                        value={modalForm.barcode}
+                        onChange={modalFormChange}
+                        onKeyDown={handleKeyPress}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder="바코드를 스캔하세요"
+                      />
+                      
+                    </div>
+                  </td>
+
                 </tr>
-                
+    
               </tbody>
             </Table>
 

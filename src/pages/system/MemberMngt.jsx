@@ -445,7 +445,7 @@ const MemberMngt = () => {
 
       <div className="h-100">
         <Row  className="h-100">
-          <Col className="h-100 pe-0 d-flex flex-column" xs={12} md={3}>
+          <Col className="h-100 pe-0 d-flex flex-column" xs={12} md={4}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">사용자 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
@@ -462,7 +462,7 @@ const MemberMngt = () => {
             />
           </Col>
 
-          <Col className="h-100 pe-0 d-flex flex-column" xs={12} md={2}>
+          <Col className="h-100 pe-0 d-flex flex-column" xs={12} md={4}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">사용자 정보</span>
             </div>
@@ -479,7 +479,7 @@ const MemberMngt = () => {
                 </div>
 
               ) : (
-                <div>
+                <div className="overflow-auto">
 
                   <Table key={"tb_userInfo"} bordered hover style={{ width: 'auto', tableLayout: 'auto' }}>
                     <tbody>
@@ -575,7 +575,7 @@ const MemberMngt = () => {
             </div>
           </Col>
 
-          <Col className="h-100 d-flex flex-column" xs={12} md={7}>
+          <Col className="h-100 d-flex flex-column" xs={12} md={4}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">사용자 메뉴</span>
             </div>

@@ -7,7 +7,7 @@ import { AG_GRID_LOCALE_KR } from '@ag-grid-community/locale';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel="singleRow", onGridReady=null, pagination=true, pageSize=25, rowDrag=false, pinnedBottomRowData=[]} ) => {
+const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel="singleRow", onGridReady=null, pagination=true, pageSize=25, rowDrag=false, pinnedBottomRowData=[], rowStyle=null, rowClass=null} ) => {
 
   // 테마설정
   const myTheme = themeQuartz  // themeQuartz, themeAlpine, themeBalham 
@@ -47,7 +47,9 @@ const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel=
       sortable: false, 
       valueGetter: (params) => !params.node.rowPinned ?params.node.rowIndex + 1 : '', 
       minWidth:40,
-      maxWidth:60,
+      maxWidth:80,
+      width: 60,
+      align: "center",
       rowDrag:rowDrag
     };
 
@@ -89,8 +91,9 @@ const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel=
   // 기본 설정
   const defaultColDef = useMemo(() => {
     return {
-      flex: 1,
-      minWidth: 110,
+      // flex: 1,
+      minWidth: 80,
+      width: 120,
       filter: false,
       editable: false,
       sortable: false,
@@ -116,6 +119,8 @@ const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel=
       checkboxes: tp,
       enableClickSelection: !tp, // singleRow일때 클릭 선택 가능
       enableSelectionWithoutKeys:true, // 같은 행 클릭시 선택,취소
+      headerCheckboxSelectionFilteredOnly: true, // 필터/페이지 적용 시 보이는 것만 선택
+      selectAll: 'currentPage', // 현재 페이지의 모든 행 선택
       // rowMultiSelectWithClick: false, // 일반 클릭으로는 선택 안 되게 함
       // suppressRowClickSelection: true,  // 행 클릭 시 선택 방지
     };
@@ -204,7 +209,8 @@ const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel=
 
           rowDragManaged={rowDrag}
           pinnedBottomRowData={pinnedBottomRowData}
-          getRowStyle={getRowStyle}
+          getRowStyle={rowStyle}
+          getRowClass={rowClass}
         />
       </div>
     </div>

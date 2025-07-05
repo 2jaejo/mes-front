@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 
 import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import { MainContentStyle } from "css/CommonStyle";
+import { ContentSteeringController } from "hls.js";
 
 
 const Main = () => {
@@ -13,8 +14,8 @@ const Main = () => {
 
   // 검색창 입력필드
   const [form, setForm] = useState({
-     item_code : ''
-    , item_name : ''
+     raw_code : ''
+    , raw_name : ''
   });
 
   // 검색창 입력필드 변경 저장
@@ -40,6 +41,22 @@ const Main = () => {
   const [loading2, setLoading2] = useState(false);
   const [rowData2, setRowData2] = useState([]);
   const [columnDefs2, setColumnDefs2] = useState([]);
+
+  const getRowClass = (params) => {
+    const r_qty = params.data.right_qty;
+    const ratio = params.data.stock_ratio;
+    if(r_qty !== 0 && ratio < 30){
+      return 'bg-red';
+    }else if (r_qty !== 0 && ratio >= 30 && ratio < 60){
+      return 'bg-orange';
+    }else if (r_qty !== 0 && ratio >= 60 && ratio < 80){
+      return 'bg-yellow';
+    }else if (r_qty !== 0 && ratio >= 80 && ratio < 100){
+      return 'bg-green';
+    }
+
+    return '';
+  };
 
   // 그리드 onGridReady
   const onGridReady = (params) => {
@@ -110,19 +127,26 @@ const Main = () => {
       selectBox.current = res.data;
 
       setColumnDefs([
-        { headerName: "자재코드", field: "item_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "자재명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "창고", field: "warehouse_id", sortable: true, editable: false, align:"center"},
-        { headerName: "LOT", field: "lot_no", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "단위", field: "unit", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center"},
-        { headerName: "수량", field: "quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
-        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
+        { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
+        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
+        { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "매입가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "분류", field: "type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "재고수량", field: "quantity", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "재고비율", field: "stock_ratio", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params, '%')},
+        { headerName: "부족수량", field: "chk_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
       ]);
 
       setColumnDefs2([
         { headerName: "변경일시", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "자재코드", field: "item_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "자재명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "자재코드", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
+        { headerName: "자재명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "변경수량", field: "changed_quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
         { headerName: "변경타입", field: "change_type", sortable: false, editable: false, align:"center"},
       ]);
@@ -138,15 +162,16 @@ const Main = () => {
   
 
   // 그리드 데이터 변경 감지
-  // useEffect(()=>{
-  //   form.current['sel_row'] = rowData;
-  // }, [rowData])
+  useEffect(()=>{
+    console.log(rowData);
+  }, [rowData])
 
   
   // grid cell code_name 변환
-  const moneyFormatter = (params) => {
+  const moneyFormatter = (params, suffix = '') => {
     if (params.value == null) return '';
-    const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+    let num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+    if (suffix !== '') num += suffix;
     return num;
   };
 
@@ -234,8 +259,8 @@ const Main = () => {
                     <div className="d-flex gap-2">
                       <Form.Control 
                         type="text"
-                        name="item_code"
-                        value={form.item_code}
+                        name="raw_code"
+                        value={form.raw_code}
                         onChange={formChange}
                         size="sm" 
                         className="w-auto"
@@ -243,8 +268,8 @@ const Main = () => {
                       />
                       <Form.Control 
                         type="text"
-                        name="item_name"
-                        value={form.item_name}
+                        name="raw_name"
+                        value={form.raw_name}
                         onChange={formChange}
                         size="sm" 
                         className="w-auto"
@@ -266,7 +291,7 @@ const Main = () => {
 
       <div className="h-100">
         <Row  className="h-100">
-          <Col className="h-100 pe-0 d-flex flex-column" xs={12} md={5}>
+          <Col className="h-100 pe-0 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">자재 목록</span>
               
@@ -282,10 +307,11 @@ const Main = () => {
               pagination={true}
               // pageSize={10}
               // pinnedBottomRowData={pinnedBottomRowData}  
+              rowClass={getRowClass}
             />
           </Col>
 
-          <Col className="h-100 d-flex flex-column" xs={12} md={7}>
+          {/* <Col className="h-100 d-flex flex-column" xs={12} md={6}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">변경 내역</span>
               
@@ -302,7 +328,7 @@ const Main = () => {
               // pageSize={10}
               // pinnedBottomRowData={pinnedBottomRowData}  
             />
-          </Col>
+          </Col> */}
 
         </Row>
       </div>

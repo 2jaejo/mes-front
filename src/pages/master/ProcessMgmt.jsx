@@ -37,14 +37,13 @@ const Main = () => {
       },
       // Y/N 값을 true/false로 변환하여 체크박스 표시
       valueGetter: (params) => {
-        return params.data.use_yn === 'Y';
+        return params.data.check_yn === 'Y';
       },
-
       // 체크박스 변경 시 true/false → Y/N 으로 반영
       valueSetter: (params) => {
         const newValue = params.newValue ? 'Y' : 'N';
-        if (params.data.use_yn !== newValue) {
-          params.data.use_yn = newValue;
+        if (params.data.check_yn !== newValue) {
+          params.data.check_yn = newValue;
           return true; // 값이 바뀐 경우만 true
         }
         return false; // 변경 없음

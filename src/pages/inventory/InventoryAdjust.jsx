@@ -118,6 +118,34 @@ const Main = () => {
 
   // 조회
   const getData = (params) => {
+    console.log("getSheet");
+
+    axiosInstance
+      .post(`/api/getSheet`, JSON.stringify({}))
+      .then((res) => {
+        console.log(res);
+        
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+      })
+      .finally(() =>{
+
+        // 그리드 행 선택
+        // let sel = selectedRow.current;
+        // if(typeof params === "number") sel = params;
+        // gridRef.current.forEachNode((node) => {
+        //   if (node.rowIndex === sel) {
+        //     node.setSelected(true);
+        //   }
+        // });
+      });
+    
+  };
+
+  // 조회
+  const getData2 = (params) => {
     console.log("getData");
 
     setRowData([]);

@@ -76,8 +76,8 @@ const Main = () => {
         selectBox.current = res.data;
 
         setColumnDefs([
-          { headerName: "매입처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
-          { headerName: "매입처명", field: "client_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+          { headerName: "매출처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
+          { headerName: "매출처명", field: "client_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
           { headerName: "사업자(주민)번호", field: "biz_num", sortable: true, editable: false, align:"center"},
           { headerName: "상호명", field: "business_name", sortable: true, editable: false, align:"left"},
           { headerName: "대표자명", field: "ceo_name", sortable: true, editable: false, align:"left"},
@@ -133,7 +133,7 @@ const Main = () => {
   const [form, setForm] = useState({
     client_code:'',
     client_name:'',
-    client_type:'매입처',
+    client_type:'매출처',
     use_yn: '',
   });
 
@@ -147,7 +147,7 @@ const Main = () => {
   const DEFAULT_FORM = (init={}) => ({
     client_code : ''
     , client_name : ''
-    , client_type : '매입처'
+    , client_type : '매출처'
     , biz_num : ''
     , business_name : ''
     , ceo_name : ''
@@ -183,7 +183,7 @@ const Main = () => {
           <tbody>
             
             <tr>
-              <th className="bg-light text-end align-middle">매입처코드</th>
+              <th className="bg-light text-end align-middle">매출처코드</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -195,7 +195,7 @@ const Main = () => {
                   maxLength={21}
                 />
               </td>
-              <th className="bg-light text-end align-middle">매입처명</th>
+              <th className="bg-light text-end align-middle">매출처명</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -412,7 +412,7 @@ const Main = () => {
   const DEFAULT_FORM3 = (init={}) => ({
     client_code : ''
     , client_name : ''
-    , client_type : '매입처'
+    , client_type : '매출처'
     , biz_num : ''
     , business_name : ''
     , ceo_name : ''
@@ -459,7 +459,7 @@ const Main = () => {
         <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
           <tbody>
             <tr>
-              <th className="bg-light text-end align-middle">매입처코드</th>
+              <th className="bg-light text-end align-middle">매출처코드</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -474,7 +474,7 @@ const Main = () => {
             </tr>
 
             <tr>
-              <th className="bg-light text-end align-middle">매입처명</th>
+              <th className="bg-light text-end align-middle">매출처명</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -738,7 +738,7 @@ const Main = () => {
     formRef.current["parent_nm"] = form.category_nm;
 
     modalRef.current.open({
-      title: "매입처 추가",
+      title: "매출처 추가",
       message: "추가하시겠습니까?",
       content: <ModalForm form={{parent_id:form.category_id, parent_nm:form.category_nm}} onChangeHandler={formRefChange} />,
       onCancel: ()=>{
@@ -749,12 +749,12 @@ const Main = () => {
       onConfirm: (res) => {
         
         if(formRef.current.client_code === "" || formRef.current.client_code === undefined){
-          modalRef2.current.open({ title:"알림", message:"매입처코드를 입력하세요.", cancelText:"" });
+          modalRef2.current.open({ title:"알림", message:"매출처코드를 입력하세요.", cancelText:"" });
           return;
         }
         
         if(formRef.current.client_name === ""){
-          modalRef2.current.open({ title:"알림", message:"매입처명을 입력하세요.", cancelText:"" });
+          modalRef2.current.open({ title:"알림", message:"매출처명을 입력하세요.", cancelText:"" });
           return;
         }
         
@@ -826,7 +826,7 @@ const Main = () => {
   const mappingData = (params) => {
     console.log("mappingData");
 
-    let data = {category: 'vendor'};
+    let data = {category: 'client'};
 
     axiosInstance
       .post(`/api/excelMapping`, JSON.stringify(data))
@@ -922,7 +922,7 @@ const Main = () => {
           return;
         }
 
-        let data = {category: 'vendor'};
+        let data = {category: 'client'};
         axiosInstance
           .post(`/api/excelMapping`, JSON.stringify(data))
           .then((res) => {
@@ -964,7 +964,7 @@ const Main = () => {
                 }
 
                 // 기본값 설정
-                newRow['client_type'] = '매입처';
+                newRow['client_type'] = '매출처';
                 return newRow;
               });
 
@@ -1023,7 +1023,7 @@ const Main = () => {
             <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
-                  <th className="bg-light text-end align-middle">매입처코드</th>
+                  <th className="bg-light text-end align-middle">매출처코드</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Control 
@@ -1037,7 +1037,7 @@ const Main = () => {
                     </div>
                   </td>
 
-                  <th className="bg-light text-end align-middle">매입처명</th>
+                  <th className="bg-light text-end align-middle">매출처명</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Control 
@@ -1051,7 +1051,7 @@ const Main = () => {
                     </div>
                   </td>
 
-                  {/* <th className="bg-light text-end align-middle">매입처유형</th>
+                  {/* <th className="bg-light text-end align-middle">매출처유형</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Select 
@@ -1110,7 +1110,7 @@ const Main = () => {
         <Row  className="h-100">
           <Col className="h-100 pe-0 d-flex flex-column" xs={12} md={12}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
-              <span className="fw-bold my-2">매입처 목록</span>
+              <span className="fw-bold my-2">매출처 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
               <Button size="sm" variant="primary" onClick={mappingData}>업로드 맵핑</Button>

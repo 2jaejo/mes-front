@@ -7,6 +7,9 @@ import { GlobalContext } from "../utils/GlobalContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 
+import { HeaderStyle } from "css/CommonStyle";
+
+
 export default function Header() {
 
   const { theme, toggleTheme } = useContext(GlobalContext);
@@ -23,7 +26,7 @@ export default function Header() {
   };
 
   return (
-    <div className='header d-flex justify-content-between align-items-center'>
+    <div className='header d-flex justify-content-between align-items-center' style={HeaderStyle}>
       <div>
         <span>현재 theme: {theme} </span>
         <button className="btn btn-secondary" onClick={toggleTheme}>테마 변경</button>
