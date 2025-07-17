@@ -7,7 +7,18 @@ import Modal from "components/Modal";
 import * as XLSX from "xlsx";
 import { comm } from "utils/CommonFunctions";
 
-const Main = () => {
+const Main = ({props={} }) => {
+
+  // 컴포넌트로 사용했을때 ref 받기
+  const [modalForm, setModalForm] = useState(props.current);
+  const modalFormChange = (e) => {
+    const { name, value } = e.target;
+    setModalForm(prev => ({ ...prev, [name]: value }));
+    if(props.current){
+      props.current[name] = value;
+    }
+  };
+
   const modalRef = useRef();  
   const modalRef2 = useRef();  
 
@@ -961,6 +972,27 @@ const Main = () => {
 
 
   // 조회
+  // const getData = (params) => {
+  //   console.log("getData");
+
+  //   setLoading(true);
+
+  //   axiosInstance
+  //     .post(`/api/getOsmStockItemStorageList`, JSON.stringify({}))
+  //     .then((res) => {
+  //       setRowData(res.data);
+        
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+  //     })
+  //     .finally(() =>{
+  //       setLoading(false);
+  //     });
+  // };
+
+  // 조회
   const getData = (params) => {
     console.log("getData");
 
@@ -1310,6 +1342,7 @@ const Main = () => {
 
       const selectedRows = params.api.getSelectedRows();
       console.log(selectedRows);
+      props.current['sel_row'] = selectedRows;
     });
 
   };
@@ -1425,10 +1458,14 @@ const Main = () => {
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">품목 리스트</span>
-              <Button size="sm" variant="success" onClick={addData}>추가</Button>
-              <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
-              <Button size="sm" variant="primary" onClick={mappingData}>업로드 맵핑</Button>
-              <Button size="sm" variant="primary" onClick={uploadExcel}>파일 업로드</Button>
+              { Object.keys(props).length === 0 &&
+                <>
+                  <Button size="sm" variant="success" onClick={addData}>추가</Button>
+                  <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
+                  <Button size="sm" variant="primary" onClick={mappingData}>업로드 맵핑</Button>
+                  <Button size="sm" variant="primary" onClick={uploadExcel}>파일 업로드</Button>
+                </>
+              }
             </div>
 
             <GridExample
@@ -1437,8 +1474,8 @@ const Main = () => {
               onGridReady={onGridReady} 
               loading={loading}
               rowNum={true}
-              rowSel={"multiRow"}
-              pageSize={25}  
+              rowSel={Object.keys(props).length === 0 ? "multiRow" : "singleRow"}
+              pageSize={1000}  
             />
           </Col>
 

@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import styles from '../css/Modal.module.css';
 
 
@@ -38,11 +38,28 @@ const Modal = forwardRef(( _, ref) => {
     modalOptions.onConfirm(true);
   });
 
+  // useEffect(()=>{
+  //   const handleKeyUp = (e) => {
+  //     if (e.key === 'Enter') {
+  //       modalOptions.onConfirm?.(true);  // 확인 핸들러 실행
+  //       setIsOpen(false);               // 모달 닫기
+  //     }
+  //   };
+
+  //   if (isOpen) {
+  //     window.addEventListener('keyup', handleKeyUp);
+  //   }
+
+  //   return () => {
+  //     window.removeEventListener('keyup', handleKeyUp);
+  //   };
+  // }, [isOpen, modalOptions]);
+
 
   if (!isOpen) return null;
 
   return (
-    <div className={styles.fullscreenCenter}>
+    <div className={styles.fullscreenCenter} >
       <div className={styles.modal}>
         <div className="mb-2 d-flex justify-content-between">
           {/* title */}

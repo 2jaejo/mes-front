@@ -6,11 +6,8 @@ import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { MainContentStyle } from "css/CommonStyle";
 
-import SearchItemComponent from "components/SearchItemComponent";
-import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
-import PurchaseReceiveComponent from "./ReceiveMgmt";
-
+import InventoryComponent from "../inventory/InventoryLookup";
 
 const Main = () => {
 
@@ -224,11 +221,12 @@ const Main = () => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"},
         { headerName: "담당자", field: "manager", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"},
       ]);
       
       // 그리드 설정2
@@ -241,10 +239,10 @@ const Main = () => {
           },
           valueFormatter: (params) => commonTypeFormatter(params, 'cd013'),
         },
-        { headerName: "품목코드", field: "item_code", sortable: false, editable: false, align:"center"},
-        { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left"}, 
+        { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
+        { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left"}, 
         { headerName: "기준단위", field: "base_unit", sortable: false, editable: false, align:"center"},
-        // { headerName: "구매단위", field: "purchase_unit", sortable: false, editable: false, align:"center"}, 
+        { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"}, 
         { headerName: "출고수량", field: "return_qty", sortable: false, 
           align:"right", 
           editable: false , 
@@ -262,69 +260,6 @@ const Main = () => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        // { headerName: "단가", field: "unit_price", sortable: false, editable: false, align:"right", 
-        //   cellRendererSelector: (params) => {
-        //     if (params.node.rowPinned) {
-        //       return {
-        //         component: ()=>{
-        //           return (
-        //             <span>{ moneyFormatter({ value: rowPin(params, 'sum') }) }</span>
-        //           );
-        //         }
-        //       };
-        //     }
-        //     return undefined;
-        //   },
-        //   valueFormatter: (params) => moneyFormatter(params)
-        // }, 
-        // { headerName: "공급가", field: "supply_price", sortable: false, editable: false, align:"right",
-        //   cellRendererSelector: (params) => {
-        //     if (params.node.rowPinned) {
-        //       return {
-        //         component: ()=>{
-        //           return (
-        //             <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-        //           );
-        //         }
-        //       };
-        //     }
-        //     return undefined;
-        //   },
-        //    valueFormatter: (params) => moneyFormatter(params)
-        //   }, 
-        // { headerName: "부가세", field: "tax", sortable: false, editable: false, align:"right", 
-        //   cellRendererSelector: (params) => {
-        //     if (params.node.rowPinned) {
-        //       return {
-        //         component: ()=>{
-        //           return (
-        //             <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-        //           );
-        //         }
-        //       };
-        //     }
-        //     return undefined;
-        //   },
-        //   valueFormatter: (params) => moneyFormatter(params)
-        // }, 
-        // { headerName: "합계", field: "total_price", sortable: false, editable: false, align:"right", 
-        //   cellRendererSelector: (params) => {
-        //     if (params.node.rowPinned) {
-        //       return {
-        //         component: ()=>{
-        //           return (
-        //             <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-        //           );
-        //         },
-        //       };
-        //     } else {
-        //       // rows that are not pinned don't use any cell renderer
-        //       return undefined;
-        //     }
-        //   },
-        //   valueFormatter: (params) => moneyFormatter(params)
-        // }, 
-        // { headerName: "입고검사여부", field: "incoming_inspection", sortable: false, editable: false, align:"center"}, 
         { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"}, 
       ]);
 
@@ -520,9 +455,8 @@ const Main = () => {
         console.log(formRef.current);
 
       
-
         if(!formRef.current.user_id){
-          modalRef2.current.open({ title:"알림", message:"담당당자를 선택하세요.", cancelText:"" });
+          modalRef2.current.open({ title:"알림", message:"담당자를 선택하세요.", cancelText:"" });
           return;
         }
 
@@ -536,14 +470,21 @@ const Main = () => {
           return;
         }
 
-        const key = "quantity";
+        const key = "release_qty";
         const arr = formRef.current.sel_row;
         const chk = arr.some(item => !item.hasOwnProperty(key) || item[key] === '' || item[key] === null || item[key] === undefined || item[key] === NaN);
         if(chk){
           modalRef2.current.open({ title:"알림", message:"출고수량을 입력하세요.", cancelText:"" });
           return ;
         }
+        
+        const chk2 = arr.some( item => item.quantity < item.release_qty);
+        if(chk2){
+          modalRef2.current.open({ title:"알림", message:"재고수량보다 많이 출고 할 수 없습니다.", cancelText:"" });
+          return ;
 
+        }
+   
         axiosInstance
           .post(`/api/addRelease`, JSON.stringify(formRef.current))
           .then((res) => {
@@ -733,22 +674,6 @@ const ModalComponent = ({ form }) => {
       console.log("cellValueChanged");
       console.log(ev);
 
-      const col = ev.colDef.field;
-      if(col === "quantity" || col === "unit_price"){
-        const supply = parseInt(ev.data.quantity ?? 0) * parseInt(ev.data.unit_price);
-        const tax = supply * 0.1 ;
-        const total = supply + tax ;
-
-        ev.node.setDataValue("supply_price", supply);
-        ev.node.setDataValue("tax", tax);
-        ev.node.setDataValue("total_price", total);
-      }
-
-      if(col === "tax"){
-        const total = parseInt(ev.data.supply_price) + parseInt(ev.data.tax);
-        ev.node.setDataValue("total_price", total);
-      }
-
     });
   };
 
@@ -767,13 +692,17 @@ const ModalComponent = ({ form }) => {
       selectBox.current = res.data;
 
       setColumnDefs([
-        { headerName: "자재코드", field: "item_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "자재명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "창고", field: "warehouse_id", sortable: true, editable: false, align:"center"},
-        { headerName: "LOT", field: "lot_no", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "단위", field: "unit", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center"},
-        { headerName: "수량", field: "quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
-        { headerName: "출고수량", field: "release_qty", sortable: false, editable: false, align:"right", cellDataType:'number'},
+        { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left" },
+        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", width:200 },
+        { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },       
+        { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "재고수량", field: "quantity", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        // { headerName: "재고비율", field: "stock_ratio", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params, '%')},
+        // { headerName: "부족수량", field: "chk_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "출고수량", field: "release_qty", sortable: false, editable: true, align:"right", cellDataType:'number'},
         { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
       ]);
 
@@ -846,11 +775,12 @@ const ModalComponent = ({ form }) => {
     formRef2.current = {
       item_code:'',
       item_name:'',
+      sel_rows:[]
     };
 
     modalRef.current.open({
-      title: "품목 조회",
-      content: <ModalComponent2 form={formRef2} />,
+      title: "재고 조회",
+      content: <InventoryComponent props={formRef2} style_props={{height: '80vh', width:'80vw'}}/>,
       onCancel: ()=>{
         modalRef.current.close();
       },
@@ -865,19 +795,14 @@ const ModalComponent = ({ form }) => {
           return;
         }
         
-        const chk = sel_rows.some(el => !('release_qty' in el) );
-        if( chk ){
-          modalRef2.current.open({ title:"알림", message:"출고수량이 비어있는 항목이 있습니다.", cancelText:"" });
-          return;
-        }
-        
-        const chk2 = sel_rows.some(el => el.release_qty > el.quantity );
+        const chk2 = sel_rows.some(el => el.quantity <= 0 );
         if( chk2 ){
-          modalRef2.current.open({ title:"알림", message:"재고수량보다 출고수량이 더 많은 항목이 있습니다.", cancelText:"" });
+          modalRef2.current.open({ title:"알림", message:"재고수량이 없습니다.", cancelText:"" });
           return;
         }
 
-        setRowData(sel_rows);
+        // setRowData(sel_rows);
+        setRowData([...rowData, ...sel_rows]);
 
         modalRef.current.close();
       }, 
@@ -889,7 +814,7 @@ const ModalComponent = ({ form }) => {
 
 
   return (
-    <div style={{ height: '50vh', width:'70vw', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '50vh', width:'80vw', display: 'flex', flexDirection: 'column' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -911,7 +836,7 @@ const ModalComponent = ({ form }) => {
                         className="w-auto"
                         placeholder="ID"
                         disabled
-                        /> 
+                      /> 
                       <Form.Control 
                         type="text"
                         name="user_nm"
@@ -972,7 +897,7 @@ const ModalComponent = ({ form }) => {
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">상세 목록</span>
-              <Button size="sm" variant="primary" onClick={getData2}>품목조회</Button>
+              <Button size="sm" variant="primary" onClick={getData2}>재고조회</Button>
             </div>
 
             <GridExample
@@ -996,748 +921,3 @@ const ModalComponent = ({ form }) => {
     </div>
   );
 };
-
-
-
-const ModalComponent2 = ({ form }) => {
-  console.log("ModalComponent2");
-
-  // form
-  const [modalForm, setModalForm] = useState(form.current);
-  const modalFormChange = (e) => {
-    const { name, value } = e.target;
-    setModalForm(prev => ({ ...prev, [name]: value }));
-    form.current[name] = value;
-  };
-
-  // 모달 ref
-  const modalRef = useRef();  
-  const modalRef2 = useRef();  
-  
-  // selectbox
-  const selectBox = useRef({}); 
-
-  // grid
-  const gridRef = useRef();  
-  const [loading, setLoading] = useState(false);
-  const [rowData, setRowData] = useState([]);
-  const [columnDefs, setColumnDefs] = useState([]);
-
-  // 그리드 onGridReady
-  const onGridReady = (params) => {
-    console.log("onGridReady");
-    gridRef.current = params.api; // Grid API 저장
-
-    // 행 클릭 이벤트
-    params.api.addEventListener("rowClicked", (ev) => {
-      console.log("rowClicked");
-      console.log(ev);
-    });
-
-    // 선택 변경 이벤트
-    params.api.addEventListener("selectionChanged", (ev) => {
-      console.log("selectionChanged");
-      console.log(ev);
-      const sel_rows = ev.api.getSelectedRows();
-      form.current["sel_rows"] = sel_rows;
-    });
-
-    // 셀 값 변경 이벤트
-    params.api.addEventListener("cellValueChanged", (ev) => {
-      console.log("cellValueChanged");
-      console.log(ev);
-    });
-  };
-
-
-  // 초기화
-  useEffect(()=>{
-    console.log("useEffect");
-    
-    const init = {
-      code: ['cd010']
-    };
-
-    axiosInstance
-    .post(`/api/getDropDown`, JSON.stringify(init))
-    .then((res) => {
-      selectBox.current = res.data;
-
-      setColumnDefs([
-        { headerName: "자재코드", field: "item_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "자재명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "창고", field: "warehouse_id", sortable: true, editable: false, align:"center"},
-        { headerName: "LOT", field: "lot_no", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "단위", field: "unit", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center"},
-        { headerName: "수량", field: "quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
-        { headerName: "출고수량", field: "release_qty", sortable: false, editable: true, align:"right", cellDataType:'number'},
-        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
-      ]);
-
-      getData();
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
-    });  
-
-  },[]);
-  
-
-  // 그리드 데이터 변경 감지
-  useEffect(()=>{
-    form.current['sel_row'] = rowData;
-  }, [rowData])
-
-  // grid cell code_name 변환
-  const moneyFormatter = (params) => {
-    if (params.value == null) return '';
-    const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
-    return num;
-  };
-
-
-  // 조회
-  const getData = (params) => {
-    console.log("getData");
-
-    setRowData([]);
-    setLoading(true);
-    
-    axiosInstance
-    .post(`/api/getRelease`, JSON.stringify(modalForm))
-    .then((res) => {
-      setRowData(res.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-      modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
-    })
-    .finally(() =>{
-      setLoading(false);
-      
-      // 그리드 행 선택
-      // let sel = selectedRow.current;
-      // if(typeof params === "number") sel = params;
-      // gridRef.current.forEachNode((node) => {
-      //   if (node.rowIndex === sel) {
-      //     node.setSelected(true);
-      //   }
-      // });
-    });
-    
-  };
-
- 
-
-
-
-
-  return (
-    <div style={{ height: '50vh', width:'50vw', display: 'flex', flexDirection: 'column' }}>
-      <Modal ref={modalRef} />
-      <Modal ref={modalRef2} />
-
-      <div className="bg-light">
-        <Row className="">
-          <Col className="">
-            <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
-              <tbody>
-                <tr>
-                  <th className="bg-light text-end align-middle">자재</th>
-                  <td className="">
-                    <div className="d-flex gap-2">
-                      <Form.Control 
-                        type="text"
-                        name="item_code"
-                        value={form.item_code}
-                        onChange={modalFormChange}
-                        size="sm" 
-                        className="w-auto"
-                        placeholder="CODE"
-                      />
-                      <Form.Control 
-                        type="text"
-                        name="item_name"
-                        value={form.item_name}
-                        onChange={modalFormChange}
-                        size="sm" 
-                        className="w-auto"
-                        placeholder="NAME"
-                      />
-                    </div>
-                  </td>
-                  <td className="">
-                    <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
-                  </td>
-                  
-                </tr>
-              </tbody>
-            </Table>
-
-          </Col>
-        </Row>
-      </div>
-
-      <div className="h-100">
-        <Row  className="h-100">
-          <Col className="h-100 d-flex flex-column" xs={12} md={12}>
-            <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
-              <span className="fw-bold">자재 목록</span>
-              
-            </div>
-
-            <GridExample 
-              columnDefs={columnDefs}
-              rowData={rowData}
-              onGridReady={onGridReady} 
-              loading={loading}
-              rowNum={true}
-              rowSel={"multiRow"}
-              pagination={false}
-              // pageSize={10}
-              // pinnedBottomRowData={pinnedBottomRowData}  
-            />
-          </Col>
-
-        </Row>
-      </div>
-
-    </div>
-  );
-};
-
-
-
-
-
-// import React, { useState, useEffect, useRef, useMemo } from "react";
-// import { Row, Col, Form, Button, Table } from 'react-bootstrap';
-
-// import axiosInstance from "utils/Axios";
-// import GridExample from "components/GridExample";
-// import Modal from "components/Modal";
-// import { MainContentStyle } from "css/CommonStyle";
-
-// import SearchItemComponent from "components/SearchItemComponent";
-// import SearchClientComponent from "components/SearchClientComponent";
-// import SearchUserComponent from "components/SearchUserComponent";
-// import PurchaseReceiveComponent from "./ReceiveMgmt";
-
-
-// const Main = () => {
-
-//   // 모달 ref
-//   const modalRef = useRef();  
-//   const modalRef2 = useRef();  
-//   const modalRef3 = useRef();  
-
-//   // selectbox
-//   const selectBox = useRef({}); 
-  
-//   // grid cell code_name 변환
-//   const categoryAFormatter = (params) => {
-//     const arr_client_type = selectBox.current.category?.item_group_a || [];
-//     const item = arr_client_type.find(el => el.category_id === params.value);
-//     return item ? item.category_nm : params.value; 
-//   };
-
-//   // grid cell code_name 변환
-//   const categoryBFormatter = (params) => {
-//     console.log(params);
-//     const arr_client_type = selectBox.current.category?.item_group_b[params.data.item_group_a] || [];
-//     const item = arr_client_type.find(el => el.category_id === params.value);
-//     return item ? item.category_nm : params.value; 
-//   };
-
-//   // grid cell code_name 변환
-//   const commonTypeFormatter = (params, cd) => {
-//     const arr_client_type = selectBox.current.common?.[cd] || [];
-//     const item = arr_client_type.find(el => el.code === params.value);
-//     return item ? item.code_name : params.value; 
-//   };
-
-//   // grid cell code_name 변환
-//   const moneyFormatter = (params) => {
-//     if (params.value == null) return '';
-//     const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
-//     return num;
-//   };
-
-//   // 그리드 설정 시작 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//   const gridRef = useRef();  
-//   const selectedRow = useRef(0);
-//   const [loading, setLoading] = useState(false);
-//   const [rowData, setRowData] = useState([]);
-//   const [columnDefs, setColumnDefs] = useState([]);
-
-//   const gridRef2 = useRef();  
-//   const [loading2, setLoading2] = useState(false);
-//   const [rowData2, setRowData2] = useState([]);
-//   const [columnDefs2, setColumnDefs2] = useState([]);
-
-//   // 그리드 onGridReady
-//   const onGridReady = (params) => {
-//     gridRef.current = params.api; // Grid API 저장
-
-//     // 행 클릭 이벤트
-//     params.api.addEventListener("rowClicked", (ev) => {
-//       console.log("rowClicked");
-//       console.log(ev);
-      
-//       // selectedRow.current = ev.rowIndex; 
-//       // const node = ev.node;
-//       // if (!node.isSelected()) {
-//       //   node.setSelected(true);
-//       // }
-//     });
-
-//     // 셀 값 변경 이벤트
-//     params.api.addEventListener("cellValueChanged", (ev) => {
-//       console.log("cellValueChanged");
-//       console.log(ev);
-//       const field = ev.colDef.field;
-//       if(field === 'release_qty'){
-//         ev.node.setSelected(ev.newValue > 0);       
-//       }
-
-//       if(field === 'comment'){
-//         setData(ev.data);
-//       }
-
-//     });
-
-//     // 선택 변경 이벤트
-//     params.api.addEventListener("selectionChanged", (ev) => {
-//       console.log("selectionChanged");
-//       console.log(ev);
-      
-//       // const selectedRows = ev.api.getSelectedRows();
-//       // if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
-//       //   getData2(selectedRows[0]);
-//       // };
-
-//     });
-
-//   };
-
-
-
-//   // 그리드 onGridReady2
-//   const onGridReady2 = (params) => {
-//     console.log("onGridReady2");
-
-//     gridRef2.current = params.api; // Grid API 저장
-    
-//     // 행 클릭 이벤트
-//     params.api.addEventListener("rowClicked", (ev) => {
-//       console.log("rowClicked");
-//       console.log(ev);
-//     });
-
-//     // 셀 값 변경 이벤트
-//     params.api.addEventListener("cellValueChanged", (ev) => {
-//       console.log("cellValueChanged");
-//       console.log(ev);
-//       // setData2(ev.data);
-
-//       // const key = ev.colDef.field;
-//       // if(['received_qty'].includes(key)){
-//       //   const sum = rowPin(ev);
-//       //   const pin_row = ev.api.getGridOption('pinnedBottomRowData');
-//       //   pin_row[0][key] = sum;
-//       //   ev.api.setGridOption('pinnedBottomRowData', pin_row);
-//       // }
-//     });
-
-//     // 선택 변경 이벤트
-//     params.api.addEventListener("selectionChanged", (ev) => {
-//       console.log("selectionChanged");
-//       console.log(ev);
-//     });
-
-//   };
-  
-
-//   const pinnedBottomRowData = [{
-//     order_date: '합계',
-//     supply_price: '',
-//     tax: '',
-//     total_price: '',
-//   }];
-
-//   const pinnedBottomRowData2 = [{
-//     purchase_unit: '합계',
-//     quantity: '',
-//     unit_price: '',
-//     supply_price: '',
-//     tax: '',
-//     total_price: '',
-//     incoming_inspection: '',
-//   }];
-
-
-//   const rowPin = (params, type='sum') => {
-//     const arr_values = [];
-//     params.api.forEachNodeAfterFilterAndSort((node) => {
-//       if (node.data && node.data[params.column.colId] != null) {
-//         arr_values.push(node.data[params.column.colId]);
-//       }
-//     });
-
-//     let result = null;
-//     const sum = arr_values.reduce((sum, current) => sum + Number(current), 0);
-//     const cnt = arr_values.length;
-//     const avg = sum / cnt;
-  
-//     if(type === 'sum'){
-//       result = sum;
-//     }
-//     else if(type === 'avg'){
-//       result = avg;
-//     }
-//     else if(type === 'cnt'){
-//       result = cnt;
-//     }
-//     else{
-
-//     }
-
-//     return result;
-//   }
-
-//   // 그리드 설정 종료 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//   // 초기화
-//   useEffect(()=>{
-//     console.log("useEffect");
-    
-//     const init = {
-//       category: '',
-//       code: []
-//     };
-
-//     axiosInstance
-//     .post(`/api/getDropDown`, JSON.stringify(init))
-//     .then((res) => {
-//       selectBox.current = res.data;
-
-//       // 그리드 설정
-//       setColumnDefs([
-//         { headerName: "자재코드", field: "item_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-//         { headerName: "자재명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-//         { headerName: "창고", field: "warehouse_id", sortable: true, editable: false, align:"center"},
-//         { headerName: "LOT", field: "lot_no", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-//         { headerName: "단위", field: "unit", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center"},
-//         { headerName: "수량", field: "quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
-//         { headerName: "출고수량", field: "release_qty", sortable: false, editable: true, align:"right", cellDataType:'number'},
-//         { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
-//       ]);
-
-//       // 그리드 설정2
-//       setColumnDefs2([
-//         { headerName: "자재코드", field: "item_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-//         { headerName: "자재명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-//         { headerName: "출고수량", field: "release_qty", sortable: false, editable: false, align:"right", cellDataType:'number'},
-//       ]);
-      
-
-//       getData();
-
-
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching data:", error);
-//       modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
-//     });  
-
-//   },[]);
-
-
-
-//   // 검색창 입력필드
-//   const [form, setForm] = useState({
-//      item_code : ''
-//     , item_name : ''
-
-//   });
-
-
-//   // 검색창 입력필드 변경 저장
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   }; 
-
-
-//   // 추가 모달 입력필드 저장
-//   const formRef = useRef();
-
-//   // 추가 모달 입력필드 변경
-//   const formRefChange = (name, value) => {
-//     formRef.current[name] = value;
-//   };
-
-//   // 추가 모달 기본값
-//   const DEFAULT_FORM = (init={}) => ({
-//     client_code:'',
-//     client_name:'',
-//     user_id:'',
-//     user_nm:'',
-//     request_date:'',
-//     tax_yn: '',
-//     comment: '',
-//     ...init
-//   });
-
-
-//   // 조회
-//   const getData = (params) => {
-//     console.log("getData");
-
-//     setRowData([]);
-//     setRowData2([]);
-//     setLoading(true);
-    
-//     axiosInstance
-//     .post(`/api/getRelease`, JSON.stringify(form))
-//     .then((res) => {
-//       setRowData(res.data);
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching data:", error);
-//       modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
-//     })
-//     .finally(() =>{
-//       setLoading(false);
-      
-//       // 그리드 행 선택
-//       // let sel = selectedRow.current;
-//       // if(typeof params === "number") sel = params;
-//       // gridRef.current.forEachNode((node) => {
-//       //   if (node.rowIndex === sel) {
-//       //     node.setSelected(true);
-//       //   }
-//       // });
-//     });
-    
-//   };
-
-
-//   // 조회
-//   const getData2 = (params) => {
-//     console.log("getData2");
-
-//     setRowData2([]);
-//     setLoading2(true);
-
-//     axiosInstance
-//     .post(`/api/getReceiptReturnDet`, JSON.stringify(params))
-//     .then((res) => {
-//       setRowData2(res.data);
-    
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching data:", error);
-//       modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
-//     })
-//     .finally(() =>{
-//       setLoading2(false);
-//     });
-    
-//   };
-
-
-//   // 수정
-//   const setData = (params) => {
-//     console.log("setData");
-
-//     axiosInstance
-//       .post("api/setReceiptReturn", JSON.stringify(params))
-//       .then((res) => {
-//         getData(selectedRow.current);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching data:", error);
-//         modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
-//       });   
-//     };
-    
-//   // 추가
-//   const addData = (params) => {
-//     console.log("addData");
-    
-//     const sel_rows = gridRef.current.getSelectedRows();
-//     console.log(sel_rows);
-    
-//     if (sel_rows.length === 0){
-//       modalRef.current.open({ title:"알림", message:"선택된 항목이 없습니다.", cancelText:"" });
-//       return;
-//     }
-    
-//     const chk = sel_rows.some(el => !('release_qty' in el) );
-//     if( chk ){
-//       modalRef.current.open({ title:"알림", message:"출고수량이 비어있는 항목이 없습니다.", cancelText:"" });
-//       return;
-//     }
-    
-//     const chk2 = sel_rows.some(el => el.release_qty > el.quantity );
-//     if( chk2 ){
-//       modalRef.current.open({ title:"알림", message:"재고수량보다 출고수량이 더 많은 항목이 있습니다.", cancelText:"" });
-//       return;
-//     }
-
-//     setRowData2(sel_rows);
-
-//   };
-
-
-//   // 추가2
-//   const addData2 = (params) => {
-//     console.log("addData2");
-
-//     const sel_rows = gridRef2.current.getSelectedRows();
-    
-//     if (sel_rows.length === 0){
-//       modalRef.current.open({ title:"알림", message:"선택된 항목이 없습니다.", cancelText:"" });
-
-//     } else {
-//       modalRef.current.open({
-//         title: "공정 출고",
-//         message: "출고 하시겠습니까?",
-//         onCancel: ()=>{
-//           modalRef.current.close();
-//         },
-//         confirmText:"출고",
-//         confirmClass:"btn btn-success",
-//         onConfirm: (res) => {
-//           console.log(sel_rows);
-
-//           // axiosInstance
-//           //   .post(`/api/addRelease`, JSON.stringify(sel_rows))
-//           //   .then((res) => {
-//           //     getData();
-//           //     modalRef.current.close();
-//           //   })
-//           //   .catch((error) => {
-//           //     console.error("Error fetching data:", error);
-//           //     modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
-//           //   });   
-//         }, 
-//       });
-
-//     }
-
-
-
-//   };
-  
-//   return (
-//     <div style={MainContentStyle}>
-//       <Modal ref={modalRef} />
-//       <Modal ref={modalRef2} />
-//       <Modal ref={modalRef3} />
-
-//       <div className="bg-light">
-//         <Row className="">
-//           <Col className="">
-//             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
-//               <tbody>
-//                 <tr>
-//                   <th className="bg-light text-end align-middle">자재</th>
-//                   <td className="">
-//                     <div className="d-flex gap-2">
-//                       <Form.Control 
-//                         type="text"
-//                         name="item_code"
-//                         value={form.item_code}
-//                         onChange={handleChange}
-//                         size="sm" 
-//                         className="w-auto"
-//                         placeholder="CODE"
-//                       />
-//                       <Form.Control 
-//                         type="text"
-//                         name="item_name"
-//                         value={form.item_name}
-//                         onChange={handleChange}
-//                         size="sm" 
-//                         className="w-auto"
-//                         placeholder="NAME"
-//                       />
-//                     </div>
-//                   </td>
-//                   <td className="">
-//                     <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
-//                   </td>
-                  
-//                 </tr>
-//               </tbody>
-//             </Table>
-
-//           </Col>
-//         </Row>
-//       </div>
-
-//       <div className="h-100">
-//         <Row  className="h-100">
-//           <Col className="h-100 d-flex flex-column" xs={12} md={6}>
-//             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
-//               <span className="fw-bold">자재 목록</span>
-//               <Button size="sm" variant="success" onClick={addData}>선택 담기</Button>
-              
-//             </div>
-
-//             <GridExample 
-//               columnDefs={columnDefs}
-//               rowData={rowData}
-//               onGridReady={onGridReady} 
-//               loading={loading}
-//               rowNum={true}
-//               rowSel={"multiRow"}
-//               pagination={false}
-//               // pageSize={10}
-//               // pinnedBottomRowData={pinnedBottomRowData}  
-//             />
-//           </Col>
-
-//           <Col className="h-100 d-flex flex-column" xs={12} md={6}>
-//             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
-//               <span className="fw-bold">출고 대기</span>
-//               <Button size="sm" variant="danger" onClick={addData2}>출고</Button>
-//             </div>
-
-//             <GridExample 
-//               columnDefs={columnDefs2}
-//               rowData={rowData2}
-//               onGridReady={onGridReady2} 
-//               loading={loading2}
-//               rowNum={true}
-//               rowSel={"multiRow"}
-//               pagination={false}
-//               // pinnedBottomRowData={pinnedBottomRowData2}
-//             />
-//           </Col>
-
-//         </Row>
-//       </div>
-
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-

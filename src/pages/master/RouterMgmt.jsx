@@ -56,7 +56,7 @@ const Main = () => {
 
   let grid_col2 = [
     { headerName: "순서", field: "sort", sortable: false, editable: false, align:"center"},
-    { headerName: "공정코드", field: "process_code", sortable: false, editable: false, align:"center"},
+    // { headerName: "공정코드", field: "process_code", sortable: false, editable: false, align:"center"},
     { headerName: "공정명", field: "process_name", sortable: false, editable: false, align:"left"}, 
     { headerName: "소요시간", field: "expected_time_min", sortable: false, editable: true, align:"right"}, 
     { headerName: "필수여부", field: "is_optional", sortable: false, editable: true, align:"center",
@@ -404,6 +404,7 @@ const Main = () => {
       },
       onConfirm:(res) => {
         console.log(res);
+        setRowData2([]);
         
         axiosInstance
           .post(`/api/delRouter`, JSON.stringify(sel_rows))
@@ -512,7 +513,6 @@ const Main = () => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}  
             />
           </Col>
         </Row>
@@ -623,9 +623,6 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
   let test = [
     { headerName: "공정코드", field: "process_code", sortable: false, editable: false, align:"left"},
     { headerName: "공정명", field: "process_name", sortable: false, editable: false, align:"left" },
-    { headerName: "공정유형", field: "process_type", sortable: false, editable: false, align:"center", 
-      valueFormatter:(params)=> typeFormatter(params,'cd011')
-    },
   ];
   
   
@@ -695,7 +692,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
     setLoading(true);
 
     axiosInstance
-    .post(`/api/getProcess`, JSON.stringify({}))
+    .post(`/api/getProcess`, JSON.stringify({type:"router"}))
     .then((res) => {
       setRowData(res.data);
     })

@@ -5,10 +5,19 @@ import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import { MainContentStyle } from "css/CommonStyle";
-import { ContentSteeringController } from "hls.js";
 
 
-const Main = () => {
+const Main = ({ props={}, style_props={} }) => {
+
+  // 컴포넌트로 사용했을때 ref 받기
+  const [modalForm, setModalForm] = useState(props.current);
+  const modalFormChange = (e) => {
+    const { name, value } = e.target;
+    setModalForm(prev => ({ ...prev, [name]: value }));
+    if(props.current){
+      props.current[name] = value;
+    }
+  };
 
   const selectedRow = useRef(0);
 
@@ -36,11 +45,6 @@ const Main = () => {
   const [loading, setLoading] = useState(false);
   const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]);
-
-  const gridRef2 = useRef();  
-  const [loading2, setLoading2] = useState(false);
-  const [rowData2, setRowData2] = useState([]);
-  const [columnDefs2, setColumnDefs2] = useState([]);
 
   const getRowClass = (params) => {
     const r_qty = params.data.right_qty;
@@ -73,36 +77,15 @@ const Main = () => {
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
       console.log(ev);
-
+      
       const selectedRows = ev.api.getSelectedRows();
+      // 모달사용시 선택 행 전달
+      modalFormChange({target:{name:"sel_rows", value:selectedRows}});
+      
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
-        getData2(selectedRows[0]);
+
       };
 
-    });
-
-    // 셀 값 변경 이벤트
-    params.api.addEventListener("cellValueChanged", (ev) => {
-      console.log("cellValueChanged");
-      console.log(ev);
-    });
-  };
-
-  // 그리드 onGridReady2
-  const onGridReady2 = (params) => {
-    console.log("onGridReady2");
-    gridRef2.current = params.api; // Grid API 저장
-
-    // 행 클릭 이벤트
-    params.api.addEventListener("rowClicked", (ev) => {
-      console.log("rowClicked");
-      console.log(ev);
-    });
-
-    // 선택 변경 이벤트
-    params.api.addEventListener("selectionChanged", (ev) => {
-      console.log("selectionChanged");
-      console.log(ev);
     });
 
     // 셀 값 변경 이벤트
@@ -141,14 +124,6 @@ const Main = () => {
         { headerName: "재고수량", field: "quantity", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
         { headerName: "재고비율", field: "stock_ratio", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params, '%')},
         { headerName: "부족수량", field: "chk_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
-      ]);
-
-      setColumnDefs2([
-        { headerName: "변경일시", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "자재코드", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "자재명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "변경수량", field: "changed_quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
-        { headerName: "변경타입", field: "change_type", sortable: false, editable: false, align:"center"},
       ]);
 
       getData();
@@ -207,44 +182,11 @@ const Main = () => {
     
   };
 
-  // 조회2
-  const getData2 = (params) => {
-    console.log("getData2");
-
-    setRowData2([]);
-    setLoading2(true);
-    
-    axiosInstance
-    .post(`/api/getInventoryDet`, JSON.stringify(params))
-    .then((res) => {
-      setRowData2(res.data);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-      modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
-    })
-    .finally(() =>{
-      setLoading2(false);
-      
-      // // 그리드 행 선택
-      // let sel = selectedRow.current;
-      // if(typeof params === "number") sel = params;
-      // gridRef.current.forEachNode((node) => {
-      //   if (node.rowIndex === sel) {
-      //     node.setSelected(true);
-      //   }
-      // });
-    });
-    
-  };
-
- 
-
 
 
 
   return (
-    <div style={MainContentStyle}>
+    <div style={{...MainContentStyle, ...style_props}}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -310,25 +252,6 @@ const Main = () => {
               rowClass={getRowClass}
             />
           </Col>
-
-          {/* <Col className="h-100 d-flex flex-column" xs={12} md={6}>
-            <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
-              <span className="fw-bold">변경 내역</span>
-              
-            </div>
-
-            <GridExample 
-              columnDefs={columnDefs2}
-              rowData={rowData2}
-              onGridReady={onGridReady2} 
-              loading={loading2}
-              rowNum={true}
-              rowSel={"singleRow"}
-              pagination={true}
-              // pageSize={10}
-              // pinnedBottomRowData={pinnedBottomRowData}  
-            />
-          </Col> */}
 
         </Row>
       </div>

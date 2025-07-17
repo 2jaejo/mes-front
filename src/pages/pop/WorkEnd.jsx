@@ -42,7 +42,31 @@ const LoginHistory = () => {
     
     const startTime = Date.now(); // 요청 전 시간 기록
     axiosInstance
-    .post(`/users/getLogs`, JSON.stringify(form))
+    .post(`/api/getOsmStockItemStorageList`, JSON.stringify(form))
+    .then((res) => {
+      const endTime = Date.now(); // 응답 시간을 측정
+      const responseTime = endTime - startTime; // 응답 시간 (밀리초)
+      const delay = responseTime < 300 ? 300 - responseTime : 0; // 응답 시간이 0.5초보다 빠르면 남은 시간만큼 지연
+      
+      // 지연 후 응답을 출력
+      setTimeout(async () => {
+        setRowData(res.data);
+        setLoading(false);
+      }, delay);
+        
+    })
+    .catch((error) => console.error("Error fetching data:", error));
+    
+
+  };
+  const getData2 = (params) => {
+    console.log("getData2");
+
+    setLoading(true);
+    
+    const startTime = Date.now(); // 요청 전 시간 기록
+    axiosInstance
+    .post(`/api/getOsmOrderCustItemOrderList`, JSON.stringify(form))
     .then((res) => {
       const endTime = Date.now(); // 응답 시간을 측정
       const responseTime = endTime - startTime; // 응답 시간 (밀리초)
@@ -114,24 +138,29 @@ const LoginHistory = () => {
               onChange={handleChange}
               placeholder="접속일자"
             />
-            <Button size="sm" variant="secondary" onClick={getData}>검색</Button>
+            <Button size="sm" variant="secondary" onClick={getData}>재고조회 테스트</Button>
+            <Button size="sm" variant="secondary" onClick={getData2}>주문조회 테스트</Button>
           </Col>
           
         </Row>
 
       </div>
       
-      <GridExample 
+      {/* <GridExample 
         columnDefs={columnDefs}
         rowData={rowData}
         onGridReady={onGridReady} 
         loading={loading}
         rowNum={true}
         rowSel={"singleRow"}
-      />
+      /> */}
       
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
+
+      {
+        JSON.stringify(rowData)
+      }
     </div>
   );
 }

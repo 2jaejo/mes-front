@@ -163,8 +163,8 @@ const Main = () => {
         setColumnDefs([
           { headerName: "출고마감일시", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
           { headerName: "출고번호", field: "receipt_id", sortable: false, editable: false, align:"center"},
-          { headerName: "품목코드", field: "item_code", sortable: false, editable: false, align:"center"},
-          { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left"}, 
+          { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
+          { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left"}, 
           { headerName: "변경수량", field: "changed_quantity", sortable: false, editable: false, align:"left"},         
         ]);
         
@@ -187,8 +187,8 @@ const Main = () => {
      start_date : ''
     , end_date : ''
     , receipt_id : ''
-    , item_code : ''
-    , item_name : ''
+    , raw_code : ''
+    , raw_name : ''
     , status : ''
     , change_type: 'OUT'
   });

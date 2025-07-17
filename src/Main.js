@@ -16,79 +16,16 @@ import Navi from "./layout/Navi";
 import TabList from "./components/TabList";
 import TabContent from "./components/TabContent";
 
-
 // 유틸
 import { setupAxiosInterceptor } from "utils/Axios";
 // import { GlobalContext } from "utils/GlobalContext";
 import axiosInstance from "utils/Axios";
 
-
-// 페이지
+// 홈
 import Home from "pages/Home";
 
-// 기준정보관리
-import CategoryMgmt from "pages/master/CategoryMgmt";
-import ItemMgmt from "pages/master/ItemMgmt";
-import RawMgmt from "pages/master/RawMgmt";
-import PriceMgmt from "pages/master/PriceMgmt";
-import ClientMgmt from "pages/master/ClientMgmt";
-import VendorMgmt from "pages/master/VendorMgmt";
-import ProcessMgmt from "pages/master/ProcessMgmt";
-import EquipmentMgmt from "pages/master/EquipmentMgmt";
-import EquipmentCheckMgmt from "pages/master/EquipmentCheckMgmt";
-import RouterMgmt from "pages/master/RouterMgmt";
-import BomMgmt from "pages/master/BomMgmt";
-import CodeMgmt from "pages/master/CodeMgmt";
-
-// 자재관리
-import PurchaseMgmt from "pages/material/PurchaseMgmt"; 
-import ReceiveMgmt from "pages/material/ReceiveMgmt"; 
-import ReceiveEtcMgmt from "pages/material/ReceiveEtcMgmt"; 
-import ReceiveReturnMgmt from "pages/material/ReceiveReturnMgmt"; 
-import ReceiveHistory from "pages/material/ReceiveHistory"; 
-import ReleaseMgmt from "pages/material/ReleaseMgmt"; 
-import ReleaseEtcMgmt from "pages/material/ReleaseEtcMgmt"; 
-import ReleaseReturnMgmt from "pages/material/ReleaseReturnMgmt"; 
-import ReleaseHistory from "pages/material/ReleaseHistory"; 
-
-// 재고관리
-import InventoryLookup from "pages/inventory/InventoryLookup";
-import InventoryAdjust from "pages/inventory/InventoryAdjust"; 
-
-// 영업관리
-import SalesOrderMgmt from "pages/sales/SalesOrderMgmt";
-
-// 생산관리
-import WorkOrderMgmt from "pages/production/WorkOrderMgmt";
-import WorkResultMgmt from "pages/production/WorkResultMgmt";
-import EquipmentInspectionMgmt from "pages/production/EquipmentInspectionMgmt";
-
-// 제품재고관리
-import ReceiveCancelMgmt from "pages/productInventory/ReceiveCancelMgmt";
-import ReleaseCancelMgmt from "pages/productInventory/ReleaseCancelMgmt";
-import ProductReleaseMgmt from "pages/productInventory/ProductReleaseMgmt";
-import ProductInventoryMgmt from "pages/productInventory/ProductInventoryMgmt";
-import ProductReceiveHistory from "pages/productInventory/ProductReceiveHistory";
-import ProductReleaseHistory from "pages/productInventory/ProductReleaseHistory";
-
-// 모니터링
-import ProductionPlan from "pages/monitoring/ProductionPlan";
-import PerformanceOperationRate from "pages/monitoring/PerformanceOperationRate";
-import EquipmentStatusByUnit from "pages/monitoring/EquipmentStatusByUnit";
-
-// 시스템관리
-import ScreenMngt from "pages/system/ScreenMngt";
-import MemberMngt from "pages/system/MemberMngt";
-import MyPage from "pages/system/MyPage";
-import LoginHistory from "pages/system/LoginHistory";
-
-// POP
-import WorkOrderLookup from "pages/pop/WorkOrderLookup";
-import GoodProductRegister from "pages/pop/GoodProductRegister";
-import DefectRegister from "pages/pop/DefectRegister";
-import WorkStart from "pages/pop/WorkStart";
-import WorkEnd from "pages/pop/WorkEnd";
-
+// 페이지 컴포넌트 전체 호출
+import PageComponent from 'utils/loadPageComponents';
 
 function Main() {
   const navigate = useNavigate();
@@ -104,7 +41,10 @@ function Main() {
   // 확장된 메뉴를 추적하는 상태
   // const [expandedMenu, setExpandedMenu] = useState(["menu1"]);
 
-  // 탭 리스트
+  // 메뉴 리스트
+  const [navMenuList, setNavMenuList] = useState([]);
+
+    // 탭 리스트
   const [tabs, setTabs] = useState([{id:"Home",title:"홈"}]);
   // 탭 활성화
   const [activeTab, setActiveTab] = useState("Home");
@@ -165,124 +105,13 @@ function Main() {
 
   // 탭에 맞는 컴포넌트를 렌더링하는 함수
   const getTabContent = (menu) => {
-    switch (menu) {
-
-      // 기준정보관리
-      case "CategoryMgmt":
-        return <CategoryMgmt />;
-      case "ItemMgmt":
-        return <ItemMgmt />;
-      case "RawMgmt":
-        return <RawMgmt />;
-      case "PriceMgmt":
-        return <PriceMgmt />;
-      case "ClientMgmt":
-        return <ClientMgmt />;
-      case "VendorMgmt":
-        return <VendorMgmt />;
-      case "ProcessMgmt":
-        return <ProcessMgmt />;
-      case "EquipmentMgmt":
-        return <EquipmentMgmt />;
-      case "EquipmentCheckMgmt":
-        return <EquipmentCheckMgmt />;
-      case "RouterMgmt":
-        return <RouterMgmt />;
-      case "BomMgmt":
-        return <BomMgmt />;
-      case "CodeMgmt":
-        return <CodeMgmt />;
-
-      // 자재관리
-      case "PurchaseMgmt":
-        return <PurchaseMgmt />;
-      case "ReceiveMgmt":
-        return <ReceiveMgmt />;
-      case "ReceiveEtcMgmt":
-        return <ReceiveEtcMgmt />;
-      case "ReceiveReturnMgmt":
-        return <ReceiveReturnMgmt />;
-      case "ReceiveHistory":
-        return <ReceiveHistory />;
-      case "ReleaseMgmt":
-        return <ReleaseMgmt />;
-      case "ReleaseEtcMgmt":
-        return <ReleaseEtcMgmt />;
-      case "ReleaseReturnMgmt":
-        return <ReleaseReturnMgmt />;
-      case "ReleaseHistory":
-        return <ReleaseHistory />;
-
-      // 재고관리
-      case "InventoryLookup":
-        return <InventoryLookup />;
-      case "InventoryAdjust": 
-        return <InventoryAdjust />;
-
-      // 영업관리
-      case "SalesOrderMgmt":
-        return <SalesOrderMgmt />;
-      
-      // 생산관리
-      case "WorkOrderMgmt":
-        return <WorkOrderMgmt />;
-      case "WorkResultMgmt":
-        return <WorkResultMgmt />;
-      case "EquipmentInspectionMgmt":
-        return <EquipmentInspectionMgmt />;
-
-      // 제품재고관리
-      case "ReceiveCancelMgmt":
-        return <ReceiveCancelMgmt />;
-      case "ReleaseCancelMgmt":
-        return <ReleaseCancelMgmt />;
-      case "ProductReleaseMgmt":
-        return <ProductReleaseMgmt />;
-      case "ProductInventoryMgmt":
-        return <ProductInventoryMgmt />;
-      case "ProductReceiveHistory":
-        return <ProductReceiveHistory />;
-      case "ProductReleaseHistory":
-        return <ProductReleaseHistory />;
-
-      // 모니터링
-      case "ProductionPlan":
-        return <ProductionPlan />;
-      case "PerformanceOperationRate":
-        return <PerformanceOperationRate />;
-      case "EquipmentStatusByUnit":
-        return <EquipmentStatusByUnit />;
-
-      // 시스템관리
-      case "ScreenMngt":
-        return <ScreenMngt />;
-      case "MemberMngt":
-        return <MemberMngt />;
-      case "MyPage":
-        return <MyPage />;
-      case "LoginHistory":
-        return <LoginHistory />;
-
-      // POP
-      case "WorkOrderLookup":
-        return <WorkOrderLookup />;
-      case "GoodProductRegister":
-        return <GoodProductRegister />;
-      case "DefectRegister":
-        return <DefectRegister />;
-      case "WorkStart":
-        return <WorkStart />;
-      case "WorkEnd":
-        return <WorkEnd />;
-
-      // 기타
-      default:
-        return <div>Check Page</div>;
-    }
+    const Component = PageComponent[menu];
+    return Component ? <Component /> : <div>존재하지 않는 탭입니다.</div>;
   };
 
 
-  const [navMenuList, setNavMenuList] = useState([]);
+
+
   useEffect(() => {
     // 메뉴리스트 조회
     axiosInstance
@@ -306,11 +135,6 @@ function Main() {
         }
       });
 
-      // 대분류 메뉴 트리
-      // console.log(menuTree); 
-      // 전체 메뉴 맵
-      // console.log(menuMap); 
-
       // 메뉴 트리에서 대분류와 소분류를 추출하여 새로운 배열 생성
       const arr = [];
       menuTree.forEach((el) => {
@@ -329,13 +153,14 @@ function Main() {
       // console.log(arr);
       setNavMenuList(arr);
 
+      
+
     })
     .catch((error) => {
       
     });   
 
   }, []);
-
 
   
   // const menuList = [

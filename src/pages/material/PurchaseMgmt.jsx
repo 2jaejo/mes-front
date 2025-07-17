@@ -246,7 +246,7 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "발주상태", field: "status", sortable: true, editable: (params) => !params.node.rowPinned, filter: "agTextColumnFilter",  align:"center",
+        { headerName: "발주상태", field: "status", sortable: true, editable: Object.keys(props).length === 0, filter: "agTextColumnFilter",  align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: selectBox.current.common?.['cd012']?.map((item) => item.code) ?? [],
@@ -314,36 +314,6 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        // { headerName: "공급가", field: "supply_price", sortable: false, editable: false, align:"right",
-        //   cellRendererSelector: (params) => {
-        //     if (params.node.rowPinned) {
-        //       return {
-        //         component: ()=>{
-        //           return (
-        //             <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-        //           );
-        //         }
-        //       };
-        //     }
-        //     return undefined;
-        //   },
-        //    valueFormatter: (params) => moneyFormatter(params)
-        //   }, 
-        // { headerName: "부가세", field: "tax", sortable: false, editable: false, align:"right", 
-        //   cellRendererSelector: (params) => {
-        //     if (params.node.rowPinned) {
-        //       return {
-        //         component: ()=>{
-        //           return (
-        //             <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
-        //           );
-        //         }
-        //       };
-        //     }
-        //     return undefined;
-        //   },
-        //   valueFormatter: (params) => moneyFormatter(params)
-        // }, 
         { headerName: "합계", field: "total_price", sortable: false, editable: false, align:"right", 
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
@@ -361,10 +331,9 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        // { headerName: "입고검사여부", field: "incoming_inspection", sortable: false, editable: false, align:"center"}, 
         { headerName: "입고수량", field: "received_qty", sortable: false, 
           align:"right", 
-          editable: (params) => !params.node.rowPinned, 
+          editable: false, 
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -399,22 +368,7 @@ const Main = ({ props={}, style_props={} }) => {
   },[rowData2]);
 
 
-  // 검색창 입력필드
-  const [form, setForm] = useState({
-     start_date : ''
-    , end_date : ''
-    , purchase_id : ''
-    , client_code : ''
-    , client_name : ''
-    , purchase_status : ''
-  });
-
-
-  // 검색창 입력필드 변경 저장
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }; 
-
+  
 
   // 추가 모달 입력필드 저장
   const formRef = useRef();
@@ -435,6 +389,23 @@ const Main = ({ props={}, style_props={} }) => {
     comment: '',
     ...init
   });
+
+
+  // 검색창 입력필드
+  const [form, setForm] = useState({
+     start_date : ''
+    , end_date : ''
+    , purchase_id : ''
+    , client_code : ''
+    , client_name : ''
+    , purchase_status : (Object.keys(props).length !== 0) ? 'order' : '' 
+  });
+
+  // 검색창 입력필드 변경 저장
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }; 
+
 
 
   // 조회
@@ -647,6 +618,8 @@ const Main = ({ props={}, style_props={} }) => {
                         size="sm"
                         className="w-auto"
                         style={{minWidth:100}}
+                        disabled={(Object.keys(props).length !== 0)}
+                
                       >
                         <option value="">전체</option>
                         {(selectBox.current.common?.['cd012'] || [])

@@ -4,7 +4,7 @@
   --bg-color: #ffffff;
   --text-color: #000000;
   --article-color: #b9b9b9;
-  --alpha : 0.6;
+  --alpha : 0.4;
 }
 [data-theme="dark"] {
   --bg-color: #121212;
@@ -296,6 +296,7 @@ li.expanded {
 
 .add-tab-btn:hover {
   background: #0056b3;
+
 }
 
 /* ag grid header align */
@@ -303,9 +304,29 @@ li.expanded {
   justify-content: center;
 }
 
+.ag-cell {
+  /* white-space: pre-wrap !important; */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
 
-.bg-red{ background-color: rgb(255, 0, 0, var(--alpha)) !important; }
-.bg-orange{ background-color: rgb(255, 165, 0, var(--alpha)) !important; }
-.bg-yellow{ background-color: rgb(255, 255, 0, var(--alpha)) !important; }
-.bg-green{ background-color: rgb(0, 128, 0, var(--alpha)) !important; }
-.bg-blue{ background-color: rgb(0, 0, 255, var(--alpha)) !important; }
+.bg-red { background-color: rgb(255, 0, 0, var(--alpha)) !important; }
+.bg-blue { background-color: rgb(0, 0, 255, var(--alpha)) !important; }
+.bg-yellow { background-color: rgb(255, 255, 0, var(--alpha)) !important; }
+.bg-teal { background-color: rgb(0, 128, 128, var(--alpha)) !important; }
+.bg-purple { background-color: rgb(128, 0, 128, var(--alpha)) !important; }
+.bg-orange { background-color: rgb(255, 165, 0, var(--alpha)) !important; }
+.bg-gray { background-color: rgb(128, 128, 128, var(--alpha)) !important; }
+.bg-indigo { background-color: rgb(75, 0, 130, var(--alpha)) !important; }
+.bg-hotPink { background-color: rgb(255, 105, 180, var(--alpha)) !important; }
+.bg-lightGreen { background-color: rgb(144, 238, 144, var(--alpha)) !important; }
+.bg-amber { background-color: rgb(255, 191, 0, var(--alpha)) !important; }
+.bg-mint { background-color: rgb(189, 252, 201, var(--alpha)) !important; }
+.bg-magenta { background-color: rgb(255, 0, 255, var(--alpha)) !important; }
+.bg-skyBlue { background-color: rgb(135, 206, 235, var(--alpha)) !important; }
+.bg-salmon { background-color: rgb(250, 128, 114, var(--alpha)) !important; }
+.bg-paleGreen { background-color: rgb(152, 251, 152, var(--alpha)) !important; }
+.bg-lavender { background-color: rgb(230, 230, 250, var(--alpha)) !important; }
+.bg-gold { background-color: rgb(255, 215, 0, var(--alpha)) !important; }
+.bg-coralRed { background-color: rgb(255, 64, 64, var(--alpha)) !important; }
+.bg-turquoise { background-color: rgb(64, 224, 208, var(--alpha)) !important; }

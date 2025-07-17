@@ -590,6 +590,47 @@ const Main = ({ props={} }) => {
     });
 
   };
+
+
+
+
+  // 삭제
+  const delData = (params) => {
+    console.log("delData");
+
+    const rows = gridRef.current.getSelectedRows();
+    if (rows.length === 0) {
+      modalRef2.current.open({ title:"알림", message:"선택하신 항목이 없습니다.", cancelText:"" });
+    }
+    
+    modalRef.current.open({
+      title: "입고 삭제",
+      message: "삭제하시겠습니까?",
+      onCancel: ()=>{
+        modalRef.current.close();
+      },
+      confirmText:"삭제",
+      confirmClass:"btn btn-danger",
+      onConfirm: (res) => {
+       
+        axiosInstance
+          .post(`/api/delReceipt`, JSON.stringify(rows))
+          .then((res) => {
+            getData();
+            modalRef.current.close();
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+          });   
+
+
+      }, 
+    });
+
+  };
+
+
   
   return (
     <div style={MainContentStyle}>
@@ -627,7 +668,7 @@ const Main = ({ props={} }) => {
                       />
                     </div>
                   </td>
-                  <th className="bg-light text-end align-middle">입고상태</th>
+                  {/* <th className="bg-light text-end align-middle">입고상태</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Select 
@@ -648,14 +689,14 @@ const Main = ({ props={} }) => {
                         ))}
                       </Form.Select>               
                     </div>
-                  </td>
+                  </td> 
                   
                 </tr>
               </tbody>
             </Table>
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
-                <tr>
+                <tr>*/}
                   <th className="bg-light text-end align-middle">입고번호</th>
                   <td className="">
                       <Form.Control 
@@ -708,7 +749,10 @@ const Main = ({ props={} }) => {
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">입고 목록</span>
               { Object.keys(props).length === 0 
-                ? (<Button size="sm" variant="success" onClick={addData}>추가</Button>)
+                ? (<>
+                    <Button size="sm" variant="success" onClick={addData}>추가</Button>
+                    <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
+                  </>)
                 : null
               }
             </div>
@@ -734,7 +778,9 @@ const Main = ({ props={} }) => {
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">입고 상세</span>
               { Object.keys(props).length === 0 
-                ? (<Button size="sm" variant="danger" onClick={setData3}>마감</Button>)
+                ? (<>
+                    <Button size="sm" variant="danger" onClick={setData3}>마감</Button>
+                  </>)
                 : null
               }
             </div>

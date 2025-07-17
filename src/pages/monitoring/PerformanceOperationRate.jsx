@@ -1,27 +1,143 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
+import axiosInstance from "utils/Axios";
 import Modal from "components/Modal";
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import { MainContentStyle } from "css/CommonStyle";
+import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import dayjs from 'dayjs'
 
-const Main = () => {
-  
-  const [data, setData] = useState([
-    { name: 'Page A', '양품': 4000, '불량': 240, '가동시간': 2400 },
-    { name: 'Page B', '양품': 3000, '불량': 139, '가동시간': 2210 },
-    { name: 'Page C', '양품': 2000, '불량': 980, '가동시간': 2290 },
-    { name: 'Page D', '양품': 2780, '불량': 390, '가동시간': 2000 },
-    { name: 'Page E', '양품': 1890, '불량': 480, '가동시간': 2181 },
-    { name: 'Page F', '양품': 2390, '불량': 380, '가동시간': 2500 },
-    { name: 'Page G', '양품': 3490, '불량': 430, '가동시간': 2100 },
-    { name: 'Page H', '양품': 3490, '불량': 430, '가동시간': 2100 },
-    { name: 'Page I', '양품': 3490, '불량': 430, '가동시간': 2100 },
-    { name: 'Page J', '양품': 3490, '불량': 430, '가동시간': 2100 },
-    { name: 'Page K', '양품': 3490, '불량': 430, '가동시간': 2100 },
-    { name: 'Page L', '양품': 3490, '불량': 430, '가동시간': 2100 }
+const Main = ({isActive}) => {
+  const modalRef = useRef();  
+  const modalRef2 = useRef();  
+
+  const [data, setData] = useState([]);
+  const cl = useState([
+    'red',
+    'blue',
+    'teal',
+    'purple',
+    'orange',
+    'gray',
+    'indigo',
+    'hotPink',
+    'lightGreen',
+    'amber',
+    'mint',
+    'magenta',
+    'skyBlue',
+    'yellow',
+    'salmon',
+    'paleGreen',
+    'lavender',
+    'gold',
+    'coralRed',
+    'turquoise',
   ]);
+
+  const DEFAULT_FORM = (init={})=> ({
+    date: dayjs().format("YYYY-MM-DD"),
+    ...init
+  });
+
+  // 폼 데이터 상태
+  const [formData, setFormData] = useState(DEFAULT_FORM());
+
+  // 폼 데이터 변경 핸들러
+  const handleFormChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+
+
+
+  }
+
+  // 초기화
+  useEffect(()=>{
+    console.log("useEffect");
+    
+    if( !isActive ) return;
+    getData();
+     
+  },[isActive]);
+
+
+  useEffect(()=>{
+    console.log("useEffect2");
+    getData();
+  },[formData]);
+
+
+
+  // 조회
+  const getData = (params) => {
+    console.log("getData");
+    
+    axiosInstance
+      .post(`/api/getReportProcess`, JSON.stringify(formData))
+      .then((res) => {
+        console.log(res.data);
+        if(res.data.length === 0) return;
+
+        const rows = res.data;
+        const newData = [];
+        rows.some( (el) => {
+          let rate = el.prod_min / el.total_min * 100;
+          rate = rate ? rate.toFixed(2) : 0;
+
+          newData.push({
+            name:el.process_name , 
+            '양품': el.result_qty ?? 0,
+            '불량': el.defect_qty ?? 0,
+            '가동시간(분)':el.prod_min ?? 0,
+            '가동률(%)':rate,
+            'item_name':el.item_name,
+            'item_code':el.item_code
+          })
+        });
+
+        setData(newData);
+
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+      })
+      .finally(() =>{
+        
+      });
+    
+  };
+
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+
+      return (
+        <div style={{ background: '#fff', border: '1px solid #ccc', padding: '10px' }}>
+          <p><strong>{label}</strong></p>
+          <hr />
+          {payload.map((entry, index) => (
+            <p key={index} style={{ color: entry.color }}>
+              ● {entry.name}: {entry.value}
+            </p>
+          ))}
+
+          {/* 추가 정보 예시 */}
+          <hr />
+          <p>{data['item_code'] ?? ""}</p>
+          <p>{data['item_name'] ?? ""}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+  
 
   const ExampleBarChart = () => {
     return (
@@ -31,13 +147,15 @@ const Main = () => {
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis type="number" domain={[0, 'dataMax + 1000']} />
-          <Tooltip />
+          <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 12 }}/>
+          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => (dataMax * 2)]} label={{ value: '수량', angle: 0, position: 'insideLeft'}}/>
+          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , 720]} label={{ value: '시간(분)', angle: 0, position: 'insideRight'}}/>
+          <Tooltip content={<CustomTooltip />}/>
           <Legend />
-          <Bar dataKey="양품" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-          <Bar dataKey="불량" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
-          <Bar dataKey="가동시간" fill="blue" activeBar={<Rectangle fill="green" stroke="red" />} />
+          <Bar dataKey="양품" yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
+          <Bar dataKey="불량" yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
+          <Bar dataKey="가동률(%)" yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
+          <Bar dataKey="가동시간(분)" yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
         </BarChart>
       </ResponsiveContainer>
     );
@@ -45,7 +163,42 @@ const Main = () => {
 
   
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
+      <Modal ref={modalRef} />
+      <Modal ref={modalRef2} />
+
+      <div className="bg-light">
+        <Row className="">
+          <Col className="">
+            <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
+              <tbody>
+                <tr>
+                  <th className="bg-light text-end align-middle">날짜</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="date"
+                      name="date"
+                      value={formData.date ?? ""}
+                      onChange={handleFormChange}
+                      size="sm" 
+                      className="w-auto"
+                    />
+                    </div>
+                  </td>
+          
+                  <td className="">
+                    <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
+                  </td>
+                  
+                </tr>
+              </tbody>
+            </Table>
+
+          </Col>
+        </Row>
+      </div>
+
       <ExampleBarChart />
     </div>
   );

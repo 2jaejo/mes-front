@@ -7,11 +7,9 @@ import { AG_GRID_LOCALE_KR } from '@ag-grid-community/locale';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel="singleRow", onGridReady=null, pagination=true, pageSize=25, rowDrag=false, pinnedBottomRowData=[], rowStyle=null, rowClass=null} ) => {
+const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNum=false, rowSel="singleRow", onGridReady=null, pagination=true, pageSize=1000, rowDrag=false, pinnedBottomRowData=[], rowStyle=null, rowClass=null} ) => {
 
-  // 테마설정
-  const myTheme = themeQuartz  // themeQuartz, themeAlpine, themeBalham 
-  .withParams({
+  const theme_sm ={
     borderRadius: 0,
     browserColorScheme: "inherit",
     columnBorder: true,
@@ -35,7 +33,37 @@ const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel=
     spacing: 4,
     wrapperBorder: true,
     wrapperBorderRadius: 0
-  });
+  };
+
+  const theme_md ={
+    borderRadius: 0,
+    browserColorScheme: "inherit",
+    columnBorder: true,
+    fontFamily: [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        "Segoe UI",
+        "Roboto",
+        "Oxygen-Sans",
+        "Ubuntu",
+        "Cantarell",
+        "Helvetica Neue",
+        "sans-serif"
+    ],
+    fontSize: 20,
+    headerFontSize: 18,
+    headerFontWeight: 700,
+    headerRowBorder: true,
+    oddRowBackgroundColor: "#FaFaFa",
+    rowBorder: true,
+    spacing: 8,
+    wrapperBorder: true,
+    wrapperBorderRadius: 0
+  };
+
+  // 테마설정
+  const myTheme = themeQuartz  // themeQuartz, themeAlpine, themeBalham 
+  .withParams(themeSize === "sm" ? theme_sm : theme_md);
 
 
   // 기본 설정 추가 = rowNum, editable: false일때 배경색
@@ -63,12 +91,24 @@ const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel=
     // editable: false = background color set , text align
     return newColumnDefs.map((col) => ({
       ...col,
+      // 툴팁 설정
+      // tooltipField:col.field,
       cellStyle: (params) => {
         let bgColor = '';
 
+        // params.colDef.editable이 함수인지 확인하고, 직접 실행해서 판단
+        const colEditable = params.colDef.editable;
+        let isEditable = false;
+
+        if (typeof colEditable === 'function') {
+          isEditable = colEditable(params); // 실행해서 true/false 판단
+        } else {
+          isEditable = !!colEditable; // boolean인 경우 그대로 처리
+        }
+
         // 1. editable일 경우 기본 배경
-        if (!params.node.rowPinned && params.colDef.editable) {
-          bgColor = '#a7d1ff29';
+        if (!params.node.rowPinned && isEditable) {
+          bgColor = '#e3fff950';
         }
 
         // 2. backgroundColor가 있으면 덮어쓰기
@@ -200,6 +240,10 @@ const GridExample = ( {columnDefs, rowData, loading=false, rowNum=false, rowSel=
           // }}
         
           // paginationAutoPageSize={true}
+
+          enableCellTextSelection={true}
+          ensureDomOrder={true}
+
           pagination={pagination}
           paginationPageSize={pageSize}
           paginationPageSizeSelector={paginationPageSizeSelector}

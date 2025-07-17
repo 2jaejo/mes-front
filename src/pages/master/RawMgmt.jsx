@@ -21,7 +21,7 @@ const Main = () => {
 
       setLoading(true);
       axiosInstance
-        .post(`/api/getItem`, JSON.stringify(params))
+        .post(`/api/getRaw`, JSON.stringify(params))
         .then((res) => {
           setRowData(res.data);
           
@@ -122,12 +122,12 @@ const Main = () => {
       { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
       { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
       { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
-      { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "매입가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "분류", field: "type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "단위", field: "base_unit", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "규격", field: "unit_size", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "매입가", field: "buyprice", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "분류", field: "type_name", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
       { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      { headerName: "안전재고", field: "right_qty", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
       { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
       { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
       { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
@@ -180,7 +180,7 @@ const Main = () => {
         <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
           <tbody>
             <tr>
-              <th className="bg-light text-end align-middle">운영상품코드</th>
+              <th className="bg-light text-end align-middle"><span className="p-0 text-danger fs-6 fw-bold">*</span>운영상품코드</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -192,7 +192,7 @@ const Main = () => {
                   maxLength={21}
                 />
               </td>
-              <th className="bg-light text-end align-middle">바코드</th>
+              <th className="bg-light text-end align-middle"><span className="p-0 text-danger fs-6 fw-bold">*</span>바코드</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -207,7 +207,7 @@ const Main = () => {
             </tr>
 
             <tr>
-              <th className="bg-light text-end align-middle">품번</th>
+              <th className="bg-light text-end align-middle"><span className="p-0 text-danger fs-6 fw-bold">*</span>품번</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -219,7 +219,7 @@ const Main = () => {
                   maxLength={21}
                 />
               </td>
-              <th className="bg-light text-end align-middle">품번</th>
+              <th className="bg-light text-end align-middle"><span className="p-0 text-danger fs-6 fw-bold">*</span>품명</th>
               <td>
                 <Form.Control 
                   type="text"
@@ -681,7 +681,10 @@ const Main = () => {
     axiosInstance
       .post("api/setRaw", JSON.stringify(params))
       .then((res) => {
-        
+        console.log(res.data);
+        if(res.data.length > 0){
+          modalRef.current.open({ title:"알림", message:"수정되었습니다.", cancelText:"" });
+        }
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -698,7 +701,7 @@ const Main = () => {
     formRef.current = DEFAULT_FORM();
 
     modalRef.current.open({
-      title: "품목 추가",
+      title: "자재 추가",
       message: "추가하시겠습니까?",
       content: <ModalForm form={formRef.current} onChangeHandler={formRefChange} />,
       onCancel: ()=>{
@@ -1090,7 +1093,7 @@ const Main = () => {
               loading={loading}
               rowNum={true}
               rowSel={"multiRow"}
-              pageSize={25}  
+              pageSize={1000}  
             />
           </Col>
 

@@ -75,8 +75,8 @@ const Main = () => {
   let grid_col2 = [
     { headerName: "품목코드", field: "item_dotno", sortable: false, editable: false, align:"center"},
     { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left"}, 
-    { headerName: "자재코드", field: "material_code", sortable: false, editable: false, align:"center"},
-    { headerName: "자재명", field: "material_name", sortable: false, editable: false, align:"left"}, 
+    { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
+    { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left"}, 
     { headerName: "수량", field: "quantity", sortable: false, editable: true, align:"right"}, 
     { headerName: "단위", field: "unit", sortable: false, editable: true, align:"right"},
     { headerName: "순서", field: "sort", sortable: false, editable: true, align:"center"},
@@ -315,7 +315,7 @@ const Main = () => {
 
         const data = {
           item_dotno: gridRef.current.getSelectedRows()[0].item_dotno,
-          material_code: formRef.current.sel_row.item_dotno
+          material_code: formRef.current.sel_row.raw_code
         }
 
         axiosInstance
@@ -444,7 +444,6 @@ const Main = () => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}  
             />
           </Col>
         </Row>
@@ -559,8 +558,8 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
 
   const col_a = [
     
-    { headerName: "품목코드", field: "item_dotno", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "품목명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+    { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
+    { headerName: "자재명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
     { headerName: "기준단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
       cellEditor: "agSelectCellEditor",
       cellEditorParams: {
@@ -614,7 +613,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
     setLoading(true);
 
     axiosInstance
-    .post(`/api/getItem`, JSON.stringify(modalForm))
+    .post(`/api/getRaw`, JSON.stringify(modalForm))
     .then((res) => {
       setRowData(res.data);
     })

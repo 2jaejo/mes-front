@@ -1124,7 +1124,7 @@ const Main = () => {
               loading={loading}
               rowNum={true}
               rowSel={"multiRow"}
-              pageSize={25}  
+              pageSize={1000}  
             />
           </Col>
 
