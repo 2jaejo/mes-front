@@ -27,7 +27,6 @@ const Forms = ({ id, fields, onSearchData, direction="horizontal" }) => {
   // inputsState가 변경될 때마다 호출되는 함수
   useEffect(() => {
     const runSomeFunction = () => {
-      // console.log('inputsState가 변경되었습니다:', inputsState);
       onSearchData(inputsState);
     };
 

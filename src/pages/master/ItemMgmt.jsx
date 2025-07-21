@@ -101,7 +101,6 @@ const Main = ({props={} }) => {
 
   // grid cell code_name 변환
   const categoryBFormatter = (params) => {
-    console.log(params);
     const arr_client_type = selectBox.current.category?.item_group_b[params.data.item_group_a] || [];
     const item = arr_client_type.find(el => el.category_id === params.value);
     return item ? item.category_nm : params.value; 
@@ -1047,7 +1046,6 @@ const Main = ({props={} }) => {
       confirmText:"추가",
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
-        console.log(formRef.current);
 
         if(formRef.current.item_usr_code === "" || formRef.current.item_usr_code === undefined){
           modalRef2.current.open({ title:"알림", message:"운영상품코드를 입력하세요.", cancelText:"" });
@@ -1111,7 +1109,6 @@ const Main = ({props={} }) => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
         
         axiosInstance
           .post(`/api/delItem`, JSON.stringify(selectRows))
@@ -1286,7 +1283,6 @@ const Main = ({props={} }) => {
               axiosInstance
                 .post(`/api/addExcelMapping`, JSON.stringify(data))
                 .then((res) => {
-                  console.log(res);
                   modalRef2.current.open({ title:"알림", message:"적용되었습니다.", cancelText:"" });
                   modalRef.current.close();
                   getData(); // 데이터 새로고침
@@ -1324,13 +1320,13 @@ const Main = ({props={} }) => {
 
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData(ev.data);
     });
 
@@ -1338,11 +1334,11 @@ const Main = ({props={} }) => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
 
       const selectedRows = params.api.getSelectedRows();
-      console.log(selectedRows);
-      props.current['sel_row'] = selectedRows;
+      modalFormChange({target:{name:'sel_row', value:selectedRows}});
+      // props.current['sel_row'] = selectedRows;
     });
 
   };

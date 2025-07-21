@@ -38,13 +38,13 @@ const Main = () => {
 
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData(ev.data);
     });
 
@@ -52,10 +52,7 @@ const Main = () => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
-
       const selectedRows = params.api.getSelectedRows();
-      console.log(selectedRows);
     });
 
   };
@@ -730,7 +727,6 @@ const Main = () => {
   const addData = (params) => {
     console.log("addData");
 
-    console.log(form);
     // 폼 초기화
 
     formRef.current = DEFAULT_FORM();
@@ -800,7 +796,6 @@ const Main = () => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
         
         axiosInstance
           .post(`/api/delClient`, JSON.stringify(selectRows))
@@ -980,7 +975,6 @@ const Main = () => {
               axiosInstance
                 .post(`/api/addExcelMapping`, JSON.stringify(data))
                 .then((res) => {
-                  console.log(res);
                   modalRef2.current.open({ title:"알림", message:"적용되었습니다.", cancelText:"" });
                   modalRef.current.close();
                   getData(); // 데이터 새로고침

@@ -399,7 +399,6 @@ const Main = () => {
       confirmText:"추가",
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
-        console.log(formRef.current);
 
 
         if(formRef.current.category_id === "" || formRef.current.category_id === undefined){
@@ -452,7 +451,6 @@ const Main = () => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
         
         axiosInstance
           .post(`/api/delCategory`, JSON.stringify(selectRows))
@@ -556,7 +554,6 @@ const Main = () => {
   const addData2 = (params) => {
     console.log("addData2");
 
-    console.log(form2);
     // 폼 초기화
 
     formRef2.current = DEFAULT_FORM2();
@@ -586,7 +583,6 @@ const Main = () => {
         
         // 소분류 아이디 조합
         formRef2.current["category_id"] = formRef2.current["parent_id"] + '-' + formRef2.current["category_id"];
-        console.log(formRef2.current);
 
         axiosInstance
           .post(`/api/addCategory`, JSON.stringify(formRef2.current))
@@ -630,7 +626,6 @@ const Main = () => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
         
         axiosInstance
           .post(`/api/delCategory`, JSON.stringify(selectRows))
@@ -663,7 +658,7 @@ const Main = () => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
 
       const selectedRows = ev.api.getSelectedRows();
       if(selectedRows.length > 0){
@@ -678,14 +673,14 @@ const Main = () => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
 
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
         getData2(selectedRows[0]);
@@ -702,13 +697,13 @@ const Main = () => {
 
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData2(ev.data);
     });
 
@@ -716,7 +711,7 @@ const Main = () => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
 
       const selectedRows = params.api.getSelectedRows();
       console.log(selectedRows);

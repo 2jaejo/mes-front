@@ -118,7 +118,7 @@ const Main = ({ isActive}) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       selectedRow.current = ev.rowIndex; 
 
       const node = ev.node;
@@ -130,14 +130,14 @@ const Main = ({ isActive}) => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
 
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){

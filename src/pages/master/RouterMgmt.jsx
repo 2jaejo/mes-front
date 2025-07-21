@@ -96,7 +96,7 @@ const Main = () => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       setSelectedRow(ev.rowIndex); 
 
       const node = ev.node;
@@ -108,14 +108,14 @@ const Main = () => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData(ev.data);
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
@@ -135,20 +135,20 @@ const Main = () => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData2(ev.data);
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
     });
 
   };
@@ -403,7 +403,6 @@ const Main = () => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
         setRowData2([]);
         
         axiosInstance
@@ -634,33 +633,32 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
   // 그리드 onGridReady
   const onGridReady = (params) => {
     console.log("onGridReady");
-    console.log(params);
 
     gridRef.current = params.api; // Grid API 저장
 
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
 
     });
 
     // 드래그 종료 이벤트
     params.api.addEventListener("rowDragEnd", (ev) => {
       console.log("rowDragEnd");
-      console.log(ev);
+      
 
       // 새로운 순서로 rowData 업데이트
       const rowCount = ev.api.getDisplayedRowCount();
@@ -919,19 +917,19 @@ const ModalForm2 = ({ form={}, onChangeHandler }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
 
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source === 'rowClicked'){

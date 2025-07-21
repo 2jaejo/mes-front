@@ -70,7 +70,7 @@ const Main = ({ props={}, isActive}) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       selectedRow.current = ev.rowIndex; 
 
       const node = ev.node;
@@ -82,7 +82,7 @@ const Main = ({ props={}, isActive}) => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData(ev.data);
 
     });
@@ -90,7 +90,7 @@ const Main = ({ props={}, isActive}) => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
@@ -321,8 +321,7 @@ const Main = ({ props={}, isActive}) => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
         
-        console.log(formRef.current);
-        console.log(formRef.current.sel_row);
+
 
         const hasEmptyFields = formRef.current.sel_row.some(row => {
           return (
@@ -383,7 +382,7 @@ const Main = ({ props={}, isActive}) => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
+        
 
         axiosInstance
           .post("api/delWorkOrder", JSON.stringify(selectRows))
@@ -657,19 +656,19 @@ const ModalComponent = ({ form }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
 
     });
   };
@@ -682,19 +681,19 @@ const ModalComponent = ({ form }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
   };
 
@@ -828,7 +827,6 @@ const ModalComponent = ({ form }) => {
       sel_row:[],
     };
 
-    console.log(formRef2.current);
 
     modalRef.current.open({
       title: "주문 조회",
@@ -840,7 +838,7 @@ const ModalComponent = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         const row = formRef2.current.sel_row[0];
-        console.log(row);
+        
         if(!row || Object.keys(row).length === 0){
           modalRef2.current.open({ title:"알림", message:"수주의 상세품목을 선택하세요.", cancelText:"" });
           return;
@@ -901,7 +899,7 @@ const ModalComponent = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         const row = formRef3.current.sel_row[0];
-        console.log(row);
+        
         if(!row || Object.keys(row).length === 0){
           modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
           return;
@@ -927,7 +925,7 @@ const ModalComponent = ({ form }) => {
   // 조회4
   const getData4 = (params) => {
     console.log("getData4");
-    console.log(params);
+    
 
     formRef4.current = {
       sel_row:{},
@@ -943,7 +941,7 @@ const ModalComponent = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         const row = formRef4.current.sel_row;
-        console.log(row);
+        
         if(!row || Object.keys(row).length === 0){
           modalRef2.current.open({ title:"알림", message:"사용자를 선택하세요.", cancelText:"" });
           return;
@@ -977,7 +975,6 @@ const ModalComponent = ({ form }) => {
   const addData = () => {
     console.log("addData");
     
-    console.log(form.current);
     if(!form.current.item_code || form.current.item_code === ''){
       modalRef2.current.open({ title:"알림", message:"제품을 입력하세요.", cancelText:"" });
       return;
@@ -1006,8 +1003,7 @@ const ModalComponent = ({ form }) => {
       return newItem;
     });
 
-    console.log(rowData2);
-    console.log(updatedRows);
+
 
     setRowData2(prev => {
       const makeKey = (row) => `${row.process_code}_${row.item_code}`;
@@ -1020,7 +1016,6 @@ const ModalComponent = ({ form }) => {
 
   const delData = () => {
     console.log("delData");
-    console.log(rowData2);
     const sel_rows = gridRef2.current.getSelectedRows();
     const sel_row_ids = sel_rows.map(item => item.id);
     setRowData2(prev => prev.filter(item => !sel_row_ids.includes(item.id)));
@@ -1321,7 +1316,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       selectedRow.current = ev.rowIndex; 
 
       const node = ev.node;
@@ -1333,14 +1328,14 @@ const ModalSalesOrderComponent = ({ props={} }) => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
 
     });
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
@@ -1352,7 +1347,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
     // 스크롤 종료 확인
     params.api.addEventListener("bodyScrollEnd", (ev) => {
       console.log("bodyScrollEnd");
-      console.log(ev);
+      
 
       if(ev.direction === "vertical"){
         onBodyScroll();
@@ -1362,7 +1357,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
     // 모델 업데이트
     params.api.addEventListener("modelUpdated", (ev) => {
       console.log("modelUpdated");
-      console.log(ev);
+      
 
       console.log(pageRef.current);
       console.log(totalPageRef.current);
@@ -1470,9 +1465,9 @@ const ModalSalesOrderComponent = ({ props={} }) => {
       
       // 그리드 행 선택
       let sel = selectedRow.current;
-      console.log(sel);
+      
       if(typeof params === "number") sel = params;
-      console.log(sel);
+      
       gridRef.current.forEachNode((node) => {
         if (node.rowIndex === sel) {
           node.setSelected(true);
@@ -1710,7 +1705,7 @@ const ModalStockItemComponent = ({ props={} }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       selectedRow.current = ev.rowIndex; 
 
       const node = ev.node;
@@ -1722,14 +1717,14 @@ const ModalStockItemComponent = ({ props={} }) => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
 
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
@@ -1741,7 +1736,7 @@ const ModalStockItemComponent = ({ props={} }) => {
     // 스크롤 종료 확인
     params.api.addEventListener("bodyScrollEnd", (ev) => {
       console.log("bodyScrollEnd");
-      console.log(ev);
+      
 
       if(ev.direction === "vertical"){
         onBodyScroll();
@@ -1751,7 +1746,7 @@ const ModalStockItemComponent = ({ props={} }) => {
     // 모델 업데이트
     params.api.addEventListener("modelUpdated", (ev) => {
       console.log("modelUpdated");
-      console.log(ev);
+      
 
       console.log(pageRef.current);
       console.log(totalPageRef.current);

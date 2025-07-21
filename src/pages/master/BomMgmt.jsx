@@ -25,7 +25,7 @@ const Main = () => {
 
   // grid cell code_name 변환
   const categoryBFormatter = (params) => {
-    console.log(params);
+
     const arr_client_type = selectBox.current.category?.item_group_b[params.data.item_group_a] || [];
     const item = arr_client_type.find(el => el.category_id === params.value);
     return item ? item.category_nm : params.value; 
@@ -96,7 +96,7 @@ const Main = () => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       setSelectedRow(ev.rowIndex); 
 
       const node = ev.node;
@@ -108,14 +108,14 @@ const Main = () => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData(ev.data);
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
@@ -135,20 +135,20 @@ const Main = () => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData(ev.data);
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
     });
 
   };
@@ -307,7 +307,6 @@ const Main = () => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
         
-        console.log(formRef.current);
         if(!formRef.current.sel_row){
           modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
           return;
@@ -357,7 +356,6 @@ const Main = () => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
         
         axiosInstance
           .post(`/api/delBom`, JSON.stringify(sel_rows))
@@ -580,23 +578,22 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       setSelectedRow(ev.rowIndex); 
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
-      console.log(selectedRows);
       onChangeHandler('sel_row', selectedRows[0]);
   
     });

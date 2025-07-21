@@ -236,7 +236,7 @@ const Main = () => {
       // 행 클릭 이벤트
       params.api.addEventListener("rowClicked", (ev) => {
         console.log("rowClicked");
-        console.log(ev);
+        
         const selectedRows = ev.api.getSelectedRows();
         onSelectRow(selectedRows[0]);
       });
@@ -244,14 +244,14 @@ const Main = () => {
       // 셀 값 변경 이벤트
       params.api.addEventListener("cellValueChanged", (ev) => {
         console.log("cellValueChanged");
-        console.log(ev);
+        
       });
 
       
       // 선택 변경 이벤트
       params.api.addEventListener("selectionChanged", (ev) => {
         console.log("selectionChanged");
-        console.log(ev);
+        
       });
 
     };
@@ -472,7 +472,6 @@ const Main = () => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
         
-        console.log(formRef3.current);
         if(!formRef3.current){
           modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
           return;
@@ -519,7 +518,6 @@ const Main = () => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
         
         axiosInstance
           .post(`/api/delPrice`, JSON.stringify(selectRows))
@@ -575,7 +573,7 @@ const Main = () => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
 
       const selectedRows = ev.api.getSelectedRows();
       if(selectedRows.length > 0){
@@ -590,17 +588,16 @@ const Main = () => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
 
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
-        console.log(selectedRows[0].client_type);
         getData2(selectedRows[0]);
       };
 
@@ -616,14 +613,14 @@ const Main = () => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       getData3(ev.data);
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData2(ev.data);
     });
 
@@ -631,7 +628,7 @@ const Main = () => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
     });
 
   };
@@ -643,20 +640,20 @@ const Main = () => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
 
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
 
       
     });

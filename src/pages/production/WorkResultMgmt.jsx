@@ -71,7 +71,7 @@ const Main = ({ props={}, isActive }) => {
   //   // 행 클릭 이벤트
   //   params.api.addEventListener("rowClicked", (ev) => {
   //     console.log("rowClicked");
-  //     console.log(ev);
+  //     
   //     selectedRow.current = ev.rowIndex; 
 
   //     // const node = ev.node;
@@ -83,13 +83,13 @@ const Main = ({ props={}, isActive }) => {
   //   // 셀 값 변경 이벤트
   //   params.api.addEventListener("cellValueChanged", (ev) => {
   //     console.log("cellValueChanged");
-  //     console.log(ev);
+  //     
   //   });
 
   //   // 선택 변경 이벤트
   //   params.api.addEventListener("selectionChanged", (ev) => {
   //     console.log("selectionChanged");
-  //     console.log(ev);
+  //     
       
   //     const selectedRows = ev.api.getSelectedRows();
   //     if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
@@ -107,7 +107,7 @@ const Main = ({ props={}, isActive }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       selectedRow2.current = ev.rowIndex; 
 
       const node = ev.node;
@@ -119,7 +119,7 @@ const Main = ({ props={}, isActive }) => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
 
       // 수량 수정시 start_dttm이 비어있으면 오류
       if(ev.colDef.field === 'result_qty' || ev.colDef.field === 'defect_qty'){
@@ -142,7 +142,7 @@ const Main = ({ props={}, isActive }) => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){

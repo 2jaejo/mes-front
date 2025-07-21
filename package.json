@@ -1,6 +1,6 @@
 {
-  "name": "react-app",
-  "version": "0.1.0",
+  "name": "react-front",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@ag-grid-community/locale": "^33.1.0",

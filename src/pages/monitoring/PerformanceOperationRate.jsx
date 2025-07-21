@@ -80,7 +80,7 @@ const Main = ({isActive}) => {
     axiosInstance
       .post(`/api/getReportProcess`, JSON.stringify(formData))
       .then((res) => {
-        console.log(res.data);
+        
         if(res.data.length === 0) return;
 
         const rows = res.data;
@@ -148,8 +148,8 @@ const Main = ({isActive}) => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 12 }}/>
-          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => (dataMax * 2)]} label={{ value: '수량', angle: 0, position: 'insideLeft'}}/>
-          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , 720]} label={{ value: '시간(분)', angle: 0, position: 'insideRight'}}/>
+          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => (dataMax * 2)]} label={{ value: '수량', angle: 0, position: 'insideTopLeft'}}/>
+          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , 720]} label={{ value: '(분)', angle: 0, position: 'insideTopRight'}}/>
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
           <Bar dataKey="양품" yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />

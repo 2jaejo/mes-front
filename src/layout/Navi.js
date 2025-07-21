@@ -50,7 +50,7 @@ const Navi = ({menu, addTab}) => {
                 aria-expanded={hoveredIndex === index ? "true" : "false"}
                 onClick={(e) => e.preventDefault()}
               >
-                <span style={{color:theme.color}}>{menu.title}</span>
+                <span style={{fontSize:'1rem', fontWeight:500, letterSpacing:'1px', color:theme.color}}>{menu.title}</span>
               </a>
               <ul
                 className={`dropdown-menu show`}
@@ -62,7 +62,7 @@ const Navi = ({menu, addTab}) => {
                 {menu.subMenu.map((item, idx) => (
                   <li key={idx}>
                     <a className="dropdown-item" href="#" onClick={() => addTab(menu.subMenu2[idx], item)}>
-                      <span style={{color:theme.color}}>{item}</span>
+                      <span style={{fontSize:'1rem', fontWeight:500, letterSpacing:'1px', color:theme.color}}>{item}</span>
                       {/* {item} */}
                     </a>
                   </li>

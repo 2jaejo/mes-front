@@ -11,7 +11,7 @@ import GridExample from "components/GridExample";
 
 
 
-const Home = ({isActive}) => {
+const Home = ({isActive, addTab}) => {
   const modalRef = useRef();  
   const modalRef2 = useRef();  
 
@@ -37,21 +37,20 @@ const Home = ({isActive}) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
       setSelectedRow(ev.rowIndex); 
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
 
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
 
@@ -68,21 +67,21 @@ const Home = ({isActive}) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       setSelectedRow2(ev.rowIndex); 
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
 
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
 
@@ -144,7 +143,7 @@ const Home = ({isActive}) => {
         // { headerName: "바코드", field: "bar_code", sortable: true, editable: false, align:"left",width:200},
         { headerName: "품번", field: "item_dotno", sortable: true, editable: false, align:"left",width:300},
         { headerName: "품명", field: "item_name", sortable: true, editable: false, align:"left",width:500},
-        { headerName: "생산량", field: "quantity", sortable: true, editable: false, align:"right",width:140},
+        { headerName: "완료수량", field: "quantity", sortable: true, editable: false, align:"right",width:140},
         { headerName: "비고", field: "remark", sortable: true, editable: false, align:"left"}, 
         { headerName: "등록일자", field: "created_at", sortable: true, editable: false, align:"left"},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"left"},
@@ -179,7 +178,6 @@ const Home = ({isActive}) => {
     axiosInstance
       .post(`/api/getProductionLog`, JSON.stringify(data))
       .then((res) => {
-        console.log(res.data);
         setRowData2(res.data);
         
       })
@@ -194,7 +192,7 @@ const Home = ({isActive}) => {
 
   // 조회2
   const getData2 = (params) => {
-    console.log("getData");
+    console.log("getData2");
 
     setLoading(true);
     setRowData([]);
@@ -202,7 +200,6 @@ const Home = ({isActive}) => {
     axiosInstance
       .post(`/api/getProcess`, JSON.stringify({type:"status"}))
       .then((res) => {  
-         console.log(res.data);
         if(res.data.length === 0) return;
 
         const rows = res.data;
@@ -242,7 +239,6 @@ const Home = ({isActive}) => {
     axiosInstance
       .post(`/api/getReportProcess`, JSON.stringify(data))
       .then((res) => {
-        console.log(res.data);
         if(res.data.length === 0) return;
 
         const rows = res.data;
@@ -258,7 +254,9 @@ const Home = ({isActive}) => {
             '가동시간(분)':el.prod_min ?? 0,
             '가동률(%)':rate,
             'item_name':el.item_name,
-            'item_code':el.item_code
+            'item_code':el.item_code,
+            'process_code':el.process_code,
+
           })
         });
 
@@ -276,24 +274,28 @@ const Home = ({isActive}) => {
   };
 
 
+
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
-      
+    
       return (
-        <div style={{ background: '#fff', border: '1px solid #ccc', padding: '2px' }}>
-          <span><strong>{label}</strong></span><br/>
-          {payload.map((entry, index) => (<>
-            <span key={index} style={{ color: entry.color }}>
-              ● {entry.name}: {entry.value}
-            </span><br/>
-            
-          </>))}
+        <div style={{ background: '#fff', border: '1px solid #ccc', padding: '4px' }}>
+           <span><strong>{label}</strong></span><br/>
+          {payload.map((entry, index) => {
+            return (
+              <>
+                <span key={entry.payload.process_code+index} style={{ color: entry.color }}>
+                  ● {entry.name}: {entry.value}
+                </span><br/>
+              </>
+            );
+          })}
 
           {/* 추가 정보 예시 */}
           <hr />
-          <span>{data['item_code'] ?? ""}</span><br/>
-          <span>{data['item_name'] ?? ""}</span>
+          <span>{data.item_code ?? ""}</span><br/>
+          <span>{data.item_name ?? ""}</span>
         </div>
       );
     }
@@ -312,7 +314,8 @@ const Home = ({isActive}) => {
           <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 10 }}/>
           <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => (dataMax * 2)]} tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft'}}/>
           <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , 600]} tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight'}}/>
-          <Tooltip content={<CustomTooltip />}/>
+          <Tooltip />
+          {/* <Tooltip content={<CustomTooltip />}/> */}
           <Legend />
           <Bar dataKey="양품" yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
           <Bar dataKey="불량" yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
@@ -334,8 +337,8 @@ const Home = ({isActive}) => {
           <Card bg="secondary" text="white">
             <Card.Body>
               <div className="d-flex justify-content-center align-items-center gap-4">
-                <h1>종합 현황</h1>
-                <h2><CurrentTime /></h2>
+                <h2>종합 현황</h2>
+                <h3><CurrentTime /></h3>
               </div>
             </Card.Body>
           </Card>
@@ -343,11 +346,14 @@ const Home = ({isActive}) => {
       </Row>
 
       {/* 상단1 영역 */}
-      <Row style={{ height: '50%' }}>
+      <Row style={{ height: '100%', minHeight:400 }}>
         <Col md={12} className="">
           <Card bg="" text="" style={{ height: '100%' }}>
             <Card.Header>
-              <Card.Title className="m-0">라인 가동 현황</Card.Title>
+              <Card.Title className="m-0 d-flex justify-content-between">
+                공정 가동 현황
+                <i className="bi bi-box-arrow-up-right" style={{ cursor: "pointer" }} onClick={()=>{addTab('EquipmentStatusByUnit', '공정별현황')}}></i>  
+              </Card.Title>
             </Card.Header>
             <Card.Body className="p-0">
               <div className="h-100">
@@ -368,13 +374,13 @@ const Home = ({isActive}) => {
       </Row>
 
       {/* 하단 2 영역 */}
-      <Row style={{ height: '40%' }} className='g-2'>
+      <Row style={{ height: '100%' }} className='g-2'>
         <Col sm={12} md={6}>
-          <Card bg="" text="" style={{ height: '100%' }}>
+          <Card bg="" text="" style={{ height: '100%', minHeight:300 }}>
             <Card.Header>
               <Card.Title className="m-0">생산 완료 현황</Card.Title>
             </Card.Header>
-            <Card.Body className="p-0">
+            <Card.Body className="p-0 h-100">
               <div className="h-100">
                 <GridExample 
                   themeSize="md"
@@ -395,7 +401,10 @@ const Home = ({isActive}) => {
         <Col sm={12} md={6}>
           <Card bg="" text="" style={{ height: '100%' }}>
             <Card.Header>
-              <Card.Title className="m-0">일별 생산 현황</Card.Title>
+              <Card.Title className="m-0 d-flex justify-content-between">
+                일일 생산 현황 
+                <i className="bi bi-box-arrow-up-right" style={{ cursor: "pointer" }} onClick={()=>{addTab('PerformanceOperationRate', '성능가동률')}}></i>
+              </Card.Title>
             </Card.Header>
             <Card.Body className="p-2 d-flex flex-column justify-content-center">
               <div style={{width:"100%", minHeight:270, maxHeight:300, overflow:'auto'}}>

@@ -70,13 +70,13 @@ const Main = ({ props={}, style_props={} }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
       
       const selectedRows = ev.api.getSelectedRows();
       // 모달사용시 선택 행 전달
@@ -91,7 +91,7 @@ const Main = ({ props={}, style_props={} }) => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
     });
   };
 
@@ -138,14 +138,14 @@ const Main = ({ props={}, style_props={} }) => {
 
   // 그리드 데이터 변경 감지
   useEffect(()=>{
-    console.log(rowData);
+
   }, [rowData])
 
   
   // grid cell code_name 변환
   const moneyFormatter = (params, suffix = '') => {
     if (params.value == null) return '';
-    let num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+    let num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 6});
     if (suffix !== '') num += suffix;
     return num;
   };

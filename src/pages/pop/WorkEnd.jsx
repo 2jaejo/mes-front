@@ -98,7 +98,7 @@ const LoginHistory = () => {
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
-      console.log(ev);
+      
     });
 
   };

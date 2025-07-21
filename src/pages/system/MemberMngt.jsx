@@ -246,7 +246,6 @@ const MemberMngt = () => {
       confirmText:"추가",
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
-        console.log(formRef.current);
 
 
         if(formRef.current.user_id === "" || formRef.current.user_id === undefined){
@@ -304,7 +303,7 @@ const MemberMngt = () => {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
+        
         
         // 나중에 데이터 전체 넘기고 batch 처리 필요
         selectRows.forEach( (el)=>{
@@ -380,7 +379,7 @@ const MemberMngt = () => {
 
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
-      console.log(ev);
+      
       setLoading2(true);
 
       axiosInstance
@@ -398,13 +397,13 @@ const MemberMngt = () => {
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
-      console.log(ev);
+      
     });
 
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
-      console.log(ev);
+      
       const selectedRows = params.api.getSelectedRows();
       console.log(selectedRows);
     });
@@ -438,7 +437,7 @@ const MemberMngt = () => {
               placeholder="이름"
             />
                             
-            <Button size="sm" variant="secondary" onClick={getData}>검색</Button>
+            <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
           </Col>
         </Row>
       </div>

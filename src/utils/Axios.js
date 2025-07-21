@@ -28,14 +28,14 @@ axiosInstance.interceptors.request.use(
 export const setupAxiosInterceptor = (navigate) => {
   axiosInstance.interceptors.response.use(
     (response) => {
-      console.log("response");
-      console.log(response);
+      // console.log("response");
+      // console.log(response);
       return response;
     },
     (error) => {
       if (error.response) {
-        console.log("error");
-        console.log(error);
+        // console.log("error");
+        // console.log(error);
 
         if(error.response.status === 401) {
           console.log("토큰 인증 에러");

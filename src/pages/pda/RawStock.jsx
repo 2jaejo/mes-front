@@ -74,7 +74,7 @@ const Main = ({ form }) => {
       .post(`/api/getRaw`, JSON.stringify(params))
       .then((res) => {
         // setRowData(res.data);
-        console.log(res.data);
+        
         if( res.data.length === 1 ){
           handleItemAdd(res.data[0]);          
         }
@@ -175,7 +175,6 @@ const Main = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         
-        console.log(formRef.current);
 
         const row = formRef.current.sel_row;
         const row2 = formRef.current.sel_row2;

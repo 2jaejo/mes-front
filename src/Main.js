@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from 'react-router-dom'; // v6: Routes와 Route 사용
 
 // 로고
@@ -44,13 +44,6 @@ function Main() {
   // 메뉴 리스트
   const [navMenuList, setNavMenuList] = useState([]);
 
-    // 탭 리스트
-  const [tabs, setTabs] = useState([{id:"Home",title:"홈"}]);
-  // 탭 활성화
-  const [activeTab, setActiveTab] = useState("Home");
-  // 탭 내용 - Home 기본값
-  const [tabContents, setTabContents] = useState({ Home: <Home /> });
-
   // 메뉴 항목 확장/축소 토글 함수
   // const handleMenuToggle = (menu) => {
   //   setExpandedMenu(
@@ -61,7 +54,7 @@ function Main() {
   // };
 
   // 탭 추가
-  const addTab = (menu, title) => {
+  const addTab = useCallback((menu, title) => {
     
     const exists = tabs.some(item => item.id === menu);
     if (!exists) {
@@ -70,15 +63,33 @@ function Main() {
         alert("탭은 최대 15개까지 열 수 있습니다.");
         return;
       }
+
+      const content = getTabContent(menu);
+      if (!content) {
+        alert("탭 내용을 불러오지 못했습니다.");
+        return;
+      }
       
-      setTabs([...tabs, {id:menu, title:title}]); // 새로운 탭 추가
-      setTabContents({
-        ...tabContents,
-        [menu]: getTabContent(menu),
-      });
+      setTabs(prev => [...prev, { id: menu, title }]); // 새로운 탭 추가
+      setTabContents(prev => ({
+        ...prev,
+        [menu]: content,
+      }));
     }
     setActiveTab(menu); // 새 탭 활성화
-  };
+  });
+
+
+
+  // 탭 리스트
+  const [tabs, setTabs] = useState([{id:"Home",title:"홈"}]);
+  // 탭 활성화
+  const [activeTab, setActiveTab] = useState("Home");
+
+  // 탭 내용 - Home 기본값
+  const [tabContents, setTabContents] = useState({ Home: <Home addTab={addTab}/> });
+
+
 
   // 탭 삭제
   const removeTab = (menu) => {
@@ -150,7 +161,6 @@ function Main() {
         arr.push(obj);
       });
 
-      // console.log(arr);
       setNavMenuList(arr);
 
       
@@ -238,6 +248,7 @@ function Main() {
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               removeTab={removeTab}
+              removeAllTab={removeAllExceptFirstTab}
             />
             <TabContent
               tabs={tabs}

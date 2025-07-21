@@ -198,7 +198,6 @@ function News() {
         modalRef.current.close();
       },
       onConfirm:(res) => {
-        console.log(res);
         // 나중에 데이터 전체 넘기고 batch 처리 필요
         selectRows.forEach( (el)=>{
           axiosInstance
@@ -236,13 +235,12 @@ function News() {
       //   else {
       //     changedRowsRef.current.push(row);
       //   }
-      //   console.log(changedRowsRef.current);
       // } 
     });
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
-      console.log(ev);
+      
     });
 
   };

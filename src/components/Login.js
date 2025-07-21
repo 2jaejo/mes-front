@@ -218,7 +218,6 @@ const LoginForm = () => {
       confirmText:"추가",
       confirmClass:"btn btn-success",
       onConfirm:(res) => {
-        console.log(formRef.current);
 
 
         if(formRef.current.user_id === "" || formRef.current.user_id === undefined){

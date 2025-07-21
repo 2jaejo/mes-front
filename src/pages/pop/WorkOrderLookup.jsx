@@ -75,7 +75,7 @@ const Main = ({ props={}, isActive}) => {
     axiosInstance
       .post(`/api/getWorkResult`, JSON.stringify({type:'list'}))
       .then((res) => {
-        console.log(res.data);
+        
         selectBox2.current = res.data;
 
         const currentIdx = modalForm.work_id; // 또는 form?.work_id
@@ -103,11 +103,12 @@ const Main = ({ props={}, isActive}) => {
     console.log("getData");
 
     console.log("formRef : ",formRef.current);
+    if(!formRef.current.work_idx) return;
     
     axiosInstance
       .post(`/api/getWorkResult`, JSON.stringify({type:'search', work_idx:formRef.current.work_idx}))
       .then((res) => {
-        console.log(res.data);
+        
         if(res.data.length === 0) return;
 
         const row = res.data[0];
@@ -184,7 +185,7 @@ const Main = ({ props={}, isActive}) => {
 
   // 적용
   const setQty = (params) =>{
-    console.log(params);
+    
     if( formRef.current.process_code === '' || formRef.current.process_code === undefined) return ;
 
 
@@ -302,6 +303,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={modalFormChange}
                         size="lg"
                         className="w-100"
+                        style={{ minWidth: '10rem' }}
                       >
                         {(selectBox2.current || [])
                           .map(opt => (

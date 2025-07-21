@@ -38,7 +38,6 @@ const Main = ({ props={}, style_props={} }) => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
       const selectedRows = ev.api.getSelectedRows();
       props.current['sel_row'] = selectedRows[0];
     });

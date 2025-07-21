@@ -74,7 +74,7 @@ const LoginHistory = () => {
     
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
-      console.log(ev);
+      
     });
 
   };
@@ -114,7 +114,7 @@ const LoginHistory = () => {
               onChange={handleChange}
               placeholder="접속일자"
             />
-            <Button size="sm" variant="secondary" onClick={getData}>검색</Button>
+            <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
           </Col>
           
         </Row>

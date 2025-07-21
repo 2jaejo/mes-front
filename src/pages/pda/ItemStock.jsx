@@ -107,7 +107,7 @@ const ItemStock = ({ form }) => {
       .post(`/api/getItem`, JSON.stringify(params))
       .then((res) => {
         // setRowData(res.data);
-        console.log(res.data);
+        
         if( res.data.length === 1 ){
           setFormData((prev) => ({
             ...res.data[0]
@@ -136,7 +136,7 @@ const ItemStock = ({ form }) => {
     axiosInstance
       .post(`/api/getProductionLog`, JSON.stringify({today:today}))
       .then((res) => {
-        console.log(res.data);
+        
         setItems(res.data);
         
       })

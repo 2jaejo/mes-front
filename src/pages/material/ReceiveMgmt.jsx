@@ -42,7 +42,7 @@ const Main = ({ props={} }) => {
 
   // grid cell code_name 변환
   const categoryBFormatter = (params) => {
-    console.log(params);
+    
     const arr_client_type = selectBox.current.category?.item_group_b[params.data.item_group_a] || [];
     const item = arr_client_type.find(el => el.category_id === params.value);
     return item ? item.category_nm : params.value; 
@@ -83,7 +83,7 @@ const Main = ({ props={} }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
       
       selectedRow.current = ev.rowIndex; 
       const node = ev.node;
@@ -95,7 +95,7 @@ const Main = ({ props={} }) => {
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData(ev.data);
 
     });
@@ -103,7 +103,7 @@ const Main = ({ props={} }) => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
 
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
@@ -127,13 +127,13 @@ const Main = ({ props={} }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
       setData2(ev.data);
 
       // const key = ev.colDef.field;
@@ -148,7 +148,7 @@ const Main = ({ props={} }) => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
     });
 
   };
@@ -429,9 +429,9 @@ const Main = ({ props={} }) => {
       
       // 그리드 행 선택
       let sel = selectedRow.current;
-      console.log(sel);
+      
       if(typeof params === "number") sel = params;
-      console.log(sel);
+      
       gridRef.current.forEachNode((node) => {
         if (node.rowIndex === sel) {
           node.setSelected(true);
@@ -544,8 +544,6 @@ const Main = ({ props={} }) => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
         
-        console.log(formRef.current);
-
         if(!formRef.current.user_id){
           modalRef2.current.open({ title:"알림", message:"사용자를 선택하세요.", cancelText:"" });
           return;
@@ -851,19 +849,19 @@ const ModalComponent = ({ form }) => {
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
-      console.log(ev);
+      
     });
 
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
+      
     });
 
     // 셀 값 변경 이벤트
     params.api.addEventListener("cellValueChanged", (ev) => {
       console.log("cellValueChanged");
-      console.log(ev);
+      
 
       const col = ev.colDef.field;
       if(col === "quantity" || col === "unit_price"){
@@ -992,7 +990,7 @@ const ModalComponent = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         const row = formRef.current.sel_row;
-        console.log(row);
+        
         if(!row){
           modalRef2.current.open({ title:"알림", message:"사용자를 선택하세요.", cancelText:"" });
           return;
@@ -1028,7 +1026,7 @@ const ModalComponent = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         const row = formRef2.current.sel_row;
-        console.log(row);
+        
         if(!row){
           modalRef2.current.open({ title:"알림", message:"거래처를 선택하세요.", cancelText:"" });
           return;
@@ -1105,7 +1103,7 @@ const ModalComponent = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         const row = formRef4.current;
-        console.log(row);
+        
 
         modalFormChange({target:{name:'purchase_id', value:row.sel_row.purchase_id}});
         modalFormChange({target:{name:'client_code', value:row.sel_row.client_code}});
@@ -1123,7 +1121,6 @@ const ModalComponent = ({ form }) => {
   const delData = (params) => {
 
     console.log("delData");
-    console.log(rowData);
     const sel_rows = gridRef.current.getSelectedRows();
 
     if( sel_rows.length === 0){

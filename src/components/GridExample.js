@@ -77,7 +77,7 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
       minWidth:40,
       maxWidth:80,
       width: 60,
-      align: "center",
+      cellStyle: { textAlign: "center" },
       rowDrag:rowDrag
     };
 
@@ -192,7 +192,7 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
     return (
       <div className="ag-overlay-loading-center" role="presentation">
         <div aria-live="polite" aria-atomic="true" style={{padding:"10px"}}>
-          로딩중입니다... abh
+          로딩중입니다...
         </div>
       </div>
     )

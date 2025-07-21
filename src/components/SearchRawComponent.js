@@ -17,7 +17,6 @@ const Main = ({ form }) => {
   const [modalForm, setModalForm] = useState(form.current);
 
   const modalFormChange = (e) => {
-    console.log(e);
     const { name, value } = e.target;
     setModalForm(prev => ({ ...prev, [name]: value }));
     form.current[name] = value;
@@ -108,7 +107,6 @@ const Main = ({ form }) => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
-      console.log(ev);
       
       const selectedRows = ev.api.getSelectedRows();
       form.current['sel_row'] = selectedRows[0];
