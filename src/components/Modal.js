@@ -1,30 +1,46 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import styles from '../css/Modal.module.css';
 
 
 const Modal = forwardRef(( _, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalOptions, setModalOptions] = useState({});
+  const autoCloseTimeoutRef = useRef(null);
 
   // 부모 컴포넌트에서 ref를 통해 open, close를 호출할 수 있도록 설정
   useImperativeHandle(ref, () => ({
     open: (options = {}) => {
       // 옵션 업데이트
-      setModalOptions((prevOptions) => ({ 
-        title:"알림",
+      const fullOptions = {
+        title: "알림",
         closeBtn: true,
-        message:"",
-        fields:[],
+        message: "",
+        fields: [],
         content: <div></div>,
-        cancelText:"취소",
-        cancelClass:"btn btn-secondary",
-        confirmText:"확인",
-        confirmClass:"btn btn-primary",
-        onCancel:()=>{setIsOpen(false)},
-        onConfirm:()=>{setIsOpen(false)},
-        ...options 
-      })); 
+        cancelText: "취소",
+        cancelClass: "btn btn-secondary",
+        confirmText: "확인",
+        confirmClass: "btn btn-primary",
+        onCancel: () => setIsOpen(false),
+        onConfirm: () => setIsOpen(false),
+        ...options,
+      };
+
+      setModalOptions(fullOptions);
       setIsOpen(true);
+
+      // 이전 타이머 클리어
+      if (autoCloseTimeoutRef.current) {
+        clearTimeout(autoCloseTimeoutRef.current);
+        autoCloseTimeoutRef.current = null;
+      }
+
+      // autoCloseDelay가 설정된 경우만 자동 닫기 실행
+      if (typeof fullOptions.autoCloseDelay === 'number') {
+        autoCloseTimeoutRef.current = setTimeout(() => {
+          setIsOpen(false);
+        }, fullOptions.autoCloseDelay);
+      }
     },
     close: () => setIsOpen(false),
   }));

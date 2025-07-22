@@ -104,7 +104,7 @@ const Main = ({ form }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -143,7 +143,7 @@ const Main = ({ form }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       })
       .finally(() =>{
         setLoading(false);
@@ -172,6 +172,7 @@ const Main = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -186,6 +187,7 @@ const Main = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                     </div>
                   </td>

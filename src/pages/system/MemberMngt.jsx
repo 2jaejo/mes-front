@@ -123,6 +123,7 @@ const MemberMngt = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -137,6 +138,7 @@ const MemberMngt = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -151,6 +153,7 @@ const MemberMngt = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -165,6 +168,7 @@ const MemberMngt = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -179,6 +183,7 @@ const MemberMngt = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -193,6 +198,7 @@ const MemberMngt = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -206,6 +212,7 @@ const MemberMngt = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -219,6 +226,7 @@ const MemberMngt = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -316,7 +324,7 @@ const MemberMngt = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
         });
       },
@@ -342,7 +350,7 @@ const MemberMngt = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"알림", message:error.message, cancelText:"" });
       });   
   };
 
@@ -367,7 +375,7 @@ const MemberMngt = () => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"알림", message:error.message, cancelText:"" });
     });   
   };
 
@@ -425,6 +433,7 @@ const MemberMngt = () => {
               size="sm" 
               className="w-auto"
               placeholder="ID"
+              maxLength={50}
             />
         
             <Form.Control
@@ -435,6 +444,7 @@ const MemberMngt = () => {
               size="sm" 
               className="w-auto"
               placeholder="이름"
+              maxLength={50}
             />
                             
             <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
@@ -491,6 +501,7 @@ const MemberMngt = () => {
                             value={form2.user_id ?? ''}
                             size="sm" 
                             className="w-auto"
+                            maxLength={50}
                             disabled
                           />
                         </td>
@@ -506,6 +517,7 @@ const MemberMngt = () => {
                             onChange={handleChange2}
                             size="sm" 
                             className="w-auto"
+                            maxLength={50}
                           />
                         </td>
                       </tr>
@@ -520,6 +532,7 @@ const MemberMngt = () => {
                             onChange={handleChange2}
                             size="sm" 
                             className="w-auto"
+                            maxLength={50}
                           />
                         </td>
                       </tr>
@@ -534,6 +547,7 @@ const MemberMngt = () => {
                             onChange={handleChange2}
                             size="sm" 
                             className="w-auto"
+                            maxLength={50}
                           />
                         </td>
                       </tr>
@@ -547,6 +561,7 @@ const MemberMngt = () => {
                             onChange={handleChange2}
                             size="sm" 
                             className="w-auto"
+                            maxLength={50}
                           />
                         </td>
                       </tr>
@@ -560,6 +575,7 @@ const MemberMngt = () => {
                             onChange={handleChange2}
                             size="sm" 
                             className="w-auto"
+                            maxLength={50}
                           />
                         </td>
                       </tr>

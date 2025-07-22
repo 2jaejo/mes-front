@@ -123,7 +123,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });  
       
     
@@ -338,7 +338,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-100"
-                  maxLength={51}
+                  maxLength={200}
                 />
               </td>
               
@@ -704,7 +704,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -720,7 +720,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
         getData();
       });   
   };
@@ -766,7 +766,7 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
 
         
@@ -809,7 +809,7 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
  
       },
@@ -872,7 +872,7 @@ const Main = () => {
               .catch((error) => {
                 console.error("Error fetching data:", error);
                 modalRef.current.close();
-                modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+                modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
               });   
     
           },
@@ -883,7 +883,7 @@ const Main = () => {
       .catch((error) => {
         console.error("Error fetching data:", error);
         modalRef.current.close();
-        modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+        modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
       });    
     
     
@@ -986,7 +986,7 @@ const Main = () => {
                 .catch((error) => {
                   console.error("Error fetching data:", error);
                   modalRef.current.close();
-                  modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+                  modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
                 });   
 
 
@@ -1031,6 +1031,7 @@ const Main = () => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -1045,6 +1046,7 @@ const Main = () => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                     </div>
                   </td>

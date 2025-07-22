@@ -41,10 +41,8 @@ const Main = ({ isActive}) => {
     'bg-turquoise',
   ]);
 
-  const [items, setItems] = useState([]);
-
   const [groups, setGroups] = useState([]);
-
+  const [items, setItems] = useState([]);
 
   const options = {
     start: dayjs().startOf('day').toDate(),
@@ -53,13 +51,6 @@ const Main = ({ isActive}) => {
     max: dayjs().add(2, 'day').endOf('day').toDate(), 
     timeAxis: { scale: 'hour', step: 2 }, // (필요시 강제 설정)
     stack: true,
-    // editable: {
-    //   add: false,         // add new items by double tapping
-    //   updateTime: true,  // drag items horizontally
-    //   updateGroup: false, // drag items from one group to another
-    //   remove: false,       // delete an item by tapping the delete button top right
-    //   overrideItems: false  // allow these options to override item.editable
-    // },
     orientation: 'top',
     showCurrentTime: true, // 현재시간 세로줄
     showTooltips: true, // 툴팁 표시
@@ -106,95 +97,44 @@ const Main = ({ isActive}) => {
 
   };
 
-  const gridRef = useRef();  
-  const selectedRow = useRef(0);
-
-
-
-  // 그리드 onGridReady
-  const onGridReady = (params) => {
-    gridRef.current = params.api; // Grid API 저장
-
-    // 행 클릭 이벤트
-    params.api.addEventListener("rowClicked", (ev) => {
-      console.log("rowClicked");
-      
-      selectedRow.current = ev.rowIndex; 
-
-      const node = ev.node;
-      if (!node.isSelected()) {
-        node.setSelected(true);
-      }
-    });
-
-    // 셀 값 변경 이벤트
-    params.api.addEventListener("cellValueChanged", (ev) => {
-      console.log("cellValueChanged");
-      
-
-    });
-
-    // 선택 변경 이벤트
-    params.api.addEventListener("selectionChanged", (ev) => {
-      console.log("selectionChanged");
-      
-      
-      const selectedRows = ev.api.getSelectedRows();
-      if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
-
-      };
-
-    });
-
-  };
-  
-
-
-
   // 초기화
   useEffect(()=>{
     console.log("useEffect");
 
     if( !isActive ) return;
-    const init = {
-      category: '',
-      code: ['cd010', 'cd016', 'cd013', 'cd014']
-    };
+
 
     axiosInstance
-      .post(`/api/getDropDown`, JSON.stringify(init))
+      .post(`/api/getProcess`, JSON.stringify({}))
       .then((res) => {
-        selectBox.current = res.data;
+        const transformed = res.data.map((item, index) => ({
+          id: item.process_code,
+          content: item.process_name
+        }));
+        // 기존 groups 와 transformed 비교
+        if (!isEqual(groups, transformed)) {
+          console.log("groups", groups);
+          // groups 가 변경되면 setGroups 호출
+          // setGroups 는 useState 의 setter 함수로, 상태를 업데이트합니다.
+          // transformed 는 새로운 상태 값입니다.
+          // isEqual 을 사용하여 이전 상태와 비교하여 변경된 경우에만 업데이트합니다
+          console.log("transformed", transformed);
+  
+          setGroups(transformed);
+        }
 
-        axiosInstance
-          .post(`/api/getProcess`, JSON.stringify({}))
-          .then((res) => {
-            const transformed = res.data.map((item, index) => ({
-              id: item.process_code,
-              content: item.process_name
-            }));
-            // 기존 groups 와 transformed 비교
-            if (!isEqual(groups, transformed)) {
-              setGroups(transformed);
-              getData();
-            }
-            
-          })
-          .catch((error) => {
-            console.error("Error fetching data:", error);
-            modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
-          })
-          .finally(() =>{
-            
-          });
+        getData();
+        
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
-      });  
+        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+      })
+      .finally(() =>{
+        
+      });
 
   }, [isActive]);
-
 
 
 
@@ -202,7 +142,7 @@ const Main = ({ isActive}) => {
   const getData = (params) => {
     console.log("getData");
     
-    setItems([]);
+    // setItems([]);
 
     axiosInstance
       .post(`/api/getWorkOrder`, JSON.stringify({type:"plan"}))
@@ -236,17 +176,15 @@ const Main = ({ isActive}) => {
 
         // 기존 groups 와 transformed 비교
         if (!isEqual(items, transformed)) {
+          console.log("items", items);
+          // items 가 변경되면 setItems 호출
+          // setItems 는 useState 의 setter 함수로, 상태를 업데이트합니다.
+          // transformed 는 새로운 상태 값입니다.
+          console.log("transformed", transformed);
+          
           setItems(transformed);
         }
 
-
-        // setItems([
-        //   { id: "RT102234234", group:"RT101", content: '11x25 SS 개별 무지 오렌지 6187 200P_팩', start: dayjs().add(0, 'day').hour(9).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-primary'},
-        //   { id: "RT10423423", group:"RT102", content: '디앙 11/25 SS (PLA 1P) 100개입 유백색', start: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(14).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-danger'},
-        //   { id: "RT1022342341", group:"RT101", content: '마트용_디앙 스무디 11/21 SS 15개입', start: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(12).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-warning'},
-        //   { id: "RT10dsfasdf", group:"RT103", content: '마트용_디앙 스무디 11/21 SS 15개입', start: dayjs().add(0, 'day').hour(11).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(12).minute(0).format('YYYY-MM-DD HH:mm:ss'), className:'bg-warning'},
-        //   { id: "RT10sdafas7", group:"RT104", content: '작업 D', start: dayjs().add(0, 'day').hour(13).minute(0).format('YYYY-MM-DD HH:mm:ss') , end: dayjs().add(0, 'day').hour(15).minute(0).format('YYYY-MM-DD HH:mm:ss')},
-        // ]);
         
       })
       .catch((error) => {
@@ -331,8 +269,8 @@ const Main = ({ isActive}) => {
               
             </div>
             
-            <div>
-              <VisTimeline items={items} options={options} groups={groups} />
+            <div style={{ width: '100%', height: '100%', minWidth:800, minHeight:600 }}>
+              <VisTimeline groups={groups} items={items} options={options}/>
 
             </div>
 

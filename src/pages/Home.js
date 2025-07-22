@@ -8,6 +8,7 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 import dayjs from 'dayjs'
 import CustomModal from "components/Modal";
 import GridExample from "components/GridExample";
+import isEqual from 'lodash/isEqual';
 
 
 
@@ -15,17 +16,17 @@ const Home = ({isActive, addTab}) => {
   const modalRef = useRef();  
   const modalRef2 = useRef();  
 
-  const [data, setData] = useState([]);
-
+  const [chartData, setChartData] = useState([]);
+  const chartDataRef = useRef([]); // 최신 chartData를 기억할 ref
 
   const gridRef = useRef();  
-  const [rowData, setRowData] = useState();
+  const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState(0);   
   
   const gridRef2 = useRef();  
-  const [rowData2, setRowData2] = useState();
+  const [rowData2, setRowData2] = useState([]);
   const [columnDefs2, setColumnDefs2] = useState([]);
   const [loading2, setLoading2] = useState(true);
   const [selectedRow2, setSelectedRow2] = useState(0);   
@@ -158,10 +159,29 @@ const Home = ({isActive, addTab}) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
       
   },[isActive]);
+
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      refresh();
+    }, 5000); // 5초마다 실행
+
+    // 언마운트 시 인터벌 해제
+    return () => clearInterval(intervalId);
+  }, []);
+
+
+
+  const refresh = () => {
+    console.log("refresh");
+    getData();
+    getData2();
+    getData3();
+  };
 
   //조회3
   const getData3 = async () =>{
@@ -172,18 +192,26 @@ const Home = ({isActive, addTab}) => {
       // today: '2025-07-15'
     };
 
-    setLoading2(true);
-    setRowData2([]);
+    // setLoading2(true);
+    // setRowData2([]);
 
     axiosInstance
       .post(`/api/getProductionLog`, JSON.stringify(data))
       .then((res) => {
-        setRowData2(res.data);
+
+        if (!res || !res.data) {
+          throw new Error('응답 데이터가 없습니다.');
+        }
         
+        // 기존 상태와 비교
+        if (!isEqual(rowData2, res.data)) {
+          setRowData2(res.data);
+        }
+
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"", autoCloseDelay: 2000 });
       })
       .finally(() =>{
         setLoading2(false);
@@ -194,12 +222,17 @@ const Home = ({isActive, addTab}) => {
   const getData2 = (params) => {
     console.log("getData2");
 
-    setLoading(true);
-    setRowData([]);
+    // setLoading(true);
+    // setRowData([]);
 
     axiosInstance
       .post(`/api/getProcess`, JSON.stringify({type:"status"}))
       .then((res) => {  
+
+        if (!res || !res.data) {
+          throw new Error('응답 데이터가 없습니다.');
+        }
+
         if(res.data.length === 0) return;
 
         const rows = res.data;
@@ -207,10 +240,15 @@ const Home = ({isActive, addTab}) => {
         const newData = rows.filter( (el) => el.process_type !=='03' && el.item_code !== null);
         setRowData(newData);
 
+        // 기존 상태와 비교
+        if (!isEqual(rowData, newData)) {
+          setRowData(newData);
+        }
+
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"", autoCloseDelay: 2000});
       })
       .finally(() =>{
         setLoading(false);
@@ -226,6 +264,11 @@ const Home = ({isActive, addTab}) => {
     
   };
 
+  // chartData가 바뀔 때마다 ref도 업데이트
+  useEffect(() => {
+    chartDataRef.current = chartData;
+  }, [chartData]);
+
 
   // 조회
   const getData = (params) => {
@@ -239,6 +282,10 @@ const Home = ({isActive, addTab}) => {
     axiosInstance
       .post(`/api/getReportProcess`, JSON.stringify(data))
       .then((res) => {
+        if (!res || !res.data) {
+          throw new Error('응답 데이터가 없습니다.');
+        }
+
         if(res.data.length === 0) return;
 
         const rows = res.data;
@@ -260,12 +307,17 @@ const Home = ({isActive, addTab}) => {
           })
         });
 
-        setData(newData);
+        // 기존 상태와 비교
+        if (!isEqual(chartData, newData)) {
+          setChartData(newData); 
+
+        }
+
 
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger", autoCloseDelay: 2000 });
       })
       .finally(() =>{
         
@@ -278,24 +330,24 @@ const Home = ({isActive, addTab}) => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
-    
       return (
-        <div style={{ background: '#fff', border: '1px solid #ccc', padding: '4px' }}>
-           <span><strong>{label}</strong></span><br/>
+        <div key={label} style={{ background: '#fff', border: '1px solid #ccc', padding: '4px' }}>
+          <span><strong>{label}</strong></span><br/>
           {payload.map((entry, index) => {
             return (
-              <>
-                <span key={entry.payload.process_code+index} style={{ color: entry.color }}>
+              <div key={index}>
+                <span style={{ color: entry.color }}>
                   ● {entry.name}: {entry.value}
-                </span><br/>
-              </>
+                </span>
+              </div>
             );
           })}
 
           {/* 추가 정보 예시 */}
-          <hr />
-          <span>{data.item_code ?? ""}</span><br/>
-          <span>{data.item_name ?? ""}</span>
+          <br/>
+          <span>{data['item_code'] ?? ""}</span>
+          <br/>
+          <span>{data['item_name'] ?? ""}</span>
         </div>
       );
     }
@@ -307,20 +359,20 @@ const Home = ({isActive, addTab}) => {
     return (
       <ResponsiveContainer width="100%" height={280}>
         <BarChart
-          data={data}
+          data={chartData}
           margin={{ top: 5, right: 5, left: 5, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 10 }}/>
-          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => (dataMax * 2)]} tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft'}}/>
-          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , 600]} tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight'}}/>
-          <Tooltip />
-          {/* <Tooltip content={<CustomTooltip />}/> */}
+          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
+          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/>
+          {/* <Tooltip /> */}
+          <Tooltip content={<CustomTooltip />}/>
           <Legend />
-          <Bar dataKey="양품" yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
-          <Bar dataKey="불량" yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
-          <Bar dataKey="가동률(%)" yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
-          <Bar dataKey="가동시간(분)" yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
+          <Bar dataKey="양품" isAnimationActive={false} yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
+          <Bar dataKey="불량" isAnimationActive={false} yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
+          <Bar dataKey="가동률(%)" isAnimationActive={false} yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
+          <Bar dataKey="가동시간(분)" isAnimationActive={false} yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
         </BarChart>
       </ResponsiveContainer>
     );
@@ -337,8 +389,15 @@ const Home = ({isActive, addTab}) => {
           <Card bg="secondary" text="white">
             <Card.Body>
               <div className="d-flex justify-content-center align-items-center gap-4">
-                <h2>종합 현황</h2>
-                <h3><CurrentTime /></h3>
+                {/* <div className="">
+                </div>
+                <div className="d-flex gap-4"> */}
+                  <h2>종합 현황</h2>
+                  <h3><CurrentTime /></h3>
+                  <Button size="lg" variant="secondary" onClick={refresh}><i className="bi bi-arrow-clockwise"></i></Button>
+                {/* </div>
+                <div className="">
+                </div> */}
               </div>
             </Card.Body>
           </Card>
@@ -352,7 +411,7 @@ const Home = ({isActive, addTab}) => {
             <Card.Header>
               <Card.Title className="m-0 d-flex justify-content-between">
                 공정 가동 현황
-                <i className="bi bi-box-arrow-up-right" style={{ cursor: "pointer" }} onClick={()=>{addTab('EquipmentStatusByUnit', '공정별현황')}}></i>  
+                <i className="bi bi-box-arrow-up-right" title="공정별현황 열기" style={{ cursor: "pointer" }} onClick={()=>{addTab('EquipmentStatusByUnit', '공정별현황')}}></i>  
               </Card.Title>
             </Card.Header>
             <Card.Body className="p-0">
@@ -362,7 +421,7 @@ const Home = ({isActive, addTab}) => {
                   columnDefs={columnDefs}
                   rowData={rowData}
                   onGridReady={onGridReady} 
-                  loading={loading}
+                  // loading={loading}
                   rowNum={true}
                   rowSel={"singleRow"}
                   pagination={false}
@@ -387,7 +446,7 @@ const Home = ({isActive, addTab}) => {
                   columnDefs={columnDefs2}
                   rowData={rowData2}
                   onGridReady={onGridReady2} 
-                  loading={loading2}
+                  // loading={loading2}
                   rowNum={true}
                   rowSel={"singleRow"}
                   pagination={false}
@@ -403,7 +462,7 @@ const Home = ({isActive, addTab}) => {
             <Card.Header>
               <Card.Title className="m-0 d-flex justify-content-between">
                 일일 생산 현황 
-                <i className="bi bi-box-arrow-up-right" style={{ cursor: "pointer" }} onClick={()=>{addTab('PerformanceOperationRate', '성능가동률')}}></i>
+                <i className="bi bi-box-arrow-up-right" title="성능가동률 열기" style={{ cursor: "pointer" }} onClick={()=>{addTab('PerformanceOperationRate', '성능가동률')}}></i>
               </Card.Title>
             </Card.Header>
             <Card.Body className="p-2 d-flex flex-column justify-content-center">

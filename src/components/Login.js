@@ -64,6 +64,7 @@ const LoginForm = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -78,6 +79,7 @@ const LoginForm = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -92,6 +94,7 @@ const LoginForm = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -106,6 +109,7 @@ const LoginForm = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -120,6 +124,7 @@ const LoginForm = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -134,6 +139,7 @@ const LoginForm = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -147,6 +153,7 @@ const LoginForm = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -160,6 +167,7 @@ const LoginForm = () => {
                   onChange={handleChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>

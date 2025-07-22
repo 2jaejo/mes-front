@@ -4,24 +4,18 @@ import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
-import { ContentSteeringController } from "hls.js";
+import { MainContentStyle } from "css/CommonStyle";
+
 
 
 const Main = ({ isActive }) => {
   const modalRef = useRef();  
   const modalRef2 = useRef();  
 
-  const [loading, setLoading] = useState(true);
-  const [loading2, setLoading2] = useState(true);
-
   const gridRef = useRef();  
-  const gridRef2 = useRef();  
-
+  const [loading, setLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState(0); 
-  const [selectedRow2, setSelectedRow2] = useState(0); 
-  
-
-  const [rowData, setRowData] = useState();
+  const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]);
 
   // selectbox
@@ -74,7 +68,7 @@ const Main = ({ isActive }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[isActive]);
@@ -97,7 +91,7 @@ const Main = ({ isActive }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       })
       .finally(() =>{
         setLoading(false);
@@ -153,7 +147,7 @@ const Main = ({ isActive }) => {
   
   
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 

@@ -169,7 +169,7 @@ const Main = ({ props={}, isActive}) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[isActive]);
@@ -286,7 +286,7 @@ const Main = ({ props={}, isActive}) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -351,7 +351,7 @@ const Main = ({ props={}, isActive}) => {
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });   
 
 
@@ -391,7 +391,7 @@ const Main = ({ props={}, isActive}) => {
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"오류", message:error.message, cancelText:"" });
           })
           .finally(() =>{
             modalRef.current.close();            
@@ -426,6 +426,7 @@ const Main = ({ props={}, isActive}) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <span className="fw-bold"> ~ </span>
                       <Form.Control 
@@ -436,6 +437,7 @@ const Main = ({ props={}, isActive}) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -477,6 +479,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                   </td>
                 
@@ -491,6 +494,7 @@ const Main = ({ props={}, isActive}) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <Form.Control 
                         type="text"
@@ -500,6 +504,7 @@ const Main = ({ props={}, isActive}) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -761,7 +766,7 @@ const ModalComponent = ({ form }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -1043,6 +1048,7 @@ const ModalComponent = ({ form }) => {
                       onChange={modalFormChange}
                       size="sm" 
                       className="w-100"
+                      maxLength={50}
                       disabled
                       /> 
                   </td>
@@ -1058,6 +1064,7 @@ const ModalComponent = ({ form }) => {
                       onChange={modalFormChange}
                       size="sm" 
                       className="w-100"
+                      maxLength={50}
                       disabled
                       /> 
                   </td>
@@ -1070,6 +1077,7 @@ const ModalComponent = ({ form }) => {
                       onChange={modalFormChange}
                       size="sm" 
                       className="w-100"
+                      maxLength={50}
                       disabled
                       /> 
                   </td>
@@ -1093,6 +1101,7 @@ const ModalComponent = ({ form }) => {
                       onChange={modalFormChange}
                       size="sm" 
                       className="w-100"
+                      maxLength={50}
                       disabled
                       /> 
                   </td>
@@ -1105,6 +1114,7 @@ const ModalComponent = ({ form }) => {
                       onChange={modalFormChange}
                       size="sm" 
                       className="w-100"
+                      maxLength={50}
                       disabled
                       /> 
                   </td>
@@ -1117,6 +1127,7 @@ const ModalComponent = ({ form }) => {
                       onChange={modalFormChange}
                       size="sm" 
                       className="w-100"
+                      maxLength={50}
                       disabled
                       /> 
                   </td>
@@ -1430,7 +1441,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -1502,6 +1513,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <span className="fw-bold"> ~ </span>
                       <Form.Control 
@@ -1512,6 +1524,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -1524,6 +1537,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                   </td>
                   <th className="bg-light text-end align-middle">운영주문번호</th>
@@ -1536,6 +1550,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -1799,7 +1814,7 @@ const ModalStockItemComponent = ({ props={} }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -1858,6 +1873,7 @@ const ModalStockItemComponent = ({ props={} }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                   </td>
                   <th className="bg-light text-end align-middle">품번</th>
@@ -1870,6 +1886,7 @@ const ModalStockItemComponent = ({ props={} }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                     </div>
                   </td>

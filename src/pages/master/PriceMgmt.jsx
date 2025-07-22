@@ -39,7 +39,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });  
   },[]);
 
@@ -208,7 +208,7 @@ const Main = () => {
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
-          modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+          modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
         })
         .finally(() =>{
           setLoading4(false);
@@ -334,6 +334,7 @@ const Main = () => {
                     size="sm" 
                     className="w-auto"
                     placeholder="CODE"
+                    maxLength={50}
                   />
                   <Form.Control 
                     type="text"
@@ -343,6 +344,7 @@ const Main = () => {
                     size="sm" 
                     className="w-auto"
                     placeholder="NAME"
+                    maxLength={50}
                   />
                 </div>
               </td>                    
@@ -392,7 +394,7 @@ const Main = () => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     })
     .finally(() =>{
       setLoading(false);
@@ -424,7 +426,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       })
       .finally(() =>{
         setLoading2(false);
@@ -443,7 +445,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -488,7 +490,7 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
 
       }, 
@@ -529,7 +531,7 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
  
       },
@@ -553,7 +555,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       })
       .finally(() =>{
         setLoading3(false);
@@ -685,6 +687,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <Form.Control 
                         type="text"
@@ -694,6 +697,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                 

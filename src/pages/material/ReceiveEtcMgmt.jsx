@@ -413,7 +413,7 @@ const Main = ({ props={} }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -526,7 +526,7 @@ const Main = ({ props={} }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -542,7 +542,7 @@ const Main = ({ props={} }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
     };
     
@@ -569,7 +569,7 @@ const Main = ({ props={} }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -629,7 +629,7 @@ const Main = ({ props={} }) => {
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });   
 
 
@@ -661,6 +661,7 @@ const Main = ({ props={} }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <span className="fw-bold"> ~ </span>
                       <Form.Control 
@@ -671,6 +672,7 @@ const Main = ({ props={} }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -712,6 +714,7 @@ const Main = ({ props={} }) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                   </td>
                   <th className="bg-light text-end align-middle">거래처</th>
@@ -725,6 +728,7 @@ const Main = ({ props={} }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <Form.Control 
                         type="text"
@@ -734,6 +738,7 @@ const Main = ({ props={} }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -925,7 +930,7 @@ const ModalComponent = ({ form }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -1142,6 +1147,7 @@ const ModalComponent = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        maxLength={50}
                         disabled
                       /> 
                       <Button size="sm" variant="primary" onClick={getData4}><i className="bi bi-search"></i></Button>
@@ -1160,6 +1166,7 @@ const ModalComponent = ({ form }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="ID"
+                        maxLength={50}
                         disabled
                         /> 
                       <Form.Control 
@@ -1170,6 +1177,7 @@ const ModalComponent = ({ form }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                         disabled
                       />
                       <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
@@ -1186,6 +1194,7 @@ const ModalComponent = ({ form }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                         disabled
                       />
                       <Form.Control 
@@ -1196,6 +1205,7 @@ const ModalComponent = ({ form }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                         disabled
                       />
                       <Button size="sm" variant="primary" onClick={getData2}><i className="bi bi-search"></i></Button>
@@ -1211,6 +1221,7 @@ const ModalComponent = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       /> 
                     </div>
                   </td>
@@ -1230,6 +1241,7 @@ const ModalComponent = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        maxLength={200}
                       /> 
                     </div>
                   </td>

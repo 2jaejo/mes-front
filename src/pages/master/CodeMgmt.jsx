@@ -146,6 +146,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
               <th className="bg-light text-end align-middle">그룹명</th>
@@ -157,6 +158,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -170,6 +172,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
               <th className="bg-light text-end align-middle">사용여부</th>
@@ -180,6 +183,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm"
                   className="w-100"
+                  maxLength={50}
                 >
                   <option value="y">사용</option>
                   <option value="n">미사용</option>
@@ -196,6 +200,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-100"
+                  maxLength={200}
                 />
               </td>
               
@@ -256,6 +261,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                   disabled
                 />
               </td>
@@ -268,6 +274,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                   disabled
                 />
               </td>
@@ -282,6 +289,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
               <th className="bg-light text-end align-middle">코드명</th>
@@ -293,6 +301,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -306,6 +315,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
               <th className="bg-light text-end align-middle">사용여부</th>
@@ -316,6 +326,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm"
                   className="w-100"
+                  maxLength={50}
                 >
                   <option value="Y">사용</option>
                   <option value="N">미사용</option>
@@ -332,6 +343,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-100"
+                  maxLength={200}
                 />
               </td>
               
@@ -347,6 +359,7 @@ const Main = () => {
                   size="sm" 
                   className="w-auto mb-2"
                   placeholder="옵션1"
+                  maxLength={50}
                 />
                 <Form.Control
                   type="text"
@@ -356,6 +369,7 @@ const Main = () => {
                   size="sm" 
                   className="w-auto mb-2"
                   placeholder="옵션2"
+                  maxLength={50}
 
                 />
                 <Form.Control
@@ -366,6 +380,7 @@ const Main = () => {
                   size="sm" 
                   className="w-auto"
                   placeholder="옵션3"
+                  maxLength={50}
 
                 />
               </td>
@@ -460,7 +475,7 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
 
        
@@ -502,7 +517,7 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
       },
     });
@@ -523,7 +538,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -553,7 +568,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -572,7 +587,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -627,7 +642,7 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
       
       }, 
@@ -667,7 +682,7 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });    
  
       },
@@ -771,6 +786,7 @@ const Main = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                 
                   </td>
@@ -783,6 +799,7 @@ const Main = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                 
                   </td>

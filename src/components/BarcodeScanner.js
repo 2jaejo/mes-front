@@ -90,6 +90,7 @@ const BarcodeScanner = () => {
         className="w-auto"
         placeholder="바코드를 스캔하세요"
         autoFocus
+        maxLength={50}
       />
 
       <div style={{ marginTop: '20px' }}>

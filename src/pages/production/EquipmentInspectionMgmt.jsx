@@ -124,7 +124,7 @@ const Main = () => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -190,6 +190,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>                    
               <th className="bg-light text-end align-middle">점검명</th>
@@ -201,6 +202,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -214,6 +216,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>                    
               <th className="bg-light text-end align-middle">점검기준</th>
@@ -225,6 +228,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-auto"
+                  maxLength={50}
                 />
               </td>
             </tr>
@@ -239,6 +243,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-100"
+                  maxLength={50}
                 />
               </td>
               <th className="bg-light text-end align-middle">비고</th>
@@ -250,6 +255,7 @@ const Main = () => {
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-100"
+                  maxLength={200}
                 />
               </td>
             </tr>
@@ -279,7 +285,7 @@ const Main = () => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     })
     .finally(() =>{
       setLoading(false);
@@ -309,7 +315,7 @@ const Main = () => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     })
     .finally(() =>{
       setLoading2(false);
@@ -331,7 +337,7 @@ const Main = () => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     })
     .finally(() =>{
       setLoading3(false);
@@ -372,7 +378,7 @@ const Main = () => {
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           })
           .finally(() =>{
             modalRef.current.close();
@@ -416,7 +422,7 @@ const Main = () => {
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           })
           .finally(() =>{
             modalRef.current.close();

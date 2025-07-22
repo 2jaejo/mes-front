@@ -86,7 +86,7 @@ const Main = ({ form }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       })
       .finally(() =>{
         setLoading(false);
@@ -353,7 +353,7 @@ const Main = ({ form }) => {
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           })
           .finally(()=>{
             setLoading(false);
@@ -425,6 +425,7 @@ const Main = ({ form }) => {
                 value={formData.purchase_id}
                 onChange={handleFormChange}
                 placeholder=""
+                maxLength={50}
               />
               <Button variant="primary" onClick={handleOrderSearch}>
                 <i className="bi bi-search"></i>
@@ -441,6 +442,7 @@ const Main = ({ form }) => {
                 name="client_code"
                 value={formData.client_code}
                 placeholder="거래처 코드"
+                maxLength={50}
                 disabled
               />
             </div> */}
@@ -450,6 +452,7 @@ const Main = ({ form }) => {
                 name="client_name" 
                 value={formData.client_name} 
                 placeholder="" 
+                maxLength={50}
                 disabled 
               />
               <Button variant="primary" onClick={handleClientSearch}>
@@ -464,7 +467,13 @@ const Main = ({ form }) => {
           {/* 입고일 */}
           <div className="mb-2">
             <Form.Label className=" mb-0 fw-bold">입고일</Form.Label>
-            <Form.Control type="date" name="receipt_date" value={formData.receipt_date} onChange={handleFormChange} />
+            <Form.Control 
+              type="date" 
+              name="receipt_date" 
+              value={formData.receipt_date} 
+              onChange={handleFormChange} 
+              maxLength={50}
+            />
           </div>
 
           {/* 비고 */}
@@ -476,7 +485,7 @@ const Main = ({ form }) => {
               value={formData.comment}
               onChange={handleFormChange}
               placeholder=""
-              maxLength={100}
+              maxLength={200}
             />
           </div>
         </Card.Body>
@@ -596,6 +605,7 @@ const Main = ({ form }) => {
                           onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
                           placeholder="수량"
                           size="sm"
+                          maxLength={50}
                         />
                       </Col>
                       <Col xs={4}>
@@ -606,6 +616,7 @@ const Main = ({ form }) => {
                           onChange={(e) => handleItemChange(index, "unit_price", e.target.value)}
                           placeholder="단가"
                           size="sm"
+                          maxLength={50}
                         />
                       </Col>
                       <Col xs={4}>
@@ -616,6 +627,7 @@ const Main = ({ form }) => {
                           onChange={(e) => handleItemChange(index, "total_price", e.target.value)}
                           placeholder=""
                           size="sm"
+                          maxLength={50}
                           disabled
                         />
                         {/* <strong className="text-primary">{formatMoney(item.total_price)}원</strong> */}

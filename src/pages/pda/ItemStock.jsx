@@ -122,7 +122,7 @@ const ItemStock = ({ form }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       })
       .finally(() =>{
         setBarcode('');
@@ -142,7 +142,7 @@ const ItemStock = ({ form }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       })
       .finally(() =>{
 
@@ -188,13 +188,13 @@ const ItemStock = ({ form }) => {
         axiosInstance
           .post(`/api/addProductionLog`, JSON.stringify(newData))
           .then((res) => {
-            modalRef2.current.open({ title:"알림", message:"생산완료 처리 되었습니다.", cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:"생산완료 처리 되었습니다.", cancelText:"", autoCloseDelay: 2000 });
             resetForm();
             getData2();
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           })
           .finally(()=>{
             setLoading(false);
@@ -318,6 +318,7 @@ const ItemStock = ({ form }) => {
                 value={formData.bar_code ?? ""}
                 onChange={handleFormChange}
                 placeholder=""
+                maxLength={50}
                 disabled
               />
               {/* <Button variant="primary" onClick={handleOrderSearch}>
@@ -335,6 +336,7 @@ const ItemStock = ({ form }) => {
                 name="itme_dotno"
                 value={formData.item_dotno ?? ""}
                 placeholder=""
+                maxLength={50}
                 disabled
               />
             </div>
@@ -356,6 +358,7 @@ const ItemStock = ({ form }) => {
                 name="item_name" 
                 value={formData.item_name ?? ""} 
                 placeholder="" 
+                maxLength={50}
                 disabled 
               />
             </div>
@@ -369,6 +372,7 @@ const ItemStock = ({ form }) => {
               name="quantity" 
               value={formData.quantity ?? ""} 
               onChange={handleFormChange} 
+              maxLength={50}
             />
           </div>
 
@@ -381,7 +385,7 @@ const ItemStock = ({ form }) => {
               value={formData.remark ?? ""}
               onChange={handleFormChange}
               placeholder=""
-              maxLength={100}
+              maxLength={200}
             />
           </div>
         </Card.Body>
@@ -496,31 +500,11 @@ const ItemStock = ({ form }) => {
                           placeholder="수량"
                           size="sm"
                           className="w-auto"
+                          maxLength={50}
                           disabled
                         />
                       </Col>
-                      {/* <Col xs={4}>
-                        <Form.Label className="small fw-bold">단가</Form.Label>
-                        <Form.Control
-                          type="number"
-                          value={item.unit_price}
-                          onChange={(e) => handleItemChange(index, "unit_price", e.target.value)}
-                          placeholder="단가"
-                          size="sm"
-                        />
-                      </Col>
-                      <Col xs={4}>
-                        <Form.Label className="small fw-bold">합계</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={formatMoney(item.total_price)}
-                          onChange={(e) => handleItemChange(index, "total_price", e.target.value)}
-                          placeholder=""
-                          size="sm"
-                          disabled
-                        />
-                        <strong className="text-primary">{formatMoney(item.total_price)}원</strong>
-                      </Col> */}
+                     
                     </Row>
 
                     
@@ -541,247 +525,3 @@ export default ItemStock
 
 
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// return (
-//     <div style={{ minHeight: "87vh", backgroundColor: "#f8f9fa"}}>
-      
-
-//       {/* Content */}
-//       <div className="container py-4">
-//         {/* Navigation Tabs */}
-//         <ul className="nav nav-pills justify-content-center mb-4">
-//           <li className="nav-item">
-//             <button
-//               className={`nav-link d-flex flex-column align-items-center px-3 ${
-//                 activeTab === "input" ? "active" : ""
-//               }`}
-//               onClick={() => setActiveTab("input")}
-//             >
-//               <i className="bi bi-plus-lg"></i>
-//               <small>입고등록</small>
-//             </button>
-//           </li>
-//           <li className="nav-item">
-//             <button
-//               className={`nav-link d-flex flex-column align-items-center px-3 ${
-//                 activeTab === "list" ? "active" : ""
-//               }`}
-//               onClick={() => setActiveTab("list")}
-//             >
-//               <i className="bi bi-file-text"></i>
-//               <small>입고목록</small>
-//             </button>
-//           </li>
-          
-//         </ul>
-
-//         {/* Tab Content */}
-//         <div className="tab-content">
-//           {/* 입고 등록 탭 */}
-//           {activeTab === "input" && (
-//             <div className="d-flex flex-column gap-3">
-//               {/* Barcode Scanner */}
-//               <div className="card">
-//                 <div className="card-body">
-//                   <Form.Control 
-//                     type="text"
-//                     name="barcode"
-//                     value={barcode}
-//                     onChange={(e) => setBarcode(e.target.value)}
-//                     onKeyDown={handleKeyPress}
-//                     size="md" 
-//                     className="w-100"
-//                     placeholder="바코드를 스캔하세요"
-//                   />
-//                 </div>
-//               </div>
-
-//               {/* Input Form */}
-//               <div className="card">
-//                 <div className="card-header">
-//                   <h5 className="card-title mb-1">입고 정보 입력</h5>
-//                   <small className="text-muted">원자재 입고 정보를 입력해주세요</small>
-//                 </div>
-//                 <div className="card-body">
-//                   <form onSubmit={handleSubmit}>
-//                     <div className="mb-3">
-//                       <label className="form-label d-flex align-items-center gap-2">
-//                         <i className="bi bi-box-seam"></i>
-//                         품목명
-//                       </label>
-//                       <input
-//                         type="text"
-//                         className="form-control"
-//                         value={formData.itemName}
-//                         onChange={(e) => setFormData({ ...formData, itemName: e.target.value })}
-//                         placeholder="품목명을 입력하세요"
-//                         required
-//                       />
-//                     </div>
-
-//                     <div className="row">
-//                       <div className="col-6">
-//                         <div className="mb-3">
-//                           <label className="form-label d-flex align-items-center gap-2">
-//                             <i className="bi bi-hash"></i>
-//                             수량
-//                           </label>
-//                           <input
-//                             type="number"
-//                             className="form-control"
-//                             value={formData.quantity}
-//                             onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-//                             placeholder="수량"
-//                             required
-//                           />
-//                         </div>
-//                       </div>
-//                       <div className="col-6">
-//                         <div className="mb-3">
-//                           <label className="form-label d-flex align-items-center gap-2">
-//                             <i className="bi bi-speedometer2"></i>
-//                             단위
-//                           </label>
-//                           <select
-//                             className="form-select"
-//                             value={formData.unit}
-//                             onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-//                           >
-//                             {units.map((unit) => (
-//                               <option key={unit} value={unit}>
-//                                 {unit}
-//                               </option>
-//                             ))}
-//                           </select>
-//                         </div>
-//                       </div>
-//                     </div>
-
-//                     <div className="mb-3">
-//                       <label className="form-label d-flex align-items-center gap-2">
-//                         <i className="bi bi-building"></i>
-//                         공급업체
-//                       </label>
-//                       <select
-//                         className="form-select"
-//                         value={formData.supplier}
-//                         onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-//                         required
-//                       >
-//                         <option value="">공급업체를 선택하세요</option>
-//                         {suppliers.map((supplier) => (
-//                           <option key={supplier} value={supplier}>
-//                             {supplier}
-//                           </option>
-//                         ))}
-//                       </select>
-//                     </div>
-
-//                     <div className="mb-3">
-//                       <label className="form-label d-flex align-items-center gap-2">
-//                         <i className="bi bi-calendar3"></i>
-//                         입고일자
-//                       </label>
-//                       <input
-//                         type="date"
-//                         className="form-control"
-//                         value={formData.date}
-//                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-//                         required
-//                       />
-//                     </div>
-
-//                     <div className="mb-3">
-//                       <label className="form-label d-flex align-items-center gap-2">
-//                         <i className="bi bi-file-text"></i>
-//                         비고
-//                       </label>
-//                       <textarea
-//                         className="form-control"
-//                         rows={3}
-//                         value={formData.notes}
-//                         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-//                         placeholder="추가 정보를 입력하세요 (선택사항)"
-//                       />
-//                     </div>
-
-//                     <button type="submit" className="btn btn-primary w-100" style={{ height: "48px" }}>
-//                       입고 등록
-//                     </button>
-//                   </form>
-//                 </div>
-//               </div>
-//             </div>
-//           )}
-
-//           {/* 입고 목록 탭 */}
-//           {activeTab === "list" && (
-//             <div>
-//               <div className="d-flex justify-content-between align-items-center mb-3">
-//                 <h5 className="mb-0">입고 목록</h5>
-//                 <span className="badge bg-secondary">{inventoryItems.length}건</span>
-//               </div>
-
-//               <div className="d-flex flex-column gap-3">
-//                 {inventoryItems.map((item) => (
-//                   <div key={item.id} className="card">
-//                     <div className="card-body">
-//                       <div className="d-flex justify-content-between align-items-start mb-3">
-//                         <div>
-//                           <h6 className="mb-1">{item.itemName}</h6>
-//                           <small className="text-muted">ID: {item.id}</small>
-//                         </div>
-//                         <span className={`${getStatusBadgeClass(item.status)} d-flex align-items-center gap-1`}>
-//                           {getStatusIcon(item.status)}
-//                           {getStatusText(item.status)}
-//                         </span>
-//                       </div>
-
-//                       <div className="row">
-//                         <div className="col-6">
-//                           <div className="mb-2">
-//                             <small className="text-muted">수량</small>
-//                             <div className="fw-medium">
-//                               {item.quantity.toLocaleString()} {item.unit}
-//                             </div>
-//                           </div>
-//                         </div>
-//                         <div className="col-6">
-//                           <div className="mb-2">
-//                             <small className="text-muted">공급업체</small>
-//                             <div className="fw-medium">{item.supplier}</div>
-//                           </div>
-//                         </div>
-//                         <div className="col-6">
-//                           <div>
-//                             <small className="text-muted">입고일자</small>
-//                             <div className="fw-medium">{item.date}</div>
-//                           </div>
-//                         </div>
-//                       </div>
-
-//                       {item.notes && (
-//                         <>
-//                           <hr className="my-3" />
-//                           <div>
-//                             <small className="text-muted">비고</small>
-//                             <div className="small">{item.notes}</div>
-//                           </div>
-//                         </>
-//                       )}
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           )}
-
-          
-//         </div>
-//       </div>
-//     </div>
-//   )

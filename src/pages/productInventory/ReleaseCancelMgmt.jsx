@@ -95,6 +95,7 @@ const LoginHistory = () => {
               value={form.user_id}
               onChange={handleChange}
               placeholder="아이디" 
+              maxLength={50}
             />
             <Form.Control
               type="text" 
@@ -104,6 +105,7 @@ const LoginHistory = () => {
               value={form.ip_address}
               onChange={handleChange}
               placeholder="아이피" 
+              maxLength={50}
             />
             <Form.Control 
               type="date"
@@ -113,6 +115,7 @@ const LoginHistory = () => {
               value={form.login_dt}
               onChange={handleChange}
               placeholder="접속일자"
+              maxLength={50}
             />
             <Button size="sm" variant="secondary" onClick={getData}>검색</Button>
           </Col>

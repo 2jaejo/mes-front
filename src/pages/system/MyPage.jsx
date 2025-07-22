@@ -71,6 +71,7 @@ const MyPage = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                       disabled
                     />
                   </td>
@@ -85,6 +86,7 @@ const MyPage = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                       disabled
                     />
                   </td>
@@ -100,6 +102,7 @@ const MyPage = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                   </td>
                 </tr>
@@ -114,6 +117,7 @@ const MyPage = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                   </td>
                 </tr>
@@ -129,6 +133,7 @@ const MyPage = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                   </td>
                 </tr>
@@ -143,6 +148,7 @@ const MyPage = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                   </td>
                 </tr>
@@ -156,6 +162,7 @@ const MyPage = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                   </td>
                 </tr>
@@ -169,6 +176,7 @@ const MyPage = () => {
                       onChange={handleChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                   </td>
                 </tr>

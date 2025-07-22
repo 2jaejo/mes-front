@@ -181,7 +181,7 @@ const Main = () => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -284,7 +284,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -325,7 +325,7 @@ const Main = () => {
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           });   
 
 
@@ -364,7 +364,7 @@ const Main = () => {
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
-            modalRef2.current.open({ title:"알림", message:error.response.data.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
           })
           .finally(() =>{
             modalRef.current.close();
@@ -401,6 +401,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         placeholder="품번"
+                        maxLength={50}
                       />
                       <Form.Control 
                         type="text"
@@ -410,6 +411,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         placeholder="상품명"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -532,7 +534,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -657,6 +659,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <Form.Control 
                         type="text"
@@ -666,6 +669,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>

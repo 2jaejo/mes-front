@@ -3,9 +3,9 @@ import { DataSet, Timeline } from 'vis-timeline/standalone';
 // import 'vis-timeline/styles/vis-timeline-graph2d.min.css';
 
 const VisTimeline = ({
+  groups = [],
   items = [],
   options = {},
-  groups = [],
   onEvents = {},
 }) => {
   const containerRef = useRef(null);
@@ -32,16 +32,23 @@ const VisTimeline = ({
   }, []);
 
   useEffect(() => {
-    if (timelineRef.current && datasetRef.current) {
-      datasetRef.current.update(items);
-      timelineRef.current.setOptions(options);
-      if (groups.length > 0) {
-        timelineRef.current.setGroups(groups);
-      }
-    }
-  }, [items, groups, options]);
+    if (!timelineRef.current) return;
 
-  return <div ref={containerRef} style={{ overflow: 'auto' }} />;
+    // 그룹 변경만 별도 관리
+    if (groups.length > 0) {
+      timelineRef.current.setGroups(groups);
+    }
+  }, [groups]);
+
+  useEffect(() => {
+    if (!timelineRef.current || !datasetRef.current) return;
+
+    timelineRef.current.setOptions(options);
+    datasetRef.current.update(items);
+  }, [items, options]);
+
+
+  return <div ref={containerRef} style={{ width: '100%', height: '100%', minWidth:800, minHeight:600, overflow: 'auto' }} />;
 };
 
 

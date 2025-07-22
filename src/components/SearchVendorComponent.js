@@ -65,7 +65,7 @@ const Main = ({ props={}, style_props={} }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -82,7 +82,7 @@ const Main = ({ props={}, style_props={} }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       })
       .finally(() =>{
         setLoading(false);
@@ -111,6 +111,7 @@ const Main = ({ props={}, style_props={} }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -130,6 +131,7 @@ const Main = ({ props={}, style_props={} }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                     </div>
                   </td>

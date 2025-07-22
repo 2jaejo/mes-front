@@ -90,7 +90,7 @@ const Main = ({ props={}, isActive}) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });  
 
    
@@ -346,6 +346,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -360,6 +361,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -377,6 +379,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -391,6 +394,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -408,6 +412,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -422,6 +427,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -436,6 +442,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -450,6 +457,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -486,6 +494,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -506,6 +515,7 @@ const Main = ({ props={}, isActive}) => {
                         })}
                         size="lg" 
                         className="w-100"
+                        maxLength={50}
                       />
                       <Button style={{width:"6rem", height:"4rem", fontSize:"1.4rem", fontWeight:"normal"}} variant="primary" onClick={()=>setQty("result_qty")}>적용</Button>
                       {modalForm.process_code.includes('RT1') && 
@@ -542,6 +552,7 @@ const Main = ({ props={}, isActive}) => {
                         })}
                         size="lg" 
                         className="w-100"
+                        maxLength={50}
                       />
                       <Button style={{width:"6rem", height:"4rem", fontSize:"1.4rem", fontWeight:"normal"}} variant="primary" onClick={()=>setQty("defect_qty")}>적용</Button>
 
@@ -613,6 +624,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -628,6 +640,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -669,6 +682,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -686,6 +700,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -703,6 +718,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -720,6 +736,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -737,6 +754,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -754,6 +772,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -771,6 +790,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -788,6 +808,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -824,6 +845,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -847,6 +869,7 @@ const Main = ({ props={}, isActive}) => {
                         })}
                         size="lg" 
                         className="w-100"
+                        maxLength={50}
                       />
                       <Button style={{width:"6rem", height:"4rem", fontSize:"1.4rem", fontWeight:"normal"}} variant="primary" onClick={()=>setQty("result_qty")}>적용</Button>
                       {modalForm.process_code.includes('RT1') && 
@@ -886,6 +909,7 @@ const Main = ({ props={}, isActive}) => {
                         })}
                         size="lg" 
                         className="w-100"
+                        maxLength={50}
                       />
                       <Button style={{width:"6rem", height:"4rem", fontSize:"1.4rem", fontWeight:"normal"}} variant="primary" onClick={()=>setQty("defect_qty")}>적용</Button>
 
@@ -943,6 +967,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -960,6 +985,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>
@@ -977,6 +1003,7 @@ const Main = ({ props={}, isActive}) => {
                       onChange={modalFormChange}
                       size="lg" 
                       className="w-100"
+                      maxLength={50}
                       disabled={true}
                     />
                     </div>

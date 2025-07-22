@@ -354,7 +354,7 @@ const Main = ({ props={}, isActive }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[isActive]);
@@ -451,7 +451,7 @@ const Main = ({ props={}, isActive }) => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });   
   };
 
@@ -481,6 +481,7 @@ const Main = ({ props={}, isActive }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <span className="fw-bold"> ~ </span>
                       <Form.Control 
@@ -491,6 +492,7 @@ const Main = ({ props={}, isActive }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -532,6 +534,7 @@ const Main = ({ props={}, isActive }) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                   </td>
                 
@@ -546,6 +549,7 @@ const Main = ({ props={}, isActive }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <Form.Control 
                         type="text"
@@ -555,6 +559,7 @@ const Main = ({ props={}, isActive }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>

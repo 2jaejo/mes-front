@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import GridExample from "components/GridExample";
 import axiosInstance from "utils/Axios";
 import Modal from "components/Modal";
 import { MainContentStyle } from "css/CommonStyle";
@@ -144,12 +143,12 @@ const Main = ({isActive}) => {
       <ResponsiveContainer width="100%" height={'100%'}>
         <BarChart
           data={data}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 12 }}/>
-          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => (dataMax * 2)]} label={{ value: '수량', angle: 0, position: 'insideTopLeft'}}/>
-          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , 720]} label={{ value: '(분)', angle: 0, position: 'insideTopRight'}}/>
+          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
+          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/>
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
           <Bar dataKey="양품" yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
@@ -183,6 +182,7 @@ const Main = ({isActive}) => {
                       onChange={handleFormChange}
                       size="sm" 
                       className="w-auto"
+                      maxLength={50}
                     />
                     </div>
                   </td>

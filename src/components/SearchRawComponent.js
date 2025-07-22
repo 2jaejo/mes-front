@@ -41,7 +41,7 @@ const Main = ({ form }) => {
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
-          modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+          modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
         })
         .finally(() =>{
           setLoading(false);
@@ -94,7 +94,7 @@ const Main = ({ form }) => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[]);
@@ -159,6 +159,7 @@ const Main = ({ form }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="품번"
+                        maxLength={50}
                       />
                       <Form.Control 
                         type="text"
@@ -168,6 +169,7 @@ const Main = ({ form }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="품명"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -187,6 +189,7 @@ const Main = ({ form }) => {
                         size="sm" 
                         className="w-auto"
                         placeholder="바코드를 스캔하세요"
+                        maxLength={50}
                       />
                       
                     </div>

@@ -100,13 +100,13 @@ const Main = ({ props={}, isActive}) => {
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
-          modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+          modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
         });  
 
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
 
   },[isActive]);
@@ -186,7 +186,7 @@ const Main = ({ props={}, isActive}) => {
     axiosInstance
       .post("api/setWorkResult", JSON.stringify(params))
       .then((res) => {
-        modalRef.current.open({ title:"알림", message:"적용되었습니다.", cancelText:"" });
+        modalRef.current.open({ title:"알림", message:"적용되었습니다.", cancelText:"", autoCloseDelay: 2000 });
         getData();
       })
       .catch((error) => {
@@ -362,6 +362,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        maxLength={50}
                         disabled={true}
                       />
                     </div>
@@ -380,6 +381,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        maxLength={50}
                         disabled={true}
                       />
                     </div>
@@ -397,6 +399,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        maxLength={50}
                         disabled={true}
                       />
                     </div>
@@ -414,6 +417,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        maxLength={50}
                         disabled={true}
                       />
                     </div>
@@ -431,6 +435,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        maxLength={50}
                         disabled={true}
                       />
                       
@@ -449,6 +454,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        maxLength={50}
                         disabled={true}
                       />
                       
@@ -485,6 +491,7 @@ const Main = ({ props={}, isActive}) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-50"
+                        maxLength={50}
                         disabled={true}
                       />
                     </div>
@@ -547,6 +554,7 @@ const Main = ({ props={}, isActive}) => {
                         })}
                         size="sm" 
                         className="w-50"
+                        maxLength={50}
                       />
                       <Button size="sm" variant="primary" onClick={()=>setQty("defect_qty")}>적용</Button>
 
@@ -585,91 +593,6 @@ const Main = ({ props={}, isActive}) => {
           </Col>
         </Row>
       </div>   
-
-
-      {/* <div className="bg-light w-100">
-        <Row className="h-100">
-          <Col className="h-100 d-flex flex-column gap-2">
-            <span className="pt-2 fw-bold ">작업 시간</span>
-
-            <Table bordered hover style={{ width: '100%' }} className="m-0">
-              <tbody>
-                <tr>
-                  <th className=" bg-light text-end align-middle">시작시간</th>
-                  <td className="align-middle">
-                    <div className="">
-                      <Form.Control 
-                      type="text"
-                      name="start_dttm"
-                      value={modalForm.start_dttm ?? ""}
-                      onChange={modalFormChange}
-                      size="sm" 
-                      className="w-auto"
-                      disabled={true}
-                    />
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th className=" bg-light text-end align-middle">생산시간</th>
-                  <td className="align-middle">
-                    <div className="">
-                      <Form.Control 
-                      type="text"
-                      name="product_dttm"
-                      value={modalForm.product_dttm ?? ""}
-                      onChange={modalFormChange}
-                      size="sm" 
-                      className="w-auto"
-                      disabled={true}
-                    />
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <th className=" bg-light text-end align-middle">종료시간</th>
-                  <td className="align-middle">
-                    <div className="">
-                      <Form.Control 
-                      type="text"
-                      name="end_dttm"
-                      value={modalForm.end_dttm ?? ""}
-                      onChange={modalFormChange}
-                      size="sm" 
-                      className="w-auto"
-                      disabled={true}
-                    />
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
-
-
-          </Col>
-        </Row>
-      </div>       */}
-
-{/* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-{/* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-{/* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-
-
-      {/* <div className="h-100">
-        <Row  className="h-100">
-          <Col className="h-100 d-flex flex-column gap-2" xs={12} md={12}>
-            
-            <div className="mb-1 d-flex gap-2 justify-content-between align-items-center">
-              <Button style={{width:"14rem", height:"8rem", fontSize:"2rem"}} variant={start ? "secondary" : "primary"} onClick={()=>buttonCliked("start_dttm")} disabled={start}>작업시작</Button>
-              <Button style={{width:"16rem", height:"8rem", fontSize:"2rem"}} variant={pause ? "secondary" : "success"} onClick={()=>buttonCliked("pause")} disabled={pause}>{modalForm.pause === "Y" ? "일시정지 해제" : "일시정지 시작"}</Button>
-              <Button style={{width:"14rem", height:"8rem", fontSize:"2rem"}} variant={modalForm.pause === 'Y' || end ? "secondary" : "danger" }onClick={()=>buttonCliked("end_dttm")} disabled={modalForm.pause === 'Y' || end}>작업종료</Button>
-            </div>
-          </Col>
-        </Row>
-
-      </div> */}
 
     
 

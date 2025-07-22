@@ -175,7 +175,7 @@ const Main = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.response.data.message, cancelText:"" });
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
       });  
 
   },[]);
@@ -257,6 +257,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <span className="fw-bold"> ~ </span>
                       <Form.Control 
@@ -267,6 +268,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>
@@ -279,6 +281,7 @@ const Main = () => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
+                        maxLength={50}
                       />
                   </td>
                   <th className="bg-light text-end align-middle">품목</th>
@@ -292,6 +295,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         placeholder="CODE"
+                        maxLength={50}
                       />
                       <Form.Control 
                         type="text"
@@ -301,6 +305,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         placeholder="NAME"
+                        maxLength={50}
                       />
                     </div>
                   </td>
