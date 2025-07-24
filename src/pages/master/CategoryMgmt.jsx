@@ -87,7 +87,7 @@ const Main = () => {
         return false; // 변경 없음
       },
     },
-    { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left"},
+    { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left", width:300},
   ]);
 
   // 검색창 입력필드

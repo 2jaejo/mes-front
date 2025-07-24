@@ -224,7 +224,7 @@ const Main = () => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300},
         { headerName: "담당자", field: "manager", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
@@ -262,7 +262,7 @@ const Main = () => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"}, 
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300}, 
       ]);
 
       getData();
@@ -713,7 +713,7 @@ const ModalComponent = ({ form }) => {
         { headerName: "단위", field: "unit", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center"},
         { headerName: "수량", field: "quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
         { headerName: "출고수량", field: "release_qty", sortable: false, editable: true, align:"right", cellDataType:'number'},
-        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left", width:300},
       ]);
 
       // getData();
@@ -1014,7 +1014,7 @@ const ModalComponent2 = ({ form }) => {
         { headerName: "단위", field: "unit", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center"},
         { headerName: "수량", field: "quantity", sortable: false, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params)},
         { headerName: "출고수량", field: "release_qty", sortable: false, editable: true, align:"right", cellDataType:'number'},
-        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left", width:300},
       ]);
 
       getData();

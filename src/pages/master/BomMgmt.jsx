@@ -50,10 +50,11 @@ const Main = () => {
 
   const col_a = [
     
+    { headerName: "BOM 등록수", field: "bom_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
     { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
     { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "품번", field: "item_dotno", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
-    { headerName: "상품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
+    { headerName: "품번", field: "item_dotno", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
+    { headerName: "상품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
     { headerName: "상태", field: "item_status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
     { headerName: "소비자가", field: "sellprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
     { headerName: "매입공급가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
@@ -80,7 +81,7 @@ const Main = () => {
     { headerName: "수량", field: "quantity", sortable: false, editable: true, align:"right"}, 
     { headerName: "단위", field: "unit", sortable: false, editable: true, align:"right"},
     { headerName: "순서", field: "sort", sortable: false, editable: true, align:"center"},
-    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left"}, 
+    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left", width:300}, 
   ];
 
   const gridRef2 = useRef();  
@@ -211,8 +212,8 @@ const Main = () => {
 
   // 추가 모달 기본값
   const DEFAULT_FORM = (init={}) => ({
-    item_dotno:''
-    , item_name:''
+    raw_code:''
+    , raw_name:''
     , ...init
   });
 
@@ -321,7 +322,7 @@ const Main = () => {
           .post(`/api/addBom`, JSON.stringify(data))
           .then((res) => {
             getData();
-            modalRef.current.close();
+            // modalRef.current.close();
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
@@ -559,7 +560,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
   const col_a = [
     
     { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "자재명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+    { headerName: "자재명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left", flex:1},
     { headerName: "기준단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
       cellEditor: "agSelectCellEditor",
       cellEditorParams: {
@@ -637,7 +638,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
 
 
   return (
-    <div style={{ height: '50vh', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+    <div style={{ height: '50vh', width:'50vw', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -653,8 +654,8 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                     <div className="d-flex gap-2">
                       <Form.Control 
                         type="text"
-                        name="item_dotno"
-                        value={form.item_dotno}
+                        name="raw_code"
+                        value={form.raw_code}
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
@@ -663,8 +664,8 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                       />
                       <Form.Control 
                         type="text"
-                        name="item_name"
-                        value={form.item_name}
+                        name="raw_name"
+                        value={form.raw_name}
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
@@ -703,7 +704,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
             rowNum={true}
             rowSel={"singleRow"}
             pagination={true}
-            pageSize={10}
+            // pageSize={10}
             // rowDrag={true}
           />
         </Col>

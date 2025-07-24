@@ -10,6 +10,7 @@ import SearchItemComponent from "components/SearchItemComponent";
 import SearchRawComponent from "components/SearchRawComponent";
 import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
+import InventoryComponent from "../inventory/InventoryLookup";
 
 
 const Main = ({ props={}, style_props={} }) => {
@@ -193,6 +194,126 @@ const Main = ({ props={}, style_props={} }) => {
     return result;
   }
 
+  // 셀 렌더러
+  const ButtonRenderer = (props) => {
+
+    const handleClick = () => {
+      console.log("handleClick");
+
+      // if(props.colDef.field === 'start_dttm'){
+      //   const newData = {
+      //     ...props.data,
+      //     type: props.colDef.field,
+      //     oldValue: props.value,
+      //     newValue: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      //     [props.colDef.field]: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      //   };
+        
+      //   setData(newData);
+      // }
+
+
+      if(props.colDef.field === 'end_dttm' && (props.data.start_dttm === '' || props.data.start_dttm === null) ){
+        modalRef.current.open({ title:"오류", message:"작업시작을 먼저 진행해주세요.", cancelText:"" });
+        return;
+      }
+      
+      if(props.colDef.field === 'end_dttm'){
+        modalRef.current.open({
+          title: "알림",
+          message: "정말 작업종료 하시겠습니까?",
+          confirmText:"작업종료",
+          confirmClass:"btn btn-danger",
+          onCancel: ()=>{
+            modalRef.current.close();
+          },
+          onConfirm: (res) => {
+            // const newData = {
+            //   ...props.data,
+            //   type: props.colDef.field,
+            //   oldValue: props.value,
+            //   newValue: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            //   [props.colDef.field]: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            // };
+            
+            // setData(newData);
+            modalRef.current.close();
+  
+          }, 
+        });
+      }
+      
+    };
+
+    const handleClick2 = (yn) => {
+      console.log("handleClick2");
+      const newData = {
+        ...props.data,
+        type: props.colDef.field,
+        oldValue: props.value,
+        newValue: yn,
+        [props.colDef.field]: yn,
+      };
+      
+      setData(newData);
+    };
+
+    let str = '';
+    let bg = '';
+
+    if (props.value === null || props.value === '') {
+      if(props.colDef.field === 'start_dttm'){
+        str = '작업시작';
+        bg = 'primary';
+      }else if(props.colDef.field === 'end_dttm'){
+        str = '작업종료';
+        bg = 'danger'
+      } 
+
+      return (
+        <div style={{ width:'100%', display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
+          <span>{props.value}</span>
+          <Button size="sm" variant={bg} onClick={handleClick}>{str}</Button>
+        </div>
+      ); 
+    } 
+    
+    let dis = false;
+    let yn = '';
+
+    if (props.colDef.field === 'pause' ) {
+      if(props.data.start_dttm !== null && props.data.end_dttm === null){
+        if(props.value === 'Y'){
+          str = '일시정지 해제';
+          bg = 'success';
+          yn = 'N';
+        }else if(props.value === 'N'){
+          str = '일시정지 시작';
+          bg = 'success';
+          yn = 'Y';
+        }
+
+      }else{
+        dis = true;
+        str = '작업종료';
+        bg = 'secondary';
+
+      }
+
+      return (
+        <div style={{ width:'100%', display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
+          <Button size="sm" variant={bg} onClick={()=>handleClick2(yn)} disabled={dis}>{str}</Button>
+        </div>
+      ); 
+    }
+
+    
+    
+  
+
+    return <span>{props.value}</span>;
+  };
+
   // 그리드 설정 종료 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -252,12 +373,14 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => commonTypeFormatter(params, 'cd012'),
         },
-        { headerName: "담당자", field: "request_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        // { headerName: "주문", field: "order_chk", sortable: true, editable: false, align:"left", cellRenderer: ButtonRenderer},
+        // { headerName: "마감", field: "close_chk", sortable: true, editable: false, align:"left", cellRenderer: ButtonRenderer},
+        // { headerName: "담당자", field: "request_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300},
       ]);
                           
       // 그리드 설정2
@@ -349,7 +472,7 @@ const Main = ({ props={}, style_props={} }) => {
           valueFormatter: (params) => moneyFormatter(params)
         }, 
         { headerName: "납기예정일", field: "due_date", sortable: true, editable: (params) => !params.node.rowPinned, filter: "agDateColumnFilter",  align:"center", cellDataType:'dateString'},
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"}, 
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300}, 
       ]);
 
       getData();
@@ -400,11 +523,13 @@ const Main = ({ props={}, style_props={} }) => {
     , purchase_status : (Object.keys(props).length !== 0) ? 'order' : '' 
   });
 
+  const formR = useRef(form);
+
   // 검색창 입력필드 변경 저장
   const handleChange = (e) => {
-
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }; 
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    formR.current[e.target.name] = e.target.value;
+  };
 
 
 
@@ -413,6 +538,7 @@ const Main = ({ props={}, style_props={} }) => {
     console.log("getData");
 
     setRowData([]);
+    setRowData2([]);
     setLoading(true);
     
     axiosInstance
@@ -471,7 +597,7 @@ const Main = ({ props={}, style_props={} }) => {
     axiosInstance
       .post("api/setOrder", JSON.stringify(params))
       .then((res) => {
-        getData(selectedRow.current);
+        getData();
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -486,7 +612,7 @@ const Main = ({ props={}, style_props={} }) => {
     axiosInstance
       .post("api/setOrderDet", JSON.stringify(params))
       .then((res) => {
-        getData(selectedRow.current);
+        getData();
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -516,11 +642,6 @@ const Main = ({ props={}, style_props={} }) => {
       onConfirm: (res) => {
         
 
-        if(!formRef.current.user_id){
-          modalRef2.current.open({ title:"알림", message:"사용자를 선택하세요.", cancelText:"" });
-          return;
-        }
-
         if(!formRef.current.client_code){
           modalRef2.current.open({ title:"알림", message:"거래처를 선택하세요.", cancelText:"" });
           return;
@@ -536,19 +657,26 @@ const Main = ({ props={}, style_props={} }) => {
           return;
         }
 
-        const key = "quantity";
         const arr = formRef.current.sel_row;
-        const chk = arr.some(item => !item.hasOwnProperty(key) || item[key] === '' || item[key] === null || item[key] === undefined);
+        
+        const key = "quantity";
+        const chk = arr.some(item => !item.hasOwnProperty(key) || item[key] === '' || item[key] === null || item[key] === undefined || item[key] <= 0);
         if(chk){
           modalRef2.current.open({ title:"알림", message:"발주수량을 입력하세요.", cancelText:"" });
           return ;
         }
 
         const key2 = "unit_price";
-        const arr2 = formRef.current.sel_row;
-        const chk2 = arr2.some(item => !item.hasOwnProperty(key2) || item[key2] === '' || item[key2] === null || item[key2] === undefined);
+        const chk2 = arr.some(item => !item.hasOwnProperty(key2) || item[key2] === '' || item[key2] === null || item[key2] === undefined || item[key] <= 0);
         if(chk2){
           modalRef2.current.open({ title:"알림", message:"매입가를 입력하세요.", cancelText:"" });
+          return ;
+        }
+
+        const key3 = "due_date";
+        const chk3 = arr.some(item => !item.hasOwnProperty(key3) || item[key3] === '' || item[key3] === null || item[key3] === undefined);
+        if(chk3){
+          modalRef2.current.open({ title:"알림", message:"납기예정일을 입력하세요.", cancelText:"" });
           return ;
         }
 
@@ -632,12 +760,7 @@ const Main = ({ props={}, style_props={} }) => {
                     </div>
                   </td>
                   
-                </tr>
-              </tbody>
-            </Table>
-            <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
-              <tbody>
-                <tr>
+          
                   <th className="bg-light text-end align-middle">발주번호</th>
                   <td className="">
                       <Form.Control 
@@ -704,7 +827,7 @@ const Main = ({ props={}, style_props={} }) => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}
+              // pageSize={10}
               pinnedBottomRowData={pinnedBottomRowData}  
             />
           </Col>
@@ -834,10 +957,11 @@ const ModalComponent = ({ form }) => {
       selectBox.current = res.data;
 
       setColumnDefs([
-        { headerName: "품번", field: "raw_code", sortable: false, editable: false, align:"center"},
-        { headerName: "품명", field: "raw_name", sortable: false, editable: false, align:"left"},
+        { headerName: "품번", field: "raw_code", sortable: false, editable: false, align:"center" , width:100},
+        { headerName: "품명", field: "raw_name", sortable: false, editable: false, align:"left", width:300 },
         { headerName: "기준단위", field: "base_unit", sortable: false, editable: false, align:"center"},
         { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"},
+        { headerName: "납기예정일", field: "due_date", sortable: false, editable: true, align:"center", cellDataType:'dateString',},
         { headerName: "발주수량", field: "quantity", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
@@ -903,36 +1027,36 @@ const ModalComponent = ({ form }) => {
 
 
   // 조회
-  const getData = (params) => {
+  // const getData = (params) => {
 
-    formRef.current = {
-      user_id:'',
-      user_nm:''
-    };
+  //   formRef.current = {
+  //     user_id:'',
+  //     user_nm:''
+  //   };
 
-    modalRef.current.open({
-      title: "사용자 조회",
-      content: <SearchUserComponent form={formRef} />,
-      onCancel: ()=>{
-        modalRef.current.close();
-      },
-      confirmText:"확인",
-      confirmClass:"btn btn-primary",
-      onConfirm: (res) => {
-        const row = formRef.current.sel_row;
-        if(!row){
-          modalRef2.current.open({ title:"알림", message:"사용자를 선택하세요.", cancelText:"" });
-          return;
-        }
+  //   modalRef.current.open({
+  //     title: "사용자 조회",
+  //     content: <SearchUserComponent form={formRef} />,
+  //     onCancel: ()=>{
+  //       modalRef.current.close();
+  //     },
+  //     confirmText:"확인",
+  //     confirmClass:"btn btn-primary",
+  //     onConfirm: (res) => {
+  //       const row = formRef.current.sel_row;
+  //       if(!row){
+  //         modalRef2.current.open({ title:"알림", message:"사용자를 선택하세요.", cancelText:"" });
+  //         return;
+  //       }
 
-        modalFormChange({target:{name:'user_id', value:row.user_id}});
-        modalFormChange({target:{name:'user_nm', value:row.user_nm}});
+  //       modalFormChange({target:{name:'user_id', value:row.user_id}});
+  //       modalFormChange({target:{name:'user_nm', value:row.user_nm}});
 
-        modalRef.current.close();
-      }, 
-    });
+  //       modalRef.current.close();
+  //     }, 
+  //   });
     
-  };
+  // };
 
 
   // 조회2
@@ -975,23 +1099,32 @@ const ModalComponent = ({ form }) => {
 
   // 조회3
   const getData3 = (params) => {
-
     formRef3.current = {
-      raw_code:'',
-      raw_name:'',
-      bar_code: ''
+      item_code:'',
+      item_name:'',
+      sel_rows:[]
     };
 
     modalRef.current.open({
-      title: "품목 조회",
-      content: <SearchRawComponent form={formRef3} />,
+      title: "재고 조회",
+      content: <InventoryComponent props={formRef3} style_props={{height: '80vh', width:'80vw'}}/>,
+    // formRef3.current = {
+    //   raw_code:'',
+    //   raw_name:'',
+    //   bar_code: ''
+    // };
+
+    // modalRef.current.open({
+    //   title: "품목 조회",
+    //   content: <SearchRawComponent form={formRef3} />,
       onCancel: ()=>{
         modalRef.current.close();
       },
       confirmText:"확인",
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
-        const row = formRef3.current.sel_row;
+        const row = formRef3.current.sel_rows[0];
+        row.unit_price = parseInt(row.buyprice?? 0);
 
         if(!row){
           modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
@@ -1004,9 +1137,17 @@ const ModalComponent = ({ form }) => {
           return;
         } 
 
-        setRowData([...rowData, row]);
+        setRowData(prevData => {
+          const newData = [...prevData, row];
+          const uniqueData = newData.filter(
+            (row, index, self) =>
+              index === self.findIndex(r => r.raw_code === row.raw_code)
+          );
+          return uniqueData;
+        });
+
         
-        modalRef.current.close();
+        // modalRef.current.close();
       }, 
     });
     
@@ -1030,7 +1171,7 @@ const ModalComponent = ({ form }) => {
 
 
   return (
-    <div style={{ height: '50vh', width:'70vw', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '80vh', width:'80vw', display: 'flex', flexDirection: 'column' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -1040,7 +1181,7 @@ const ModalComponent = ({ form }) => {
             <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
-                  <th className="bg-light text-end align-middle">담당자</th>
+                  {/* <th className="bg-light text-end align-middle">담당자</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Control 
@@ -1067,7 +1208,7 @@ const ModalComponent = ({ form }) => {
                       />
                       <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
                     </div>
-                  </td>
+                  </td> */}
                   <th className="bg-light text-end align-middle">거래처</th>
                   <td className="">
                     <div className="d-flex gap-2">

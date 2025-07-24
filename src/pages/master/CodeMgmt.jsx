@@ -51,7 +51,7 @@ const Main = () => {
       },
     },
     { headerName: "정렬", field: "sort", sortable: true, editable: true, align:"center"},
-    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left"},
+    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left", width:300},
   ]);
 
   // 그리드2 설정
@@ -86,7 +86,7 @@ const Main = () => {
       },
     },
     { headerName: "정렬", field: "sort", sortable: true, editable: true, align:"center"},
-    { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left"},
+    { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left", width:300},
     { headerName: "옵션1", field: "opt1", sortable: true, editable: true, align:"center"},
     { headerName: "옵션2", field: "opt2", sortable: true, editable: true, align:"center"},
     { headerName: "옵션3", field: "opt3", sortable: true, editable: true, align:"center"},

@@ -287,7 +287,7 @@ const Main = ({ props={} }) => {
           },
           valueFormatter: (params) => commonTypeFormatter(params, 'cd012'),
         },
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300},
         { headerName: "담당자", field: "request_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
@@ -407,7 +407,7 @@ const Main = ({ props={} }) => {
           valueFormatter: (params) => moneyFormatter(params)
         }, 
         { headerName: "납기예정일", field: "due_date", sortable: true, editable: (params) => !params.node.rowPinned, filter: "agDateColumnFilter",  align:"center", cellDataType:'dateString'},
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"}, 
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300}, 
       ]);
 
       getData();

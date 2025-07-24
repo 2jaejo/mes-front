@@ -98,7 +98,7 @@ const Main = () => {
     { headerName: "적용시작일", field: "start_date", sortable: true, editable: true, align:"center"},
     { headerName: "적용종료일", field: "end_date", sortable: true, editable: true, align:"center"},
    
-    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left"},
+    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left", width:300},
   ]);
 
   // 변경이력 그리드 설정
@@ -135,7 +135,7 @@ const Main = () => {
     { headerName: "적용시작일", field: "start_date", sortable: true, editable: false, align:"center"},
     { headerName: "적용종료일", field: "end_date", sortable: true, editable: false, align:"center"},
    
-    { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
+    { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left", width:300},
     { headerName: "변경일시", field: "updated_at", sortable: true, editable: false, align:"left"},
   ]);
 
@@ -226,7 +226,7 @@ const Main = () => {
       { headerName: "품목소분류", field: "item_group_b", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
       { headerName: "기준단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
       { headerName: "거래처", field: "client_list", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-      { headerName: "비고", field: "comment", sortable: true, editable: false, align:"left"},
+      { headerName: "비고", field: "comment", sortable: true, editable: false, align:"left", width:300},
     ]);
 
     // 변경이력 그리드 onGridReady

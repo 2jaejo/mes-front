@@ -31,7 +31,7 @@ const Main = () => {
     { headerName: "점검방법", field: "method", sortable: true, editable: true, align:"left" },
     { headerName: "점검기준", field: "standard", sortable: true, editable: true, align:"left" },
     { headerName: "점검주기", field: "cycle", sortable: true, editable: true, align:"center" },
-    { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left" },
+    { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left" , width:300},
     
   ]);
 

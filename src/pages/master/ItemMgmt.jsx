@@ -239,8 +239,8 @@ const Main = ({props={} }) => {
           
           { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
           { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "품번", field: "item_dotno", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
-          { headerName: "상품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
+          { headerName: "품번", field: "item_dotno", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
+          { headerName: "상품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
           { headerName: "상태", field: "item_status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
           { headerName: "소비자가", field: "sellprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
           { headerName: "매입공급가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
@@ -254,7 +254,7 @@ const Main = ({props={} }) => {
           { headerName: "출고창고", field: "storage_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
           { headerName: "브랜드", field: "brand_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
           { headerName: "상품구분", field: "item_part_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "등록일", field: "reg_date", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+          { headerName: "등록일", field: "reg_date", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center", cellDataType: 'dateTime' },
           { headerName: "등록자", field: "reg_admin_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
 
           // { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left", flex:1},
@@ -635,8 +635,8 @@ const Main = ({props={} }) => {
     , storage_name : ''
     , brand_name : ''
     , item_part_name : ''
-    , reg_date : ''
-    , reg_admin_name : ''
+    // , reg_date : ''
+    // , reg_admin_name : ''
     , category : ''
     , ...init
   });
@@ -929,7 +929,7 @@ const Main = ({props={} }) => {
               </td>
               
             </tr>
-            <tr>
+            {/* <tr>
               <th className="bg-light text-end align-middle">등록일</th>
               <td>
                 <Form.Control 
@@ -958,7 +958,7 @@ const Main = ({props={} }) => {
                 />
               </td>
               
-            </tr>
+            </tr> */}
             
 
           </tbody>

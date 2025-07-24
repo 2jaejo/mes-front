@@ -78,11 +78,11 @@ const Main = () => {
           { headerName: "사업자(주민)번호", field: "biz_num", sortable: true, editable: false, align:"center"},
           { headerName: "상호명", field: "business_name", sortable: true, editable: false, align:"left"},
           { headerName: "대표자명", field: "ceo_name", sortable: true, editable: false, align:"left"},
-          { headerName: "사업장주소", field: "office_address", sortable: true, editable: false, align:"left"},
-          { headerName: "사업장 상세주소", field: "office_address2", sortable: true, editable: false, align:"left"},
-          { headerName: "전화", field: "phone", sortable: true, editable: false, align:"center"},
-          { headerName: "휴대전화", field: "mobile_phone", sortable: true, editable: false, align:"center"},
-          { headerName: "팩스", field: "fax", sortable: true, editable: false, align:"center"},
+          { headerName: "사업장주소", field: "office_address", sortable: true, editable: true, align:"left", width: 300},
+          { headerName: "사업장 상세주소", field: "office_address2", sortable: true, editable: true, align:"left"},
+          { headerName: "전화", field: "phone", sortable: true, editable: true, align:"center"},
+          { headerName: "휴대전화", field: "mobile_phone", sortable: true, editable: true, align:"center"},
+          { headerName: "팩스", field: "fax", sortable: true, editable: true, align:"center"},
           { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center"},
           { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"center"},
           { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center"},
@@ -149,6 +149,7 @@ const Main = () => {
     , business_name : ''
     , ceo_name : ''
     , office_address : ''
+    , office_address2 : ''
     , phone : ''
     , mobile_phone : ''
     , fax : ''
@@ -258,6 +259,22 @@ const Main = () => {
                   type="text"
                   name="office_address"
                   value={modalForm.office_address ?? ''}
+                  onChange={modalFormChange}
+                  size="sm" 
+                  className="w-100"
+                  maxLength={51}
+                />
+              </td>
+              
+            </tr>
+            <tr>
+
+              <th className="bg-light text-end align-middle">상세주소</th>
+              <td colSpan={3}>
+                <Form.Control 
+                  type="text"
+                  name="office_address2"
+                  value={modalForm.office_address2 ?? ''}
                   onChange={modalFormChange}
                   size="sm" 
                   className="w-100"
@@ -606,7 +623,7 @@ const Main = () => {
               </td>
               
             </tr>
-            <tr>
+            {/* <tr>
               <th className="bg-light text-end align-middle">등록일</th>
               <td>
                 <Form.Control 
@@ -663,7 +680,7 @@ const Main = () => {
                   maxLength={1}
                 />
               </td>
-            </tr>
+            </tr> */}
             
 
           </tbody>
@@ -713,7 +730,7 @@ const Main = () => {
     axiosInstance
       .post("api/setClient", JSON.stringify(params))
       .then((res) => {
-     
+        getData();
       })
       .catch((error) => {
         console.error("Error fetching data:", error);

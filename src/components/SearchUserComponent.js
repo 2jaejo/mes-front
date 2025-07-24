@@ -178,7 +178,7 @@ const Main = ({ form }) => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}  
+              // pageSize={10}  
             />
           </Col>
 

@@ -204,7 +204,7 @@ const Main = () => {
 
       // 그리드 설정
       setColumnDefs([
-        { headerName: "출고번호", field: "return_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
+        { headerName: "출고번호", field: "return_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width: 200},
         { headerName: "출고일자", field: "return_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "품목(수)", field: "item_count", sortable: true, editable: false, align:"right",
           cellRendererSelector: (params) => {
@@ -221,17 +221,17 @@ const Main = () => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "담당자", field: "manager", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        // { headerName: "담당자", field: "manager", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left",  width:300},
       ]);
       
       // 그리드 설정2
       setColumnDefs2([
-        { headerName: "출고번호", field: "return_id", sortable: false, editable: false, align:"center"},
+        { headerName: "출고번호", field: "return_id", sortable: false, editable: false, align:"center", width: 200},
         { headerName: "진행상태", field: "status", sortable: false, editable: false, align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -240,7 +240,7 @@ const Main = () => {
           valueFormatter: (params) => commonTypeFormatter(params, 'cd013'),
         },
         { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
-        { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left"}, 
+        { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
         { headerName: "기준단위", field: "base_unit", sortable: false, editable: false, align:"center"},
         { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"}, 
         { headerName: "출고수량", field: "return_qty", sortable: false, 
@@ -260,7 +260,7 @@ const Main = () => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left"}, 
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300}, 
       ]);
 
       getData();
@@ -454,10 +454,10 @@ const Main = () => {
         
 
       
-        if(!formRef.current.user_id){
-          modalRef2.current.open({ title:"알림", message:"담당자를 선택하세요.", cancelText:"" });
-          return;
-        }
+        // if(!formRef.current.user_id){
+        //   modalRef2.current.open({ title:"알림", message:"담당자를 선택하세요.", cancelText:"" });
+        //   return;
+        // }
 
         if(!formRef.current.request_date){
           modalRef2.current.open({ title:"알림", message:"출고일을 입력하세요.", cancelText:"" });
@@ -486,6 +486,42 @@ const Main = () => {
    
         axiosInstance
           .post(`/api/addRelease`, JSON.stringify(formRef.current))
+          .then((res) => {
+            getData();
+            modalRef.current.close();
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
+          });   
+
+
+      }, 
+    });
+
+  };
+
+  // 삭제
+  const delData = (params) => {
+    console.log("delData");
+
+    const rows = gridRef.current.getSelectedRows();
+    if (rows.length === 0) {
+      modalRef2.current.open({ title:"알림", message:"선택하신 항목이 없습니다.", cancelText:"" });
+    }
+    
+    modalRef.current.open({
+      title: "출고 삭제",
+      message: "삭제하시겠습니까?",
+      onCancel: ()=>{
+        modalRef.current.close();
+      },
+      confirmText:"삭제",
+      confirmClass:"btn btn-danger",
+      onConfirm: (res) => {
+       
+        axiosInstance
+          .post(`/api/delReceiptReturn`, JSON.stringify(rows))
           .then((res) => {
             getData();
             modalRef.current.close();
@@ -570,7 +606,7 @@ const Main = () => {
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">출고 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
-              
+              {/* <Button size="sm" variant="danger" onClick={delData}>삭제</Button> */}
             </div>
 
             <GridExample 
@@ -705,7 +741,7 @@ const ModalComponent = ({ form }) => {
         // { headerName: "재고비율", field: "stock_ratio", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params, '%')},
         // { headerName: "부족수량", field: "chk_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
         { headerName: "출고수량", field: "release_qty", sortable: false, editable: true, align:"right", cellDataType:'number'},
-        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: false, align:"left", width:300},
       ]);
 
       // getData();
@@ -790,8 +826,13 @@ const ModalComponent = ({ form }) => {
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
         const sel_rows = formRef2.current.sel_rows;
-        console.log(sel_rows);
-        
+
+        const exists = rowData.some(row => row.raw_code === sel_rows[0].raw_code);
+        if (exists) {
+          modalRef2.current.open({ title:"알림", message:"이미 추가된 품목입니다.", cancelText:"" });
+          return;
+        }
+
         if (sel_rows === undefined || sel_rows.length === 0){
           modalRef2.current.open({ title:"알림", message:"선택된 항목이 없습니다.", cancelText:"" });
           return;
@@ -803,10 +844,17 @@ const ModalComponent = ({ form }) => {
           return;
         }
 
-        // setRowData(sel_rows);
-        setRowData([...rowData, ...sel_rows]);
+        setRowData(prevData => {
+          const newData = [...prevData, ...sel_rows];
+          const uniqueData = newData.filter(
+            (row, index, self) =>
+              index === self.findIndex(r => r.raw_code === row.raw_code)
+          );
+          return uniqueData;
+        });
 
-        modalRef.current.close();
+        // console.log("rowData", rowData);
+        // modalRef.current.close();
       }, 
     });
     
@@ -816,7 +864,7 @@ const ModalComponent = ({ form }) => {
 
 
   return (
-    <div style={{ height: '50vh', width:'80vw', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '80vh', width:'80vw', display: 'flex', flexDirection: 'column' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -826,7 +874,7 @@ const ModalComponent = ({ form }) => {
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
-                  <th className="bg-light text-end align-middle">담당자</th>
+                  {/* <th className="bg-light text-end align-middle">담당자</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Control 
@@ -853,7 +901,7 @@ const ModalComponent = ({ form }) => {
                       />
                       <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
                     </div>
-                  </td>
+                  </td> */}
                   <th className="bg-light text-end align-middle">출고일</th>
                   <td className="">
                     <div className="d-flex gap-2">
@@ -868,8 +916,7 @@ const ModalComponent = ({ form }) => {
                       /> 
                     </div>
                   </td>
-                </tr>
-                <tr>
+             
                   <th className="bg-light text-end align-middle">비고</th>
                   <td className="" colSpan={3}>
                     <div className="d-flex gap-2">
@@ -880,6 +927,7 @@ const ModalComponent = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-100"
+                        style={{ minWidth: 800 }}
                         maxLength={200}
                       /> 
                     </div>

@@ -125,9 +125,9 @@ const Main = ({ props={}, isActive}) => {
       // 그리드 설정
       setColumnDefs([
         { headerName: "수주번호", field: "sales_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "작업지시코드", field: "work_id", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:150 },
+        { headerName: "작업지시코드", field: "work_id", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:200 },
         { headerName: "제품코드", field: "item_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
-        { headerName: "제품명", field: "item_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:200 },
+        { headerName: "제품명", field: "item_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:300 },
         { headerName: "공정명", field: "process_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
         { headerName: "지시수량", field: "order_qty", sortable: false, editable: (params) => params.data.status !== 'end', align:"right", cellDataType:'number',
           valueFormatter:(params)=> moneyFormatter(params)
@@ -160,7 +160,7 @@ const Main = ({ props={}, isActive}) => {
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "비고", field: "remark", sortable: false, editable: true, align:"left"},
+        { headerName: "비고", field: "remark", sortable: false, editable: true, align:"left", width:300},
       ]);
 
     
@@ -756,7 +756,7 @@ const ModalComponent = ({ form }) => {
           },
           valueFormatter:(params)=> commonTypeFormatter(params,'cd014')
         },
-        { headerName: "비고", field: "comment2", sortable: false, editable: true, align:"left" },
+        { headerName: "비고", field: "comment2", sortable: false, editable: true, align:"left", width:300 },
       ]);
 
   

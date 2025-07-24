@@ -76,8 +76,8 @@ const Main = ({ form }) => {
       setColumnDefs([
         { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
-        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
+        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
+        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
         { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "매입가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
@@ -137,7 +137,7 @@ const Main = ({ form }) => {
 
 
   return (
-    <div style={{ height: '50vh', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+    <div style={{ height: '80vh', width:'80vw',  display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
       <Modal ref={modalRef} />
 
       <div className="bg-light">
@@ -220,7 +220,7 @@ const Main = ({ form }) => {
             rowNum={true}
             rowSel={"singleRow"}
             pagination={true}
-            pageSize={10}
+            // pageSize={10}
             // rowDrag={true}
           />
         </Col>

@@ -102,7 +102,6 @@ const Main = ({ props={}, isActive}) => {
   const getData = (params) => {
     console.log("getData");
 
-    console.log("formRef : ",formRef.current);
     if(!formRef.current.work_idx) return;
     
     axiosInstance

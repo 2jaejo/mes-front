@@ -19,6 +19,35 @@ const Main = ({ props={}, style_props={} }) => {
     }
   };
 
+  const [barcode, setBarcode] = useState('');
+
+  const handleKeyPress = async (e) => {
+    if (e.key === 'Enter' && barcode.trim() !== '') {
+      const params = {
+        barcode: barcode,
+      }
+
+      setLoading(true);
+      axiosInstance
+        .post(`/api/getRaw`, JSON.stringify(params))
+        .then((res) => {
+          setRowData(res.data);
+          
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+        })
+        .finally(() =>{
+          setLoading(false);
+          setBarcode('');
+
+        });
+      
+    }
+
+  };
+
   const selectedRow = useRef(0);
 
   // 검색창 입력필드
@@ -110,20 +139,20 @@ const Main = ({ props={}, style_props={} }) => {
       selectBox.current = res.data;
 
       setColumnDefs([
+        { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "재고수량", field: "quantity", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "재고비율", field: "stock_ratio", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params, '%')},
+        { headerName: "부족수량", field: "chk_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
         { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:150 },
-        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:200 },
+        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
+        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
         { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "매입가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "분류", field: "type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
-        { headerName: "재고수량", field: "quantity", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
-        { headerName: "재고비율", field: "stock_ratio", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params, '%')},
-        { headerName: "부족수량", field: "chk_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
       ]);
 
       getData();
@@ -223,6 +252,24 @@ const Main = ({ props={}, style_props={} }) => {
                   </td>
                   <td className="">
                     <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-search"></i></Button>
+                  </td>
+
+                  <th className="bg-light text-end align-middle">바코드</th>
+                  <td className="">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="text"
+                        name="barcode"
+                        value={form.barcode}
+                        onChange={(e) => setBarcode(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder="바코드를 스캔하세요"
+                        maxLength={50}
+                      />
+                      
+                    </div>
                   </td>
                   
                 </tr>

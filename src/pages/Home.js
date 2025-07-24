@@ -16,6 +16,8 @@ const Home = ({isActive, addTab}) => {
   const modalRef = useRef();  
   const modalRef2 = useRef();  
 
+  const isUnmounted = useRef(false);
+
   const [chartData, setChartData] = useState([]);
   const chartDataRef = useRef([]); // 최신 chartData를 기억할 ref
 
@@ -104,11 +106,23 @@ const Home = ({isActive, addTab}) => {
     return item ? item.code_name : params.value; 
   };
 
+
+  // 최초 실행된 후만 refresh 루프 실행
+  const startRefreshLoop = async () => {
+    while (!isUnmounted.current) {
+      console.log("refresh");
+      await Promise.all([getData(), getData2(), getData3()]);
+      if (isUnmounted.current) break;
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+  };
+
   // 초기화
   useEffect(()=>{
     console.log("useEffect");
     
     if( !isActive ) return;
+    isUnmounted.current = false;
 
     const init = {
       category: '',
@@ -152,27 +166,24 @@ const Home = ({isActive, addTab}) => {
         { headerName: "수록자", field: "updated_by", sortable: true, editable: false, align:"left"},
       ]);
 
-      getData();
-      getData2();
-      getData3();
+      startRefreshLoop();
 
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
       modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
     });  
+
+    // 컴포넌트 언마운트 시 플래그 설정
+    return () => {
+      console.log("useEffect cleanup");
+      isUnmounted.current = true;
+    };
       
   },[isActive]);
 
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      refresh();
-    }, 5000); // 5초마다 실행
 
-    // 언마운트 시 인터벌 해제
-    return () => clearInterval(intervalId);
-  }, []);
 
 
 

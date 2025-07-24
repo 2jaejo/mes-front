@@ -269,7 +269,7 @@ const Main = ({ isActive}) => {
               
             </div>
             
-            <div style={{ width: '100%', height: '100%', minWidth:800, minHeight:600 }}>
+            <div style={{ width: '100%', height: '100%', minWidth:800, minHeight:600, paddingBottom: 50, overflow: 'auto' }}>
               <VisTimeline groups={groups} items={items} options={options}/>
 
             </div>

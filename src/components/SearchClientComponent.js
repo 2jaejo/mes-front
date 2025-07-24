@@ -55,7 +55,7 @@ const Main = ({ form }) => {
 
       setColumnDefs([
         { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "거래처명", field: "client_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "거래처명", field: "client_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left", width:300 },
         { headerName: "거래처유형", field: "client_type", sortable: true, editable: false, align:"center", 
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -152,7 +152,7 @@ const Main = ({ form }) => {
 
 
   return (
-    <div style={{ height: '50vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '80vh', width: '80vw', display: 'flex', flexDirection: 'column' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -220,7 +220,7 @@ const Main = ({ form }) => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}  
+              // pageSize={10}  
             />
           </Col>
 

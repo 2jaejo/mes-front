@@ -88,7 +88,7 @@ const Main = () => {
             return false; // 변경 없음
           },
         },
-        { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left", width:300},
       ]);
 
       getData();

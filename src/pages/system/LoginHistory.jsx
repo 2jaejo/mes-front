@@ -15,7 +15,7 @@ const LoginHistory = () => {
   const [columnDefs] = useState([
     { headerName: "아이디", field: "user_id", sortable: true, filter: true, },
     { headerName: "아이피", field: "ip_address", sortable: true, },
-    { headerName: "접속정보", field: "user_agent", sortable: true, minWidth:800 },
+    { headerName: "접속정보", field: "user_agent", sortable: true, align:"left", flex:1 },
     { headerName: "접속시간", field: "login_dt", sortable: true, },
     { headerName: "성공여부", field: "success", sortable: true, },
   ]);

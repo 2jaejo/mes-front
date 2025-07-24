@@ -89,7 +89,7 @@ const Main = () => {
         { headerName: "LOT", field: "lot_no", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "단위", field: "unit", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center"},
         { headerName: "수량", field: "quantity", sortable: false, editable: true, align:"right", valueFormatter: (params) => moneyFormatter(params)},
-        { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left", width:300},
       ]);
 
       getData();

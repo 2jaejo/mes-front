@@ -23,59 +23,6 @@ const Main = () => {
   const [columnDefs, setColumnDefs] = useState([]);
   
 
-  const col_a = [
-    { headerName: "공정코드", field: "process_code", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter"},
-    { headerName: "공정명", field: "process_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter" },
-    { headerName: "공정유형", field: "process_type", sortable: true, editable: false, align:"center", filter: "agTextColumnFilter", 
-      valueFormatter:(params)=> typeFormatter(params,'cd011')
-    },
-    { headerName: "검사여부", field: "check_yn", sortable: true, editable: false, align:"center",
-      backgroundColor: "#a7d1ff29",
-      cellRenderer: 'agCheckboxCellRenderer',
-      cellRendererParams: {
-        disabled: false,
-      },
-      // Y/N 값을 true/false로 변환하여 체크박스 표시
-      valueGetter: (params) => {
-        return params.data.check_yn === 'Y';
-      },
-      // 체크박스 변경 시 true/false → Y/N 으로 반영
-      valueSetter: (params) => {
-        const newValue = params.newValue ? 'Y' : 'N';
-        if (params.data.check_yn !== newValue) {
-          params.data.check_yn = newValue;
-          return true; // 값이 바뀐 경우만 true
-        }
-        return false; // 변경 없음
-      },
-    },
-    { headerName: "사용여부", field: "use_yn", sortable: true, editable: false, align:"center",
-      backgroundColor: "#a7d1ff29",
-      cellRenderer: 'agCheckboxCellRenderer',
-      cellRendererParams: {
-        disabled: false,
-      },
-      // Y/N 값을 true/false로 변환하여 체크박스 표시
-      valueGetter: (params) => {
-        return params.data.use_yn === 'Y';
-      },
-
-      // 체크박스 변경 시 true/false → Y/N 으로 반영
-      valueSetter: (params) => {
-        const newValue = params.newValue ? 'Y' : 'N';
-        if (params.data.use_yn !== newValue) {
-          params.data.use_yn = newValue;
-          return true; // 값이 바뀐 경우만 true
-        }
-        return false; // 변경 없음
-      },
-    },
-    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left", minWidth:500 },
-  ];
-
-
-
-
   // 그리드 onGridReady
   const onGridReady = (params) => {
     gridRef.current = params.api; // Grid API 저장
@@ -141,9 +88,62 @@ const Main = () => {
       selectBox.current = res.data;
 
       // 공정목록 그리드 설정
-      setColumnDefs(col_a);
+      setColumnDefs([
+        { headerName: "공정코드", field: "process_code", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter"},
+        { headerName: "공정명", field: "process_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter", width:300 },
+        { headerName: "공정유형", field: "process_type", sortable: true, editable: true, align:"center", filter: "agTextColumnFilter", 
+          cellEditor: "agSelectCellEditor",
+          cellEditorParams: {
+            values: selectBox.current.common?.['cd011'].map((item) => item.code) ?? [],
+          },
+          valueFormatter:(params)=> typeFormatter(params,'cd011')
+        },
+        // { headerName: "검사여부", field: "check_yn", sortable: true, editable: false, align:"center",
+        //   backgroundColor: "#a7d1ff29",
+        //   cellRenderer: 'agCheckboxCellRenderer',
+        //   cellRendererParams: {
+        //     disabled: false,
+        //   },
+        //   // Y/N 값을 true/false로 변환하여 체크박스 표시
+        //   valueGetter: (params) => {
+        //     return params.data.check_yn === 'Y';
+        //   },
+        //   // 체크박스 변경 시 true/false → Y/N 으로 반영
+        //   valueSetter: (params) => {
+        //     const newValue = params.newValue ? 'Y' : 'N';
+        //     if (params.data.check_yn !== newValue) {
+        //       params.data.check_yn = newValue;
+        //       return true; // 값이 바뀐 경우만 true
+        //     }
+        //     return false; // 변경 없음
+        //   },
+        // },
+        { headerName: "사용여부", field: "use_yn", sortable: true, editable: false, align:"center",
+          backgroundColor: "#a7d1ff29",
+          cellRenderer: 'agCheckboxCellRenderer',
+          cellRendererParams: {
+            disabled: false,
+          },
+          // Y/N 값을 true/false로 변환하여 체크박스 표시
+          valueGetter: (params) => {
+            return params.data.use_yn === 'Y';
+          },
+
+          // 체크박스 변경 시 true/false → Y/N 으로 반영
+          valueSetter: (params) => {
+            const newValue = params.newValue ? 'Y' : 'N';
+            if (params.data.use_yn !== newValue) {
+              params.data.use_yn = newValue;
+              return true; // 값이 바뀐 경우만 true
+            }
+            return false; // 변경 없음
+          },
+        },
+        { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left", minWidth:500 },
+      ]);
 
       getData();
+
     })
     .catch((error) => {
       console.error("Error fetching data:", error);

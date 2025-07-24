@@ -231,7 +231,7 @@ const Main = ({ form }) => {
             rowNum={true}
             rowSel={"singleRow"}
             pagination={true}
-            pageSize={10}
+            // pageSize={10}
             // rowDrag={true}
           />
         </Col>

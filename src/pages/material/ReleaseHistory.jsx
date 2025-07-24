@@ -162,9 +162,9 @@ const Main = () => {
         // 그리드 설정
         setColumnDefs([
           { headerName: "출고마감일시", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
-          { headerName: "출고번호", field: "receipt_id", sortable: false, editable: false, align:"center"},
+          { headerName: "출고번호", field: "receipt_id", sortable: false, editable: false, align:"center", width:200},
           { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
-          { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left"}, 
+          { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
           { headerName: "변경수량", field: "changed_quantity", sortable: false, editable: false, align:"left"},         
         ]);
         

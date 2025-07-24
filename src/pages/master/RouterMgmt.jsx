@@ -25,7 +25,7 @@ const Main = () => {
   
 
   const col_a = [
-    { headerName: "품목명", field: "item_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter"},
+    { headerName: "품목명", field: "item_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter", width: 300},
     { headerName: "라우터코드", field: "router_code", sortable: true, editable: false, align:"center", filter: "agTextColumnFilter"},
     { headerName: "라우터명", field: "router_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter" },
     // { headerName: "버전", field: "version", sortable: true, editable: false, align:"center", filter: "agTextColumnFilter"},
@@ -80,7 +80,7 @@ const Main = () => {
         return false; // 변경 없음
       },
     },
-    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"center"}, 
+    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"center",  width:300 }, 
   ];
 
   const gridRef2 = useRef();  
@@ -905,7 +905,7 @@ const ModalForm2 = ({ form={}, onChangeHandler }) => {
 
   let grid_col4 = [
     { headerName: "품목코드", field: "item_dotno", sortable: true, editable: false, align:"center"},
-    { headerName: "품목명", field: "item_name", sortable: true, editable: false, align:"left"},
+    { headerName: "품목명", field: "item_name", sortable: true, editable: false, align:"left", flex:1},
   ];
   
   
@@ -1036,7 +1036,7 @@ const ModalForm2 = ({ form={}, onChangeHandler }) => {
             loading={loading}
             rowNum={true}
             rowSel={"singleRow"}
-            pageSize={10}  
+            // pageSize={10}  
           />
         </Col>
       </Row>
