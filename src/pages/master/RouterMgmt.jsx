@@ -362,6 +362,7 @@ const Main = () => {
           return;
         }
 
+        modalRef.current.update({ isLoading: true });
         axiosInstance
           .post(`/api/addRouter`, JSON.stringify(formRef.current))
           .then((res) => {
@@ -371,7 +372,10 @@ const Main = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });   
+          })
+          .finally(() =>{
+            modalRef.current.update({ isLoading: false });
+          });
 
 
       }, 
@@ -722,6 +726,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
       confirmText:"확인",
       confirmClass:"btn btn-success",
       onConfirm: (res) => { 
+        modalRef.current.update({ isLoading: true });
         const sel_row = formRef.current;
         if(sel_row.length > 0){
           modalFormChange( {target:{name:"item_dotno",value:sel_row[0].item_dotno}} );
@@ -731,7 +736,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
         else{
           modalRef2.current.open({ title:"알림", message:"선택된 항목이 없습니다.", cancelText:"" });
         }
-    
+        modalRef.current.update({ isLoading: false });
       }, 
     });
 
@@ -983,7 +988,7 @@ const ModalForm2 = ({ form={}, onChangeHandler }) => {
 
 
   return (
-    <div style={{ height: '40vh', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+    <div style={{ height: '50vh', width:'40vw', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
       <Modal ref={modalRef} />
 
       <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">

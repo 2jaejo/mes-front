@@ -330,3 +330,8 @@ li.expanded {
 .bg-gold { background-color: rgb(255, 215, 0, var(--alpha)) !important; }
 .bg-coralRed { background-color: rgb(255, 64, 64, var(--alpha)) !important; }
 .bg-turquoise { background-color: rgb(64, 224, 208, var(--alpha)) !important; }
+
+
+.dropdown-toggle::after {
+  display: none !important;
+}

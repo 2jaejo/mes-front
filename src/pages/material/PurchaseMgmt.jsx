@@ -335,7 +335,7 @@ const Main = ({ props={}, style_props={} }) => {
       setColumnDefs([
         { headerName: "발주번호", field: "purchase_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:200},
         { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" , width:300},
+        { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" , width:200},
         { headerName: "발주일자", field: "order_date", sortable: true, editable: false, filter: "agDateColumnFilter", align:"center",
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
@@ -350,7 +350,7 @@ const Main = ({ props={}, style_props={} }) => {
             return undefined;
           },
         },
-       
+        { headerName: "품목(수)", field: "raw_count", sortable: true, editable: false, align:"left", width:400},
         { headerName: "합계", field: "total_price", sortable: true, editable: false, align:"right",
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
@@ -372,6 +372,7 @@ const Main = ({ props={}, style_props={} }) => {
             values: selectBox.current.common?.['cd012']?.map((item) => item.code) ?? [],
           },
           valueFormatter: (params) => commonTypeFormatter(params, 'cd012'),
+          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
         },
         // { headerName: "주문", field: "order_chk", sortable: true, editable: false, align:"left", cellRenderer: ButtonRenderer},
         // { headerName: "마감", field: "close_chk", sortable: true, editable: false, align:"left", cellRenderer: ButtonRenderer},
@@ -389,7 +390,7 @@ const Main = ({ props={}, style_props={} }) => {
         { headerName: "진행상태", field: "status", sortable: false, editable: false, align:"center",
           valueFormatter: (params) => {
             if( params.data.received_qty == 0){
-              return '보류중';
+              return '입고대기중';
             }else if(params.data.quantity > params.data.received_qty){
               return '부분입고';
             }else if(params.data.quantity <= params.data.received_qty){
@@ -406,7 +407,7 @@ const Main = ({ props={}, style_props={} }) => {
         { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"}, 
         { headerName: "발주수량", field: "quantity", sortable: false, 
           align:"right", 
-          editable: false , 
+          editable: true ,
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -421,7 +422,7 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "단가", field: "unit_price", sortable: false, editable: false, align:"right", 
+        { headerName: "단가", field: "unit_price", sortable: false, editable: true, align:"right", 
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -436,7 +437,7 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "합계", field: "total_price", sortable: false, editable: false, align:"right", 
+        { headerName: "합계", field: "total_price", sortable: false, editable: true, align:"right", 
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -680,6 +681,8 @@ const Main = ({ props={}, style_props={} }) => {
           return ;
         }
 
+        modalRef.current.update({isLoading:true});
+
         axiosInstance
           .post(`/api/addOrder`, JSON.stringify(formRef.current))
           .then((res) => {
@@ -689,7 +692,10 @@ const Main = ({ props={}, style_props={} }) => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });   
+          })
+          .finally(() =>{
+            modalRef.current.update({isLoading:false});
+          });
 
 
       }, 
@@ -768,6 +774,7 @@ const Main = ({ props={}, style_props={} }) => {
                         name="purchase_id"
                         value={form.purchase_id}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -781,9 +788,10 @@ const Main = ({ props={}, style_props={} }) => {
                         name="client_code"
                         value={form.client_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="거래처코드"
                         maxLength={50}
                       />
                       <Form.Control 
@@ -791,9 +799,10 @@ const Main = ({ props={}, style_props={} }) => {
                         name="client_name"
                         value={form.client_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="거래처명"
                         maxLength={50}
                       />
                     </div>
@@ -835,7 +844,7 @@ const Main = ({ props={}, style_props={} }) => {
 
       </div>
 
-      <div className="h-100">
+      <div className="h-50">
         <Row  className="h-100">
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
@@ -965,7 +974,7 @@ const ModalComponent = ({ form }) => {
         { headerName: "발주수량", field: "quantity", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "매입가", field: "unit_price", sortable: false, editable: true, align:"right", cellDataType: 'number',
+        { headerName: "단가", field: "unit_price", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
         { headerName: "합계", field: "total_price", sortable: false, editable: false, align:"right", cellDataType: 'number',
@@ -1123,31 +1132,48 @@ const ModalComponent = ({ form }) => {
       confirmText:"확인",
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
-        const row = formRef3.current.sel_rows[0];
-        row.unit_price = parseInt(row.buyprice?? 0);
-
-        if(!row){
-          modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
+        const selectedRows = formRef3.current.sel_rows ?? [];
+        if (selectedRows.length === 0) {
+          modalRef2.current.open({
+            title: "알림",
+            message: "품목을 선택하세요.",
+            cancelText: "",
+          });
           return;
         }
 
-        const chk = rowData.some(el => el.raw_code === row.raw_code);
-        if(chk) {
-          modalRef2.current.open({ title:"알림", message:"이미 추가된 품목입니다.", cancelText:"" });
-          return;
-        } 
 
+        // 중복 체크 및 추가
         setRowData(prevData => {
-          const newData = [...prevData, row];
+          const newData = [...prevData];
+
+          selectedRows.forEach(row => {
+            row.unit_price = parseInt(row.buyprice ?? 0);
+
+            const alreadyExists = newData.some(el => el.raw_code === row.raw_code);
+            if (!alreadyExists) {
+              newData.push(row);
+            } else {
+              // 이미 추가된 품목 경고 (선택적으로 처리)
+              modalRef2.current.open({
+                title: "알림",
+                message: `이미 추가된 품목입니다. (품목명: ${row.raw_name})`,
+                cancelText: "",
+              });
+
+            }
+          });
+
+          // 중복 제거는 안전하게 한 번 더 처리 (raw_code 기준)
           const uniqueData = newData.filter(
             (row, index, self) =>
               index === self.findIndex(r => r.raw_code === row.raw_code)
           );
+
           return uniqueData;
         });
-
         
-        // modalRef.current.close();
+        modalRef.current.close();
       }, 
     });
     
@@ -1219,7 +1245,7 @@ const ModalComponent = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="거래처코드"
                         maxLength={50}
                         disabled
                       />
@@ -1230,7 +1256,7 @@ const ModalComponent = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="거래처명"
                         maxLength={50}
                         disabled
                       />

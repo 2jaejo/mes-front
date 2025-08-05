@@ -161,11 +161,12 @@ const Main = () => {
 
         // 그리드 설정
         setColumnDefs([
-          { headerName: "출고마감일시", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+          { headerName: "출고일시", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
           { headerName: "출고번호", field: "receipt_id", sortable: false, editable: false, align:"center", width:200},
           { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
           { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
-          { headerName: "변경수량", field: "changed_quantity", sortable: false, editable: false, align:"left"},         
+          { headerName: "출고량", field: "changed_quantity", sortable: false, editable: false, align:"right"},         
+          { headerName: "등록자", field: "created_by", sortable: false, editable: false, align:"left"}, 
         ]);
         
 
@@ -294,7 +295,7 @@ const Main = () => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="자재코드"
                         maxLength={50}
                       />
                       <Form.Control 
@@ -304,7 +305,7 @@ const Main = () => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="자재명"
                         maxLength={50}
                       />
                     </div>

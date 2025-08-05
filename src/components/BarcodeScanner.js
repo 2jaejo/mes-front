@@ -85,7 +85,7 @@ const BarcodeScanner = () => {
         name="barcode"
         value={barcode}
         onChange={(e) => setBarcode(e.target.value)}
-        onKeyDown={handleKeyPress}
+        onKeyUp={handleKeyPress}
         size="sm" 
         className="w-auto"
         placeholder="바코드를 스캔하세요"

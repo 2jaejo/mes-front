@@ -166,6 +166,7 @@ const Main = ({ form }) => {
                         name="raw_name"
                         value={modalForm.raw_name}
                         onChange={modalFormChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="품명"
@@ -185,7 +186,7 @@ const Main = ({ form }) => {
                         name="barcode"
                         value={modalForm.barcode}
                         onChange={modalFormChange}
-                        onKeyDown={handleKeyPress}
+                        onKeyUp={handleKeyPress}
                         size="sm" 
                         className="w-auto"
                         placeholder="바코드를 스캔하세요"

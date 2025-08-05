@@ -6,6 +6,7 @@ import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import * as XLSX from "xlsx";
 import { comm } from "utils/CommonFunctions";
+import dayjs from "dayjs";
 
 const Main = ({props={} }) => {
 
@@ -120,6 +121,7 @@ const Main = ({props={} }) => {
   const [rowData, setRowData] = useState();
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(false);
+  
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1067,6 +1069,7 @@ const Main = ({props={} }) => {
           return;
         }
 
+        modalRef.current.update({ isLoading: true });
         axiosInstance
           .post(`/api/addItem`, JSON.stringify(formRef.current))
           .then((res) => {
@@ -1077,7 +1080,10 @@ const Main = ({props={} }) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });    
+          })
+          .finally(() => {
+            modalRef.current.update({ isLoading: false });
+          });
 
         
 
@@ -1172,6 +1178,8 @@ const Main = ({props={} }) => {
               .map(([k, v]) => [v.trim(), k])
             );
 
+            modalRef.current.update({ isLoading: true });
+
             axiosInstance
               .post(`/api/setExcelMapping`, JSON.stringify(reversed))
               .then((res) => {
@@ -1181,8 +1189,11 @@ const Main = ({props={} }) => {
                 console.error("Error fetching data:", error);
                 modalRef.current.close();
                 modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-              });   
-    
+              })
+              .finally(() => {
+                modalRef.current.update({ isLoading: false });
+              });
+
           },
         });
 
@@ -1228,7 +1239,10 @@ const Main = ({props={} }) => {
           return;
         }
 
+
         let data = {category: 'item'};
+        modalRef.current.update({ isLoading: true });
+        
         axiosInstance
           .post(`/api/excelMapping`, JSON.stringify(data))
           .then((res) => {
@@ -1291,7 +1305,10 @@ const Main = ({props={} }) => {
                   console.error("Error fetching data:", error);
                   modalRef.current.close();
                   modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-                });   
+                })
+                .finally(() => {
+                  modalRef.current.update({ isLoading: false });
+                });
 
 
             };
@@ -1310,6 +1327,15 @@ const Main = ({props={} }) => {
       },
     });
     
+  };
+
+  const exportExcel = () =>{
+    console.log("exportExcel");
+    if (gridRef.current) {
+      gridRef.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_품목관리.csv`
+      });
+    }
   };
 
 
@@ -1413,6 +1439,7 @@ const Main = ({props={} }) => {
                         name="item_name"
                         value={form.item_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="상품명"
@@ -1432,7 +1459,7 @@ const Main = ({props={} }) => {
                         name="barcode"
                         value={barcode}
                         onChange={(e) => setBarcode(e.target.value)}
-                        onKeyDown={handleKeyPress}
+                        onKeyUp={handleKeyPress}
                         size="sm" 
                         className="w-auto"
                         placeholder="바코드를 스캔하세요"
@@ -1463,6 +1490,7 @@ const Main = ({props={} }) => {
                   <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
                   <Button size="sm" variant="primary" onClick={mappingData}>업로드 맵핑</Button>
                   <Button size="sm" variant="primary" onClick={uploadExcel}>파일 업로드</Button>
+                  <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
                 </>
               }
             </div>

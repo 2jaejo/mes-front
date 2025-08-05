@@ -255,7 +255,7 @@ const Main = ({ props={}, isActive }) => {
         dis = true;
         str = '작업종료';
         bg = 'secondary';
-
+        yn = 'N';
       }
 
       return (
@@ -533,6 +533,7 @@ const Main = ({ props={}, isActive }) => {
                         name="work_id"
                         value={form.work_id}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -547,9 +548,10 @@ const Main = ({ props={}, isActive }) => {
                         name="item_code"
                         value={form.item_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="품목코드"
                         maxLength={50}
                       />
                       <Form.Control 
@@ -557,9 +559,10 @@ const Main = ({ props={}, isActive }) => {
                         name="item_name"
                         value={form.item_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="품목명"
                         maxLength={50}
                       />
                     </div>
@@ -605,7 +608,7 @@ const Main = ({ props={}, isActive }) => {
               loading={loading2}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}
+              // pageSize={10}
             />
           </Col>
         </Row>

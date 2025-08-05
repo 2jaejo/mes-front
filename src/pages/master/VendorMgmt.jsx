@@ -77,11 +77,11 @@ const Main = () => {
 
         setColumnDefs([
           { headerName: "매입처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
-          { headerName: "매입처명", field: "client_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+          { headerName: "매입처명", field: "client_name", sortable: true, editable: true, filter: "agTextColumnFilter",  align:"left"},
           { headerName: "사업자(주민)번호", field: "biz_num", sortable: true, editable: false, align:"center"},
-          { headerName: "상호명", field: "business_name", sortable: true, editable: false, align:"left"},
+          // { headerName: "상호명", field: "business_name", sortable: true, editable: false, align:"left"},
           { headerName: "대표자명", field: "ceo_name", sortable: true, editable: false, align:"left"},
-          { headerName: "사업장주소", field: "office_address", sortable: true, editable: true, align:"left"},
+          { headerName: "사업장주소", field: "office_address", sortable: true, editable: true, align:"left",width:300},
           { headerName: "사업장 상세주소", field: "office_address2", sortable: true, editable: true, align:"left"},
           { headerName: "전화", field: "phone", sortable: true, editable: true, align:"center"},
           { headerName: "휴대전화", field: "mobile_phone", sortable: true, editable: true, align:"center"},
@@ -774,6 +774,8 @@ const Main = () => {
           return;
         }
         
+        modalRef.current.update({ isLoading: true });
+
         axiosInstance
           .post(`/api/addClient`, JSON.stringify(formRef.current))
           .then((res) => {
@@ -784,7 +786,10 @@ const Main = () => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });    
+          })
+          .finally(() => {
+            modalRef.current.update({ isLoading: false });
+          });
 
         
 
@@ -881,6 +886,8 @@ const Main = () => {
               .map(([k, v]) => [v.trim(), k])
             );
 
+            modalRef.current.update({ isLoading: true });
+
             axiosInstance
               .post(`/api/setExcelMapping`, JSON.stringify(reversed))
               .then((res) => {
@@ -890,8 +897,10 @@ const Main = () => {
                 console.error("Error fetching data:", error);
                 modalRef.current.close();
                 modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-              });   
-    
+              })
+              .finally(() => {
+                modalRef.current.update({ isLoading: false });
+              });
           },
         });
 
@@ -936,6 +945,9 @@ const Main = () => {
           modalRef2.current.open({ title:"알림", message:"엑셀 파일을 선택하세요.", cancelText:"" });
           return;
         }
+
+
+        modalRef.current.update({ isLoading: true });
 
         let data = {category: 'vendor'};
         axiosInstance
@@ -1004,7 +1016,10 @@ const Main = () => {
                   console.error("Error fetching data:", error);
                   modalRef.current.close();
                   modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-                });   
+                })
+                .finally(() => {
+                  modalRef.current.update({ isLoading: false });
+                });
 
 
             };
@@ -1049,6 +1064,7 @@ const Main = () => {
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
+                        placeholder=""
                       />
                     </div>
                   </td>
@@ -1061,9 +1077,11 @@ const Main = () => {
                         name="client_name"
                         value={form.client_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
+                        placeholder=""
                       />
                     </div>
                   </td>

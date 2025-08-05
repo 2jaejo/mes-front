@@ -115,26 +115,49 @@ const Main = () => {
   // 초기화 selectbox list
   useEffect(()=>{
     console.log("useEffect");
+
+    const init = {
+      code: ['cd017']
+    };
+
+    axiosInstance
+    .post(`/api/getDropDown`, JSON.stringify(init))
+    .then((res) => {
+      selectBox.current = res.data;
     
-    setColumnDefs([
-      { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
-      { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
-      { headerName: "단위", field: "base_unit", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "규격", field: "unit_size", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "매입가", field: "buyprice", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "분류", field: "type_name", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "안전재고", field: "right_qty", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-      
-    ]);
+      setColumnDefs([
+        { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
+        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
+        { headerName: "단위", field: "base_unit", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center",
+          cellEditor: "agSelectCellEditor",
+          cellEditorParams: {
+            values: selectBox.current.common?.['cd017'].map((item) => item.code) ?? [],
+          },
+          valueFormatter: (params) => commonTypeFormatter(params,'cd017') ,
+          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
+        },
+        { headerName: "규격", field: "unit_size", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "매입가", field: "buyprice", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "분류", field: "type_name", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "안전재고", field: "right_qty", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        
+      ]);
 
-    getData();
+      getData();
 
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+    });    
 
   },[]);
 
@@ -233,17 +256,25 @@ const Main = () => {
             </tr>
 
             <tr>
-              <th className="bg-light text-end align-middle">단위</th>
+              <th className="bg-light text-end align-middle"><span className="p-0 text-danger fs-6 fw-bold">*</span>단위</th>
               <td>
-                <Form.Control 
-                  type="text"
-                  name="base_unit"
-                  value={modalForm.base_unit ?? ''}
+                <Form.Select 
+                  name="base_unit" 
+                  value={modalForm.base_unit ?? ''} 
                   onChange={modalFormChange}
-                  size="sm" 
-                  className="w-auto"
-                  maxLength={11}
-                />
+                  size="sm"
+                  className="w-100"
+                >
+                  <option key="" value="">선택</option>
+                  {(selectBox.current.common?.['cd017'] || [])
+                    .filter(opt => opt.use_yn === 'Y')
+                    .map(opt => (
+                      <option key={opt.code} value={opt.code}>
+                        {opt.code_name}
+                      </option>
+                  ))}
+                </Form.Select>
+                
               </td>
               <th className="bg-light text-end align-middle">규격</th>
               <td>
@@ -682,7 +713,7 @@ const Main = () => {
       .then((res) => {
         
         if(res.data.length > 0){
-          modalRef.current.open({ title:"알림", message:"수정되었습니다.", cancelText:"" });
+          getData();
         }
       })
       .catch((error) => {
@@ -730,6 +761,12 @@ const Main = () => {
           return;
         }
 
+        if(formRef.current.base_unit === "" || formRef.current.base_unit === undefined){
+          modalRef2.current.open({ title:"알림", message:"단위를 선택하세요.", cancelText:"" });
+          return;
+        }
+
+        modalRef.current.update({ isLoading: true });
         axiosInstance
           .post(`/api/addRaw`, JSON.stringify(formRef.current))
           .then((res) => {
@@ -740,7 +777,10 @@ const Main = () => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });    
+          })
+          .finally(() => {
+            modalRef.current.update({ isLoading: false });
+          });
 
         
 
@@ -834,6 +874,7 @@ const Main = () => {
               .map(([k, v]) => [v.trim(), k])
             );
 
+            modalRef.current.update({ isLoading: true });
             axiosInstance
               .post(`/api/setExcelMapping`, JSON.stringify(reversed))
               .then((res) => {
@@ -843,7 +884,11 @@ const Main = () => {
                 console.error("Error fetching data:", error);
                 modalRef.current.close();
                 modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-              });   
+              })
+              .finally(() => {
+                modalRef.current.update({ isLoading: false });
+  
+              });
     
           },
         });
@@ -889,6 +934,8 @@ const Main = () => {
           modalRef2.current.open({ title:"알림", message:"엑셀 파일을 선택하세요.", cancelText:"" });
           return;
         }
+
+        modalRef.current.update({ isLoading: true });
 
         let data = {category: 'raw'};
         axiosInstance
@@ -953,7 +1000,10 @@ const Main = () => {
                   console.error("Error fetching data:", error);
                   modalRef.current.close();
                   modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-                });   
+                })
+                .finally(() => {
+                  modalRef.current.update({ isLoading: false });
+                });
 
 
             };
@@ -1035,6 +1085,7 @@ const Main = () => {
                         name="raw_name"
                         value={form.raw_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="상품명"
@@ -1054,7 +1105,7 @@ const Main = () => {
                         name="barcode"
                         value={form.barcode}
                         onChange={(e) => setBarcode(e.target.value)}
-                        onKeyDown={handleKeyPress}
+                        onKeyUp={handleKeyPress}
                         size="sm" 
                         className="w-auto"
                         placeholder="바코드를 스캔하세요"

@@ -12,6 +12,7 @@ import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
 import OrderComponent from "./PurchaseMgmt";
 import InventoryComponent from "../inventory/InventoryLookup";
+import dayjs from "dayjs";
 
 
 const Main = ({ props={} }) => {
@@ -305,6 +306,21 @@ const Main = ({ props={} }) => {
           },
         }, 
         { headerName: "입고일자", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "발주수량", field: "purchase_qty", sortable: false, editable: false, align:"right",
+          cellRendererSelector: (params) => {
+            if (params.node.rowPinned) {
+              return {
+                component: ()=>{
+                  return (
+                    <span>{ moneyFormatter({ value: rowPin(params) }) }</span>
+                  );
+                }
+              };
+            }
+            return undefined;
+          },
+          valueFormatter: (params) => moneyFormatter(params)
+        },
         { headerName: "입고수량", field: "received_qty", sortable: false, 
           align:"right", 
           editable: false , 
@@ -372,8 +388,8 @@ const Main = ({ props={} }) => {
 
   // 검색창 입력필드
   const [form, setForm] = useState({
-     start_date : ''
-    , end_date : ''
+     start_date : dayjs().format('YYYY-MM-DD')
+    , end_date : dayjs().format('YYYY-MM-DD')
     , purchase_id : ''
     , receipt_id : ''
     , client_code : ''
@@ -390,6 +406,7 @@ const Main = ({ props={} }) => {
 
   // 추가 모달 입력필드 저장
   const formRef = useRef();
+  const formRef2 = useRef();
 
   // 추가 모달 입력필드 변경
   const formRefChange = (name, value) => {
@@ -552,11 +569,7 @@ const Main = ({ props={} }) => {
         //   return;
         // }
 
-        if(!formRef.current.client_code){
-          modalRef2.current.open({ title:"알림", message:"거래처를 선택하세요.", cancelText:"" });
-          return;
-        }
-
+       
         if(!formRef.current.receipt_date){
           modalRef2.current.open({ title:"알림", message:"입고일을 입력하세요.", cancelText:"" });
           return;
@@ -582,6 +595,7 @@ const Main = ({ props={} }) => {
           return ;
         }
 
+        modalRef.current.update({isLoading:true});
         axiosInstance
           .post(`/api/addReceipt`, JSON.stringify(formRef.current))
           .then((res) => {
@@ -591,13 +605,43 @@ const Main = ({ props={} }) => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });   
+          })
+          .finally(() =>{
+            modalRef.current.update({isLoading:false});
+          });
 
 
       }, 
     });
 
   };
+
+
+  // 추가2
+  // const addData2 = (params) => {
+  //   console.log("addData2");
+
+  
+  //   formRef2.current = {
+  //     item_code:'',
+  //     item_name:'',
+  //     sel_rows:[]
+  //   };
+
+  //   modalRef.current.open({
+  //     title: "재고 조회",
+  //     content: <InventoryComponent props={formRef2} style_props={{height: '80vh', width:'80vw'}}/>,
+  //     onCancel: ()=>{
+  //       modalRef.current.close();
+  //     },
+  //     confirmText:"추가",
+  //     confirmClass:"btn btn-success",
+  //     onConfirm: (res) => {
+
+  //     }, 
+  //   });
+
+  // };
 
 
 
@@ -621,6 +665,7 @@ const Main = ({ props={} }) => {
       confirmClass:"btn btn-danger",
       onConfirm: (res) => {
        
+        modalRef.current.update({isLoading:true});
         axiosInstance
           .post(`/api/delReceipt`, JSON.stringify(rows))
           .then((res) => {
@@ -630,8 +675,10 @@ const Main = ({ props={} }) => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });   
-
+          })
+          .finally(() =>{
+            modalRef.current.update({isLoading:false});
+          });
 
       }, 
     });
@@ -662,7 +709,7 @@ const Main = ({ props={} }) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="거래처코드"
                         maxLength={50}
                       />
                       <span className="fw-bold"> ~ </span>
@@ -673,7 +720,7 @@ const Main = ({ props={} }) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="거래처명"
                         maxLength={50}
                       />
                     </div>
@@ -714,6 +761,7 @@ const Main = ({ props={} }) => {
                         name="purchase_id"
                         value={form.purchase_id}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -726,6 +774,7 @@ const Main = ({ props={} }) => {
                         name="receipt_id"
                         value={form.receipt_id}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -739,9 +788,10 @@ const Main = ({ props={} }) => {
                         name="client_code"
                         value={form.client_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="거래처코드"
                         maxLength={50}
                       />
                       <Form.Control 
@@ -749,9 +799,10 @@ const Main = ({ props={} }) => {
                         name="client_name"
                         value={form.client_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="거래처명"
                         maxLength={50}
                       />
                     </div>
@@ -776,7 +827,7 @@ const Main = ({ props={} }) => {
               { Object.keys(props).length === 0 
                 ? (<>
                     <Button size="sm" variant="success" onClick={addData}>추가</Button>
-                    {/* <Button size="sm" variant="danger" onClick={delData}>삭제</Button> */}
+                    <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
                   </>)
                 : null
               }
@@ -789,7 +840,8 @@ const Main = ({ props={} }) => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}
+              // pageSize={10}
+              pagination={false}
               pinnedBottomRowData={pinnedBottomRowData}  
             />
           </Col>
@@ -797,7 +849,7 @@ const Main = ({ props={} }) => {
 
       </div>
 
-      <div className="h-100">
+      <div className="h-50">
         <Row  className="h-100">
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
@@ -805,6 +857,7 @@ const Main = ({ props={} }) => {
               { Object.keys(props).length === 0 
                 ? (<>
                     <Button size="sm" variant="danger" onClick={setData3}>마감</Button>
+                    {/* <Button size="sm" variant="success" onClick={addData2}>품목 추가</Button> */}
                   </>)
                 : null
               }
@@ -1076,10 +1129,7 @@ const ModalComponent = ({ form }) => {
   const getData3 = (params) => {
     console.log("getData3");
 
-    if(modalForm.client_code === ''){
-      modalRef.current.open({ title:"알림", message:"거래처를 먼저 선택하세요.", cancelText:"" });
-      return;
-    }
+
 
     formRef3.current = {
       item_code:'',
@@ -1106,30 +1156,48 @@ const ModalComponent = ({ form }) => {
       confirmText:"확인",
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
-        const row = formRef3.current.sel_rows[0];
-        row.unit_price = parseInt(row.buyprice?? 0);
-
-        if(!row){
-          modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
+        const selectedRows = formRef3.current.sel_rows ?? [];
+        if (selectedRows.length === 0) {
+          modalRef2.current.open({
+            title: "알림",
+            message: "품목을 선택하세요.",
+            cancelText: "",
+          });
           return;
         }
 
-        const chk = rowData.some(el => el.raw_code === row.raw_code);
-        if(chk) {
-          modalRef2.current.open({ title:"알림", message:"이미 추가된 품목입니다.", cancelText:"" });
-          return;
-        } 
 
+        // 중복 체크 및 추가
         setRowData(prevData => {
-          const newData = [...prevData, row];
+          const newData = [...prevData];
+
+          selectedRows.forEach(row => {
+            row.unit_price = parseInt(row.buyprice ?? 0);
+
+            const alreadyExists = newData.some(el => el.raw_code === row.raw_code);
+            if (!alreadyExists) {
+              newData.push(row);
+            } else {
+              // 이미 추가된 품목 경고 (선택적으로 처리)
+              modalRef2.current.open({
+                title: "알림",
+                message: `이미 추가된 품목입니다. (품목명: ${row.raw_name})`,
+                cancelText: "",
+              });
+
+            }
+          });
+
+          // 중복 제거는 안전하게 한 번 더 처리 (raw_code 기준)
           const uniqueData = newData.filter(
             (row, index, self) =>
               index === self.findIndex(r => r.raw_code === row.raw_code)
           );
+
           return uniqueData;
         });
         
-        // modalRef.current.close();
+        modalRef.current.close();
       }, 
     });
     
@@ -1259,7 +1327,7 @@ const ModalComponent = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="거래처코드"
                         maxLength={50}
                         disabled
                       />
@@ -1270,7 +1338,7 @@ const ModalComponent = ({ form }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="거래처명"
                         maxLength={50}
                         disabled
                       />

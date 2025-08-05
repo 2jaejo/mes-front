@@ -178,6 +178,9 @@ const Main = ({ form }) => {
 
         const row = formRef.current.sel_row;
         const row2 = formRef.current.sel_row2;
+        row2.some ((el) =>{
+          el.quantity2 = el.quantity;
+        })
         handleFormChange({target:{name:"purchase_id", value:row.purchase_id}});
         handleFormChange({target:{name:"client_code", value:row.client_code}});
         handleFormChange({target:{name:"client_name", value:row.client_name}});
@@ -512,7 +515,7 @@ const Main = ({ form }) => {
               name="barcode"
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
-              onKeyDown={handleKeyPress}
+              onKeyUp={handleKeyPress}
               size="md" 
               className="w-100"
               placeholder="자재 바코드를 스캔하세요"
@@ -597,18 +600,30 @@ const Main = ({ form }) => {
                     </div>
 
                     <Row className="g-2">
-                      <Col xs={4}>
+                      <Col xs={3}>
+                        <Form.Label className="small fw-bold">발주수량</Form.Label>
+                        <Form.Control
+                          type="number"
+                          value={item.quantity2}
+                          onChange={(e) => handleItemChange(index, "quantity2", e.target.value)}
+                          placeholder=""
+                          size="sm"
+                          maxLength={50}
+                          disabled
+                        />
+                      </Col>
+                      <Col xs={3}>
                         <Form.Label className="small fw-bold">입고수량</Form.Label>
                         <Form.Control
                           type="number"
                           value={item.quantity}
                           onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
-                          placeholder="수량"
+                          placeholder=""
                           size="sm"
                           maxLength={50}
                         />
                       </Col>
-                      <Col xs={4}>
+                      <Col xs={3}>
                         <Form.Label className="small fw-bold">단가</Form.Label>
                         <Form.Control
                           type="number"
@@ -619,7 +634,7 @@ const Main = ({ form }) => {
                           maxLength={50}
                         />
                       </Col>
-                      <Col xs={4}>
+                      <Col xs={3}>
                         <Form.Label className="small fw-bold">합계</Form.Label>
                         <Form.Control
                           type="text"

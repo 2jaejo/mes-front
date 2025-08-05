@@ -333,7 +333,7 @@ const Main = () => {
                     onChange={handleChange}
                     size="sm" 
                     className="w-auto"
-                    placeholder="CODE"
+                    placeholder="품번"
                     maxLength={50}
                   />
                   <Form.Control 
@@ -341,9 +341,10 @@ const Main = () => {
                     name="item_name"
                     value={modalForm.item_name}
                     onChange={handleChange}
+                    onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                     size="sm" 
                     className="w-auto"
-                    placeholder="NAME"
+                    placeholder="품명"
                     maxLength={50}
                   />
                 </div>

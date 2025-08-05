@@ -660,7 +660,7 @@ const Main = ({ props={} }) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder=""
                         maxLength={50}
                       />
                       <span className="fw-bold"> ~ </span>
@@ -671,7 +671,7 @@ const Main = ({ props={} }) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder=""
                         maxLength={50}
                       />
                     </div>
@@ -727,7 +727,7 @@ const Main = ({ props={} }) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="거래처코드"
                         maxLength={50}
                       />
                       <Form.Control 
@@ -737,7 +737,7 @@ const Main = ({ props={} }) => {
                         onChange={handleChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="거래처명"
                         maxLength={50}
                       />
                     </div>

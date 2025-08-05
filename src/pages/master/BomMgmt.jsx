@@ -73,21 +73,12 @@ const Main = () => {
   ];
 
 
-  let grid_col2 = [
-    { headerName: "품목코드", field: "item_dotno", sortable: false, editable: false, align:"center"},
-    { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left"}, 
-    { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
-    { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left"}, 
-    { headerName: "수량", field: "quantity", sortable: false, editable: true, align:"right"}, 
-    { headerName: "단위", field: "unit", sortable: false, editable: true, align:"right"},
-    { headerName: "순서", field: "sort", sortable: false, editable: true, align:"center"},
-    { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left", width:300}, 
-  ];
+  
 
   const gridRef2 = useRef();  
   const [loading2, setLoading2] = useState(false);
   const [rowData2, setRowData2] = useState([]);
-  const [columnDefs2, setColumnDefs2] = useState(grid_col2);
+  const [columnDefs2, setColumnDefs2] = useState([]);
 
 
   // 그리드 onGridReady
@@ -167,7 +158,7 @@ const Main = () => {
     
     const init = {
       category: '',
-      code: ['cd006', 'cd010', 'cd011']
+      code: ['cd006', 'cd010', 'cd011', 'cd017']
     };
 
     axiosInstance
@@ -177,6 +168,28 @@ const Main = () => {
 
       // 그리드 설정
       setColumnDefs(col_a);
+
+      setColumnDefs2([
+        { headerName: "품목코드", field: "item_dotno", sortable: false, editable: false, align:"center"},
+        { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left", width:300}, 
+        { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
+        { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
+        { headerName: "수량", field: "quantity", sortable: false, editable: true, align:"right"}, 
+        { headerName: "단위", field: "unit", sortable: false, editable: true, align:"center",
+          cellEditor: "agSelectCellEditor",
+          cellEditorParams: {
+            values: selectBox.current.common?.['cd017'].map((item) => item.code) ?? [],
+          },
+          valueFormatter:(params)=> commonTypeFormatter(params,'cd017'),
+          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
+        },
+        { headerName: "순서", field: "sort", sortable: false, editable: true, align:"center"},
+        { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left"}, 
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center" },
+        { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"left" },
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center" },
+        { headerName: "수정자", field: "updated_by", sortable: true, editable: false, align:"left" },
+      ]);
 
       getData();
     })
@@ -214,6 +227,7 @@ const Main = () => {
   const DEFAULT_FORM = (init={}) => ({
     raw_code:''
     , raw_name:''
+    , sel_rows:[]
     , ...init
   });
 
@@ -281,7 +295,8 @@ const Main = () => {
     axiosInstance
       .post("api/setBom", JSON.stringify(params))
       .then((res) => {
-       
+        const rows = gridRef.current.getSelectedRows();
+        getData2(rows[0]);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -307,27 +322,35 @@ const Main = () => {
       confirmText:"추가",
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
-        
-        if(!formRef.current.sel_row){
+
+        console.log(formRef.current);
+
+        if(!formRef.current.sel_rows){
           modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
           return;
         }
 
-        const data = {
-          item_dotno: gridRef.current.getSelectedRows()[0].item_dotno,
-          material_code: formRef.current.sel_row.raw_code
-        }
+        const item_dotno = gridRef.current.getSelectedRows()[0].item_dotno;
+        formRef.current.sel_rows.forEach((row) => {
+          row.item_dotno = item_dotno; // 품목코드 추가
+        });
+
+
+        modalRef.current.update({ isLoading: true });
 
         axiosInstance
-          .post(`/api/addBom`, JSON.stringify(data))
+          .post(`/api/addBom`, JSON.stringify(formRef.current.sel_rows))
           .then((res) => {
             getData();
-            // modalRef.current.close();
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });   
+          })
+          .finally(() =>{
+            modalRef.current.update({ isLoading: false });
+            modalRef.current.close();
+          });
 
 
       }, 
@@ -409,6 +432,7 @@ const Main = () => {
                         name="item_name"
                         value={form.item_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="상품명"
@@ -451,7 +475,7 @@ const Main = () => {
 
       </div>
 
-      <div className="h-100">
+      <div className="h-50">
         <Row  className="h-100">
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
@@ -595,9 +619,8 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
     params.api.addEventListener("selectionChanged", (ev) => {
       console.log("selectionChanged");
       
-      
       const selectedRows = ev.api.getSelectedRows();
-      onChangeHandler('sel_row', selectedRows[0]);
+      onChangeHandler('sel_rows', selectedRows);
   
     });
 
@@ -638,7 +661,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
 
 
   return (
-    <div style={{ height: '50vh', width:'50vw', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+    <div style={{ height: '80vh', width:'50vw', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -659,7 +682,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="품번"
                         maxLength={50}
                       />
                       <Form.Control 
@@ -667,9 +690,10 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                         name="raw_name"
                         value={form.raw_name}
                         onChange={modalFormChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="품명"
                         maxLength={50}
                       />
                     </div>
@@ -686,31 +710,29 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
         </Row>
       </div>
 
-
       <div className="h-100">
-      <Row  className="h-100">
-        <Col className="h-100 d-flex flex-column" xs={12} md={12}>
-          <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
-            <span className="fw-bold">자재 목록</span>
-            
-       
-          </div>
+        <Row  className="h-100">
+          <Col className="h-100 d-flex flex-column" xs={12} md={12}>
+            <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
+              <span className="fw-bold">자재 목록</span>
+          
+            </div>
 
-          <GridExample 
-            columnDefs={columnDefs}
-            rowData={rowData}
-            onGridReady={onGridReady} 
-            loading={loading}
-            rowNum={true}
-            rowSel={"singleRow"}
-            pagination={true}
-            // pageSize={10}
-            // rowDrag={true}
-          />
-        </Col>
-      </Row>
+            <GridExample 
+              columnDefs={columnDefs}
+              rowData={rowData}
+              onGridReady={onGridReady} 
+              loading={loading}
+              rowNum={true}
+              rowSel={"multiRow"}
+              pagination={true}
+              // pageSize={10}
+              // rowDrag={true}
+            />
+          </Col>
+        </Row>
 
-    </div>
+      </div>
 
     </div>
   );

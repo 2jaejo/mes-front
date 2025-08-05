@@ -1,9 +1,9 @@
 
 import { useState, useRef, useEffect } from "react"
-import { Container, Card, Form, Button, Row, Col, ListGroup, Badge, Modal, Alert, Spinner } from "react-bootstrap"
+import { Container, Card, Form, Button, Row, Col, ListGroup, Badge, Modal, Alert, Spinner, Dropdown } from "react-bootstrap"
 import axiosInstance from "utils/Axios";
 import CustomModal from "components/Modal";
-
+import SearchableDropdown from "components/SearchableDropdown";
 
 const ItemStock = ({ form }) => {
   const modalRef = useRef();  
@@ -35,6 +35,7 @@ const ItemStock = ({ form }) => {
     vtax_buyprice:"",
     quantity:"",
     remark:"",
+    bom_yn:"N",
     ...init
   });
 
@@ -255,12 +256,71 @@ const ItemStock = ({ form }) => {
     }
   }
 
+  const [options, setOptions] = useState([]);
+
+  useEffect(()=>{
+    axiosInstance
+      .post(`/api/getItem`, JSON.stringify())
+      .then((res) => {
+        
+        const newData = res.data.map(el => ({
+          ...el,
+          name : `[${el.item_dotno}] ${el.item_name}`,
+          value: `${el.item_dotno}`
+        }));
+        
+        setOptions(newData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+      })
+      .finally(() =>{
+        setBarcode('');
+
+      });
+
+  },[]);
+
+  const [selectedName, setSelectedName] = useState('');
+  const [selectedValue, setSelectedValue] = useState('');
+
+  const handleSelect = (option) => {
+    setSelectedName(option.name);
+    setSelectedValue(option.value);
+    console.log(option);
+    
+    // form에 적용
+    setFormData((prev) => ({
+      ...prev,
+      ...option
+    }));
+    
+  };
+
+
   return (
     <Container fluid className="p-0" style={{ minHeight: "87vh"}}>
 
       <CustomModal ref={modalRef} />
       <CustomModal ref={modalRef2} />
 
+
+      {/* 조회 */}
+      <Card className="mb-3 shadow-sm">
+        <Card.Body>
+          <div className="d-flex gap-2">
+            <SearchableDropdown
+              options={options}
+              selected={selectedName}
+              onSelect={handleSelect}
+              title={"제품 선택"}
+            />
+              
+          </div>
+
+        </Card.Body>
+      </Card>
 
       {/* 바코드 */}
       <Card className="mb-3 shadow-sm">
@@ -283,7 +343,7 @@ const ItemStock = ({ form }) => {
               name="barcode"
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
-              onKeyDown={handleKeyPress}
+              onKeyUp={handleKeyPress}
               size="md" 
               className="w-100"
               placeholder="제품 바코드를 스캔하세요"
@@ -377,7 +437,7 @@ const ItemStock = ({ form }) => {
           </div>
 
           {/* 비고 */}
-          <div>
+          <div className="mb-2">
             <Form.Label className=" mb-0 fw-bold">비고</Form.Label>
             <Form.Control
               type="text"
@@ -387,6 +447,20 @@ const ItemStock = ({ form }) => {
               placeholder=""
               maxLength={200}
             />
+          </div>
+
+          {/* BOM 사용여부 */}
+          <div>
+            <Form.Label className=" mb-0 fw-bold">BOM 사용여부</Form.Label>
+            <Form.Select
+              name="bom_yn"
+              value={formData.bom_yn ?? ""}
+              onChange={handleFormChange}
+              placeholder=""
+            >
+               <option key="N" value="N">사용안함</option>
+               <option key="Y" value="Y">사용</option>
+            </Form.Select>
           </div>
         </Card.Body>
       </Card>

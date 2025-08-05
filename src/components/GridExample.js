@@ -155,9 +155,9 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
     const tp = rowSel === "singleRow" ? false : true;
     return { 
       mode: rowSel, // singleRow, multiRow
-      headerCheckbox: true,
-      checkboxes: tp,
-      enableClickSelection: !tp, // singleRow일때 클릭 선택 가능
+      headerCheckbox: tp,
+      checkboxes: true,
+      enableClickSelection: true, // singleRow일때 클릭 선택 가능
       enableSelectionWithoutKeys:true, // 같은 행 클릭시 선택,취소
       headerCheckboxSelectionFilteredOnly: true, // 필터/페이지 적용 시 보이는 것만 선택
       selectAll: 'currentPage', // 현재 페이지의 모든 행 선택

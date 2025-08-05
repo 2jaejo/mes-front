@@ -138,23 +138,45 @@ const Main = ({isActive}) => {
   };
   
 
+  // const ExampleBarChart = () => {
+  //   return (
+  //     <ResponsiveContainer width="100%" height={'100%'}>
+  //       <BarChart
+  //         data={data}
+  //         margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+  //       >
+  //         <CartesianGrid strokeDasharray="3 3" />
+  //         <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 12 }}/>
+  //         <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
+  //         <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/>
+  //         <Tooltip content={<CustomTooltip />}/>
+  //         <Legend />
+  //         <Bar dataKey="양품" yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
+  //         <Bar dataKey="불량" yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
+  //         <Bar dataKey="가동률(%)" yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
+  //         <Bar dataKey="가동시간(분)" yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
+  //       </BarChart>
+  //     </ResponsiveContainer>
+  //   );
+  // };
   const ExampleBarChart = () => {
     return (
       <ResponsiveContainer width="100%" height={'100%'}>
         <BarChart
           data={data}
-          margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+          margin={{ top: 5, right: 5, left: 5, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 12 }}/>
-          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
-          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0 , dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/>
+          <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 10 }}/>
+          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
+          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/>
+          {/* <Tooltip /> */}
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
-          <Bar dataKey="양품" yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
-          <Bar dataKey="불량" yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
-          <Bar dataKey="가동률(%)" yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
-          <Bar dataKey="가동시간(분)" yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
+          <Bar dataKey="양품" isAnimationActive={false} yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
+          <Bar dataKey="불량" isAnimationActive={false} yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
+          <Bar dataKey="가동률(%)" isAnimationActive={false} yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
+          <Bar dataKey="가동시간(분)" isAnimationActive={false} yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
         </BarChart>
       </ResponsiveContainer>
     );

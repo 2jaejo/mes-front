@@ -96,28 +96,10 @@ const Main = () => {
           cellEditorParams: {
             values: selectBox.current.common?.['cd011'].map((item) => item.code) ?? [],
           },
-          valueFormatter:(params)=> typeFormatter(params,'cd011')
+          valueFormatter:(params)=> typeFormatter(params,'cd011'),
+          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
         },
-        // { headerName: "검사여부", field: "check_yn", sortable: true, editable: false, align:"center",
-        //   backgroundColor: "#a7d1ff29",
-        //   cellRenderer: 'agCheckboxCellRenderer',
-        //   cellRendererParams: {
-        //     disabled: false,
-        //   },
-        //   // Y/N 값을 true/false로 변환하여 체크박스 표시
-        //   valueGetter: (params) => {
-        //     return params.data.check_yn === 'Y';
-        //   },
-        //   // 체크박스 변경 시 true/false → Y/N 으로 반영
-        //   valueSetter: (params) => {
-        //     const newValue = params.newValue ? 'Y' : 'N';
-        //     if (params.data.check_yn !== newValue) {
-        //       params.data.check_yn = newValue;
-        //       return true; // 값이 바뀐 경우만 true
-        //     }
-        //     return false; // 변경 없음
-        //   },
-        // },
+       
         { headerName: "사용여부", field: "use_yn", sortable: true, editable: false, align:"center",
           backgroundColor: "#a7d1ff29",
           cellRenderer: 'agCheckboxCellRenderer',
@@ -400,6 +382,7 @@ const Main = () => {
           return;
         }
 
+        modalRef.current.update({ isLoading: true });
         axiosInstance
           .post(`/api/addProcess`, JSON.stringify(formRef.current))
           .then((res) => {
@@ -410,7 +393,10 @@ const Main = () => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });    
+          })
+          .finally(() => {
+            modalRef.current.update({ isLoading: false });
+          });
 
       }, 
     });

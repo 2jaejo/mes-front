@@ -276,13 +276,19 @@ const MemberMngt = () => {
           return;
         }
 
+        modalRef.current.update({ isLoading: true });
         axiosInstance
           .post("/users/addUser", JSON.stringify(formRef.current))
           .then((res) => {
             getData();
-            modalRef.current.close();
           })
-          .catch((error) => console.error("Error fetching data:", error));   
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          })
+          .finally(() => {
+            modalRef.current.update({ isLoading: false });
+            modalRef.current.close();
+          });
 
       }, 
     });
@@ -432,7 +438,7 @@ const MemberMngt = () => {
               onChange={handleChange}
               size="sm" 
               className="w-auto"
-              placeholder="ID"
+              placeholder="아이디"
               maxLength={50}
             />
         

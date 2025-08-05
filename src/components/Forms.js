@@ -95,7 +95,7 @@ const Forms = ({ id, fields, onSearchData, direction="horizontal" }) => {
                 [field.name]: filteredValue,
               }));
             }}
-            onKeyDown={(e)=>{
+            onKeyUp={(e)=>{
               if (!/^\d$/.test(e.key) && e.key !== "Backspace") {
                 e.preventDefault(); // 숫자와 백스페이스 외 입력 방지
               }

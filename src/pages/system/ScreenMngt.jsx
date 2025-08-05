@@ -13,20 +13,27 @@ const ScreenMngt = () => {
   const [color, setColor] = useState(theme.color);
   const [color2, setColor2] = useState(theme.bgColor);
 
-  
+  const [isLoading, setIsLoading] = useState(false);
 
   const update = (params) => {
     let data = {
       color: color,
       bgColor: color2,
     };
+
+    setIsLoading(true);
     axiosInstance
       .post("/users/setTheme", JSON.stringify(data))
       .then((res) => {
         modalRef.current.open({ title:"알림", message:"적용되었습니다.", cancelText:""});
         setTheme({ color: color, bgColor: color2 });
       })
-      .catch((error) => console.error("Error fetching data:", error));    
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
  
@@ -70,7 +77,18 @@ const ScreenMngt = () => {
 
         <Row className="">
           <Col className="d-flex gap-2 align-items-center">
-            <Button size="sm" variant="secondary" onClick={update}>적용</Button>
+       
+            <Button size="sm" variant="secondary" onClick={update} disabled={isLoading}>
+              {isLoading ? (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              ) : null}
+              적용
+            </Button>
+
           </Col>
         </Row>
       

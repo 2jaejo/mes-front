@@ -9,6 +9,8 @@ import { MainContentStyle2 } from "css/CommonStyle";
 import SearchItemComponent from "components/SearchItemComponent";
 import SearchUserComponent from "components/SearchUserComponent";
 import ItemMgmtCompent from "../master/ItemMgmt";
+import SalesOrderMgmt from "../production/SalesOrderMgmt";
+import SearchableDropdown from "components/SearchableDropdown";
 
 import dayjs from 'dayjs'
 
@@ -138,7 +140,8 @@ const Main = ({ props={}, isActive}) => {
           cellEditorParams: {
             values: selectBox.current.common?.['cd014'].map((item) => item.code) ?? [],
           },
-          valueFormatter:(params)=> commonTypeFormatter(params,'cd014')
+          valueFormatter:(params)=> commonTypeFormatter(params,'cd014'),
+          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
         },
         { headerName: "종료일자", field: "end_date", sortable: false, editable: (params) => params.data.editable, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "종료시간", field: "end_time", sortable: false, editable: (params) => params.data.editable, align:"center",
@@ -146,7 +149,8 @@ const Main = ({ props={}, isActive}) => {
           cellEditorParams: {
             values: selectBox.current.common?.['cd014'].map((item) => item.code) ?? [],
           },
-          valueFormatter:(params)=> commonTypeFormatter(params,'cd014')
+          valueFormatter:(params)=> commonTypeFormatter(params,'cd014'),
+          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
         },
         { headerName: "상태", field: "status", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
           cellEditor: "agSelectCellEditor",
@@ -343,17 +347,20 @@ const Main = ({ props={}, isActive}) => {
           return;
         }
         
+        modalRef.current.update({isLoading:true});
         axiosInstance
           .post(`/api/addWorkOrder`, JSON.stringify(formRef.current))
           .then((res) => {
             getData();
-            modalRef.current.close();
           })
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
-          });   
-
+          })
+          .finally(() =>{
+            modalRef.current.update({isLoading:false});
+            modalRef.current.close();
+          });
 
       }, 
     });
@@ -402,6 +409,8 @@ const Main = ({ props={}, isActive}) => {
 
      
   };
+
+  
   
   return (
     <div style={MainContentStyle2}>
@@ -477,6 +486,7 @@ const Main = ({ props={}, isActive}) => {
                         name="work_id"
                         value={form.work_id}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -491,9 +501,10 @@ const Main = ({ props={}, isActive}) => {
                         name="item_code"
                         value={form.item_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="CODE"
+                        placeholder="품목코드"
                         maxLength={50}
                       />
                       <Form.Control 
@@ -501,9 +512,10 @@ const Main = ({ props={}, isActive}) => {
                         name="item_name"
                         value={form.item_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
-                        placeholder="NAME"
+                        placeholder="품목명"
                         maxLength={50}
                       />
                     </div>
@@ -542,8 +554,8 @@ const Main = ({ props={}, isActive}) => {
               onGridReady={onGridReady} 
               loading={loading}
               rowNum={true}
-              rowSel={"singleRow"}
-              pageSize={25}
+              rowSel={"multiRow"}
+              // pageSize={25}
             />
           </Col>
           
@@ -729,10 +741,10 @@ const ModalComponent = ({ form }) => {
 
       setColumnDefs2([
         // { headerName: "품목코드", field: "item_code", sortable: true, editable: false, align:"center", filter: "agTextColumnFilter" },
-        { headerName: "품목명", field: "item_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter", width:200 },
+        { headerName: "품목명", field: "item_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter", width:300 },
         // { headerName: "공정코드", field: "process_code", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter" },
-        { headerName: "공정명", field: "process_name", sortable: false, editable: false, align:"left", },
-        { headerName: "공정유형", field: "process_type", sortable: false, editable: false, align:"center",
+        { headerName: "공정명", field: "process_name", sortable: true, editable: false, align:"left", },
+        { headerName: "공정유형", field: "process_type", sortable: true, editable: false, align:"center",
           valueFormatter:(params)=> commonTypeFormatter(params,'cd011')
         },
         // { headerName: "작업자ID", field: "user_id", sortable: false, editable: false },
@@ -814,63 +826,60 @@ const ModalComponent = ({ form }) => {
   const getData2 = (params) => {
 
     formRef2.current = {
-      "intNowPage": 1,
-      "maxCnt": 0,
-      "dateValue": "3",
-      stdate: dayjs().add(-7, 'day').format('YYYY-MM-DD'),
-      endate: dayjs().format('YYYY-MM-DD'),
-      "orderValue": "",
-      "transType": "",
-      "orderStatus": "",
-      "shipedStatus": "",
-      "cancelYn": "",
-      "storageName": "",
-      "mediaOrderNo01": "",
-      "mediaName": "",
-      "invoceNo": "",
-      "orderCode": "",
-      sel_row:[],
+      start_dt: "",
+      end_dt: "",
+      status:"",
+      sales_id:"",
+      client_code:"",
+      client_name:"",
+      sel_rows:[]
     };
 
 
+    // formRef2.current = {
+    //   "intNowPage": 1,
+    //   "maxCnt": 0,
+    //   "dateValue": "3",
+    //   stdate: dayjs().add(-7, 'day').format('YYYY-MM-DD'),
+    //   endate: dayjs().format('YYYY-MM-DD'),
+    //   "orderValue": "",
+    //   "transType": "",
+    //   "orderStatus": "",
+    //   "shipedStatus": "",
+    //   "cancelYn": "",
+    //   "storageName": "",
+    //   "mediaOrderNo01": "",
+    //   "mediaName": "",
+    //   "invoceNo": "",
+    //   "orderCode": "",
+    //   sel_row:[],
+    // };
+
+
     modalRef.current.open({
-      title: "주문 조회",
-      content: <ModalSalesOrderComponent props={formRef2} />,
+      title: "수주 조회",
+      content: <SalesOrderMgmt props={formRef2} isModal={true} />,
+      // content: <ModalSalesOrderComponent props={formRef2} />,
       onCancel: ()=>{
         modalRef.current.close();
       },
       confirmText:"확인",
       confirmClass:"btn btn-primary",
       onConfirm: (res) => {
-        const row = formRef2.current.sel_row[0];
+        const rows = formRef2.current.sel_rows;
+        const row = rows[0];
+        const newData = rows.map(el => ({
+          ...el,
+          name : `[${el.item_dotno}] ${el.item_name}`,
+          value: `${el.item_dotno}`
+        }));
         
-        if(!row || Object.keys(row).length === 0){
+        if(!rows || rows.length === 0){
           modalRef2.current.open({ title:"알림", message:"수주의 상세품목을 선택하세요.", cancelText:"" });
           return;
         }
 
-        modalFormChange({target:{name:'order_id', value:row.orderCode}});
-        modalFormChange({target:{name:'item_code', value:row.itemDotno}});
-        modalFormChange({target:{name:'item_name', value:row.itemName}});
-        modalFormChange({target:{name:'quantity', value:row.orderQty}});
-
-        const params = {
-          "intNowPage": 1,
-          "storageName":"적성창고",
-          "itemDotno":row.itemDotno
-        };
-
-        axiosInstance
-          .post(`/api/getOsmStockItemStorageList`, JSON.stringify(params))
-          .then((res) => {
-            const row = res.data[0];
-            modalFormChange({target:{name:'stock_qty', value:row.endQty}});
-            modalFormChange({target:{name:'allocated_qty', value:row.endShipQty}});
-          })
-          .catch((error) => {
-            console.error("Error fetching data:", error);
-          });
-        
+        handleSelect(newData[0], 'sales');
         modalRef.current.close();
 
       }, 
@@ -890,6 +899,7 @@ const ModalComponent = ({ form }) => {
       "storageName": "적성창고",
       "itemCode": "",
       "itemDotno": "",
+      item_name: "",
       sel_row:[],
     };
 
@@ -998,9 +1008,9 @@ const ModalComponent = ({ form }) => {
       newItem.order_id = modalForm.order_id;
       newItem.item_code = modalForm.item_code;
       newItem.item_name = modalForm.item_name;
-      newItem.quantity = modalForm.quantity === 0 ? 100 : modalForm.quantity;
+      newItem.quantity = modalForm.quantity;
       newItem.start_date = dayjs().add(1, 'day').format('YYYY-MM-DD');
-      newItem.start_time = '09:00';
+      newItem.start_time = '08:00';
       newItem.end_date = dayjs().add(1, 'day').format('YYYY-MM-DD');
       newItem.end_time = '12:00';
       newItem.remark = '';
@@ -1026,7 +1036,75 @@ const ModalComponent = ({ form }) => {
     setRowData2(prev => prev.filter(item => !sel_row_ids.includes(item.id)));
   };
 
+  const [options, setOptions] = useState([]);
 
+  useEffect(()=>{
+    axiosInstance
+      .post(`/api/getItem`, JSON.stringify())
+      .then((res) => {
+        
+        const newData = res.data.map(el => ({
+          ...el,
+          name : `[${el.item_dotno}] ${el.item_name}`,
+          value: `${el.item_dotno}`
+        }));
+        
+        setOptions(newData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+      })
+      .finally(() =>{
+        // setBarcode('');
+
+      });
+
+  },[]);
+
+  const [selectedName, setSelectedName] = useState('');
+  const [selectedValue, setSelectedValue] = useState('');
+
+  const handleSelect = (option, type="sel") => {
+    setSelectedName(option.name);
+    setSelectedValue(option.value);
+
+    console.log(option);
+    modalFormChange({target:{name:'order_id', value:option.sales_id}});
+    modalFormChange({target:{name:'quantity', value:option.quantity}});
+
+    const params = {
+      "intNowPage": 1,
+      "storageName": "적성창고",
+      "itemDotno": option.item_dotno,
+    };
+
+    axiosInstance
+      .post(`/api/getOsmStockItemStorageList`, JSON.stringify(params))
+      .then((res) => {        
+        const row = res.data[0];
+        if( type === 'sel'){
+          modalFormChange({target:{name:'order_id', value:""}});
+          modalFormChange({target:{name:'quantity', value:0}});
+        }
+
+        modalFormChange({target:{name:'item_code', value:row.itemDotno}});
+        modalFormChange({target:{name:'item_name', value:row.itemName}});
+        modalFormChange({target:{name:'stock_qty', value:row.endQty}});
+        modalFormChange({target:{name:'allocated_qty', value:row.endShipQty}});
+
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+      })
+    // form에 적용
+    // setFormData((prev) => ({
+    //   ...prev,
+    //   ...option
+    // }));
+    
+  };
 
   return (
     <div style={{ height: '80vh', width:'80vw', display: 'flex', flexDirection: 'column' }}>
@@ -1049,14 +1127,16 @@ const ModalComponent = ({ form }) => {
                       size="sm" 
                       className="w-100"
                       maxLength={50}
+                      style={{minWidth:'200px'}}
                       disabled
                       /> 
                   </td>
                   <td className="">
                     <Button size="sm" variant="primary" onClick={getData2}><i className="bi bi-search"></i></Button>
                   </td>
-                  <th className="bg-light text-end align-middle">제품코드</th>
-                  <td className="">
+
+                  <th className="bg-light text-end align-middle">제품</th>
+                  <td className="" style={{width:"600px", maxWidth:"600px"}}>
                     <Form.Control 
                       type="text"
                       name="item_code"
@@ -1066,10 +1146,9 @@ const ModalComponent = ({ form }) => {
                       className="w-100"
                       maxLength={50}
                       disabled
-                      /> 
-                  </td>
-                  <th className="bg-light text-end align-middle">제품명</th>
-                  <td className="">
+                      hidden
+                    /> 
+       
                     <Form.Control 
                       type="text"
                       name="item_name"
@@ -1079,11 +1158,18 @@ const ModalComponent = ({ form }) => {
                       className="w-100"
                       maxLength={50}
                       disabled
-                      /> 
+                      hidden
+                    /> 
+                    <SearchableDropdown
+                      options={options}
+                      selected={selectedName}
+                      onSelect={handleSelect}
+                      title={"제품 선택"}
+                      size="sm"
+                    />
                   </td>
-                  <td className="">
-                    <Button size="sm" variant="primary" onClick={getData3}><i className="bi bi-search"></i></Button>
-                  </td>
+
+
                 </tr>
                 </tbody>
             </Table>
@@ -1794,7 +1880,7 @@ const ModalStockItemComponent = ({ props={} }) => {
         { headerName: "운영창고명", field: "storageName", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "운영상품코드", field: "itemCode", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "품번", field: "itemDotno", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "상품명", field: "itemName", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:300 },
+        { headerName: "상품명", field: "itemName", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:300 },
         { headerName: "과세여부", field: "taxTypeName", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
         { headerName: "입수", field: "itemCount", sortable: false, editable: false, align:"left"},
         { headerName: "매입공급가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
@@ -1827,8 +1913,39 @@ const ModalStockItemComponent = ({ props={} }) => {
 
     setRowData([]);
     setLoading(true);
-    pageRef.current = modalForm.intNowPage;
+
+    console.log(modalForm);
+    if(modalForm.item_name === ''){
+      getOsm();
+    }
+    else{
+      axiosInstance
+        .post(`/api/getItem`, JSON.stringify(modalForm))
+        .then((res) => {
+          console.log(res);
+
+          // getOsm();
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+        })
+        .finally(() =>{
+          setLoading(false);
+        
+        });
+
+    }
+
+
     
+
+    
+    
+  };
+
+  const getOsm = () => {
+    pageRef.current = modalForm.intNowPage;
     axiosInstance
       .post(`/api/getOsmStockItemStorageList`, JSON.stringify(modalForm))
       .then((res) => {
@@ -1846,8 +1963,7 @@ const ModalStockItemComponent = ({ props={} }) => {
         setLoading(false);
       
       });
-    
-  };
+  }
 
 
   
@@ -1883,6 +1999,20 @@ const ModalStockItemComponent = ({ props={} }) => {
                         type="text"
                         name="itemDotno"
                         value={modalForm.itemDotno}
+                        onChange={modalFormChange}
+                        size="sm" 
+                        className="w-auto"
+                        maxLength={50}
+                      />
+                    </div>
+                  </td>
+                  <th className="bg-light text-end align-middle">품명</th>
+                  <td className="">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="text"
+                        name="item_name"
+                        value={modalForm.item_name}
                         onChange={modalFormChange}
                         size="sm" 
                         className="w-auto"

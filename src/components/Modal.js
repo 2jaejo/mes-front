@@ -12,6 +12,7 @@ const Modal = forwardRef(( _, ref) => {
     open: (options = {}) => {
       // 옵션 업데이트
       const fullOptions = {
+        isLoading: false,
         title: "알림",
         closeBtn: true,
         message: "",
@@ -43,6 +44,12 @@ const Modal = forwardRef(( _, ref) => {
       }
     },
     close: () => setIsOpen(false),
+    update: (partialOptions) => {
+      setModalOptions(prev => ({
+        ...prev,
+        ...partialOptions,
+      }));
+    }
   }));
 
 
@@ -54,22 +61,6 @@ const Modal = forwardRef(( _, ref) => {
     modalOptions.onConfirm(true);
   });
 
-  // useEffect(()=>{
-  //   const handleKeyUp = (e) => {
-  //     if (e.key === 'Enter') {
-  //       modalOptions.onConfirm?.(true);  // 확인 핸들러 실행
-  //       setIsOpen(false);               // 모달 닫기
-  //     }
-  //   };
-
-  //   if (isOpen) {
-  //     window.addEventListener('keyup', handleKeyUp);
-  //   }
-
-  //   return () => {
-  //     window.removeEventListener('keyup', handleKeyUp);
-  //   };
-  // }, [isOpen, modalOptions]);
 
 
   if (!isOpen) return null;
@@ -118,7 +109,15 @@ const Modal = forwardRef(( _, ref) => {
             <button
               onClick={onConfirm}
               className={`${modalOptions.confirmClass}`}
+              disabled={modalOptions.isLoading}
             >
+              {modalOptions.isLoading ? (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              ) : null}
               {modalOptions.confirmText}
             </button>
           )}

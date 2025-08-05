@@ -31,6 +31,7 @@ const Main = ({ props={}, isActive}) => {
     end_dttm: '',
     end_time: '',
     idx: '',
+    bar_code: '',
     item_code: '',
     item_name: '',
     order_qty: '',
@@ -162,7 +163,7 @@ const Main = ({ props={}, isActive}) => {
         const rows = res.data.data;
         
         // const filtered_row = rows.find( el=> el[2] === 'B-PP-00019-C');
-        const filtered_row = rows.find( el=> el[2] === modalForm.item_code);
+        const filtered_row = rows.find( el=> el[1] === modalForm.bar_code);
         if (filtered_row){
           modalFormChange({target:{name:'result_qty', value:parseInt(filtered_row[6])}});
         }
@@ -389,6 +390,23 @@ const Main = ({ props={}, isActive}) => {
                 </tr>
 
                 <tr>
+                  <th className=" bg-light text-end align-middle">바코드</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                        type="text"
+                        name="bar_code"
+                        value={modalForm.bar_code ?? ""}
+                        onChange={modalFormChange}
+                        size="sm" 
+                        className="w-100"
+                        maxLength={50}
+                        disabled={true}
+                      />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
                   <th className=" bg-light text-end align-middle">품번</th>
                   <td className="align-middle">
                     <div className="">
@@ -594,7 +612,19 @@ const Main = ({ props={}, isActive}) => {
         </Row>
       </div>   
 
-    
+      <div className="w-100">
+        <Row className="h-100">
+          <Col className="h-100 d-flex flex-column gap-2">
+            
+            <div className="mb-1 d-flex gap-2 justify-content-between align-items-center">
+              <Button style={{width:"7rem", height:"4rem", fontSize:"1rem"}} variant={start ? "secondary" : "primary"} onClick={()=>buttonCliked("start_dttm")} disabled={start}>작업시작</Button>
+              <Button style={{width:"8rem", height:"4rem", fontSize:"1rem"}} variant={pause ? "secondary" : "success"} onClick={()=>buttonCliked("pause")} disabled={pause}>{modalForm.pause === "Y" ? "일시정지 해제" : "일시정지 시작"}</Button>
+              <Button style={{width:"7rem", height:"4rem", fontSize:"1rem"}} variant={modalForm.pause === 'Y' || end ? "secondary" : "danger" }onClick={()=>buttonCliked("end_dttm")} disabled={modalForm.pause === 'Y' || end}>작업종료</Button>
+            </div>
+          </Col>
+        </Row>
+
+      </div>
 
     </div>
   );

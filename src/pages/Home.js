@@ -156,10 +156,10 @@ const Home = ({isActive, addTab}) => {
       // 생산완료 그리드 설정
       setColumnDefs2([
         // { headerName: "바코드", field: "bar_code", sortable: true, editable: false, align:"left",width:200},
-        { headerName: "품번", field: "item_dotno", sortable: true, editable: false, align:"left",width:300},
+        { headerName: "품번", field: "item_dotno", sortable: true, editable: false, align:"left",width:200},
         { headerName: "품명", field: "item_name", sortable: true, editable: false, align:"left",width:500},
         { headerName: "완료수량", field: "quantity", sortable: true, editable: false, align:"right",width:140},
-        { headerName: "비고", field: "remark", sortable: true, editable: false, align:"left"}, 
+        { headerName: "비고", field: "remark", sortable: true, editable: false, align:"left", width:300}, 
         { headerName: "등록일자", field: "created_at", sortable: true, editable: false, align:"left"},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"left"},
         { headerName: "수정일자", field: "updated_at", sortable: true, editable: false, align:"left"},
@@ -248,7 +248,7 @@ const Home = ({isActive, addTab}) => {
 
         const rows = res.data;
         // const newData = [];
-        const newData = rows.filter( (el) => el.process_type !=='03' && el.item_code !== null);
+        const newData = rows.filter( (el) => el.item_code !== null);
         setRowData(newData);
 
         // 기존 상태와 비교
