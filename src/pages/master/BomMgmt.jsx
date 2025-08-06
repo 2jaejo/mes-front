@@ -475,7 +475,7 @@ const Main = () => {
 
       </div>
 
-      <div className="h-50">
+      <div className="h-100">
         <Row  className="h-100">
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">

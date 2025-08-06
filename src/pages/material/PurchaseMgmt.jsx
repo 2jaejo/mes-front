@@ -366,7 +366,7 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         },
-        { headerName: "발주상태", field: "status", sortable: true, editable: Object.keys(props).length === 0, filter: "agTextColumnFilter",  align:"center",
+        { headerName: "발주상태", field: "status", sortable: true, editable: !props.current, filter: "agTextColumnFilter",  align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: selectBox.current.common?.['cd012']?.map((item) => item.code) ?? [],
@@ -381,7 +381,7 @@ const Main = ({ props={}, style_props={} }) => {
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !props.current && !params.node.rowPinned, align:"left", width:300},
       ]);
                           
       // 그리드 설정2
@@ -407,7 +407,7 @@ const Main = ({ props={}, style_props={} }) => {
         { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"}, 
         { headerName: "발주수량", field: "quantity", sortable: false, 
           align:"right", 
-          editable: true ,
+          editable: !props.current ,
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -422,7 +422,7 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "단가", field: "unit_price", sortable: false, editable: true, align:"right", 
+        { headerName: "단가", field: "unit_price", sortable: false, editable: !props.current, align:"right", 
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -437,7 +437,7 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "합계", field: "total_price", sortable: false, editable: true, align:"right", 
+        { headerName: "합계", field: "total_price", sortable: false, editable: !props.current, align:"right", 
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
               return {
@@ -472,8 +472,8 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "납기예정일", field: "due_date", sortable: true, editable: (params) => !params.node.rowPinned, filter: "agDateColumnFilter",  align:"center", cellDataType:'dateString'},
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300}, 
+        { headerName: "납기예정일", field: "due_date", sortable: true, editable: (params) => !props.current && !params.node.rowPinned, filter: "agDateColumnFilter",  align:"center", cellDataType:'dateString'},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !props.current && !params.node.rowPinned, align:"left", width:300}, 
       ]);
 
       getData();
@@ -968,8 +968,8 @@ const ModalComponent = ({ form }) => {
       setColumnDefs([
         { headerName: "품번", field: "raw_code", sortable: false, editable: false, align:"center" , width:100},
         { headerName: "품명", field: "raw_name", sortable: false, editable: false, align:"left", width:300 },
-        { headerName: "기준단위", field: "base_unit", sortable: false, editable: false, align:"center"},
-        { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"},
+        { headerName: "단위", field: "base_unit", sortable: false, editable: false, align:"center"},
+        { headerName: "규격", field: "unit_size", sortable: false, editable: false, align:"center"},
         { headerName: "납기예정일", field: "due_date", sortable: false, editable: true, align:"center", cellDataType:'dateString',},
         { headerName: "발주수량", field: "quantity", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
@@ -1149,7 +1149,8 @@ const ModalComponent = ({ form }) => {
 
           selectedRows.forEach(row => {
             row.unit_price = parseInt(row.buyprice ?? 0);
-
+            row.quantity = 0;
+            
             const alreadyExists = newData.some(el => el.raw_code === row.raw_code);
             if (!alreadyExists) {
               newData.push(row);

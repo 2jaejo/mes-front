@@ -4,6 +4,7 @@ import { Container, Card, Form, Button, Row, Col, ListGroup, Badge, Modal, Alert
 import axiosInstance from "utils/Axios";
 import CustomModal from "components/Modal";
 import SearchableDropdown from "components/SearchableDropdown";
+import dayjs from "dayjs";
 
 const ItemStock = ({ form }) => {
   const modalRef = useRef();  
@@ -77,7 +78,7 @@ const ItemStock = ({ form }) => {
 
 
   const [barcode, setBarcode] = useState('');
-  const [today, setToday] = useState(new Date().toISOString().split("T")[0]);
+  const [today, setToday] = useState(dayjs().format('YYYY-MM-DD'));
 
   const handleKeyPress = async (e) => {
     if (e.key === 'Enter' && barcode.trim() !== '') {
@@ -181,16 +182,31 @@ const ItemStock = ({ form }) => {
           ...formData,
           today
         };
-        console.log(newData);
-
+        
         modalRef.current.close();
         setLoading(true);
-
+        
         axiosInstance
           .post(`/api/addProductionLog`, JSON.stringify(newData))
           .then((res) => {
-            modalRef2.current.open({ title:"알림", message:"생산완료 처리 되었습니다.", cancelText:"", autoCloseDelay: 2000 });
+            if (res.data[0].register_production_with_stock_check === 'SUCCESS'){
+              modalRef2.current.open({ title:"알림", message:"생산완료 처리 되었습니다.", cancelText:"", autoCloseDelay: 2000 });
+            }
+            else{
+              modalRef2.current.open({ 
+                title:"알림", 
+                content:
+                  (<div>
+                    <span>
+                      생산완료 처리 되었으나, <br/>
+                      {res.data[0].register_production_with_stock_check} 으로 BOM 적용불가.
+                    </span>
+                  </div>), 
+                cancelText:""
+              });
+            }
             resetForm();
+            handleSelect({name:'',value:''});
             getData2();
           })
           .catch((error) => {
@@ -288,7 +304,6 @@ const ItemStock = ({ form }) => {
   const handleSelect = (option) => {
     setSelectedName(option.name);
     setSelectedValue(option.value);
-    console.log(option);
     
     // form에 적용
     setFormData((prev) => ({

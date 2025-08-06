@@ -4,6 +4,7 @@ import axiosInstance from "utils/Axios";
 import CustomModal from "components/Modal";
 import SearchOrderComponent from "components/SearchOrderComponent";
 import SearchVendorComponent from "components/SearchVendorComponent";
+import dayjs from "dayjs";
 
 const Main = ({ form }) => {
   const modalRef = useRef();  
@@ -17,7 +18,7 @@ const Main = ({ form }) => {
     purchase_id: "",
     client_code: "",
     client_name: "",
-    receipt_date: new Date().toISOString().split("T")[0],
+    receipt_date: dayjs().format('YYYY-MM-DD'),
     comment: "",
   })
 
@@ -376,7 +377,7 @@ const Main = ({ form }) => {
       user_nm: "",
       client_code: "",
       client_name: "",
-      receipt_date: new Date().toISOString().split("T")[0],
+      receipt_date: dayjs().format('YYYY-MM-DD'),
       comment: "",
     })
     setItems([])
@@ -391,7 +392,7 @@ const Main = ({ form }) => {
       user_nm: "",
       client_code: "",
       client_name: "",
-      receipt_date: new Date().toISOString().split("T")[0],
+      receipt_date: dayjs().format('YYYY-MM-DD'),
       comment: "",
     })
     

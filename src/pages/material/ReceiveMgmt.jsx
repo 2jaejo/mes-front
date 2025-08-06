@@ -564,12 +564,7 @@ const Main = ({ props={} }) => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
         
-        // if(!formRef.current.user_id){
-        //   modalRef2.current.open({ title:"알림", message:"사용자를 선택하세요.", cancelText:"" });
-        //   return;
-        // }
-
-       
+   
         if(!formRef.current.receipt_date){
           modalRef2.current.open({ title:"알림", message:"입고일을 입력하세요.", cancelText:"" });
           return;
@@ -982,6 +977,9 @@ const ModalComponent = ({ form }) => {
         { headerName: "품목명", field: "raw_name", sortable: false, editable: false, align:"left", width:300},
         { headerName: "기준단위", field: "base_unit", sortable: false, editable: false, align:"center"},
         { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"},
+        { headerName: "발주수량", field: "purchase_qty", sortable: false, editable: false, align:"right", cellDataType: 'number',
+          valueFormatter: (params) => moneyFormatter(params)
+        },
         { headerName: "입고수량", field: "quantity", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },
@@ -1129,8 +1127,6 @@ const ModalComponent = ({ form }) => {
   const getData3 = (params) => {
     console.log("getData3");
 
-
-
     formRef3.current = {
       item_code:'',
       item_name:'',
@@ -1141,15 +1137,6 @@ const ModalComponent = ({ form }) => {
       title: "재고 조회",
       content: <InventoryComponent props={formRef3} style_props={{height: '80vh', width:'80vw'}}/>,
 
-    // formRef3.current = {
-    //   raw_code:'',
-    //   raw_name:'',
-    
-    // };
-
-    // modalRef.current.open({
-    //   title: "품목 조회",
-    //   content: <SearchRawComponent form={formRef3} />,
       onCancel: ()=>{
         modalRef.current.close();
       },
@@ -1173,6 +1160,7 @@ const ModalComponent = ({ form }) => {
 
           selectedRows.forEach(row => {
             row.unit_price = parseInt(row.buyprice ?? 0);
+            row.quantity = 0;
 
             const alreadyExists = newData.some(el => el.raw_code === row.raw_code);
             if (!alreadyExists) {
@@ -1231,7 +1219,7 @@ const ModalComponent = ({ form }) => {
 
         // 발주수량, 합계 0으로
         const updatedArr = rows.map(el => {
-          return {...el, quantity: 0, total_price:0};
+          return {...el, purchase_qty: el.quantity, quantity: 0, total_price:0};
         });  
         setRowData(updatedArr);
         
@@ -1404,7 +1392,7 @@ const ModalComponent = ({ form }) => {
               onGridReady={onGridReady} 
               loading={loading}
               rowNum={true}
-              rowSel={"singleRow"}
+              rowSel={"multiRow"}
               pagination={false}
               // pageSize={10}  
             />

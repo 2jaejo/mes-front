@@ -440,7 +440,7 @@ const Main = () => {
 
     // 폼 초기화
     formRef.current = DEFAULT_FORM({
-      request_date: new Date().toISOString().split('T')[0],
+      request_date: dayjs().format("YYYY-MM-DD"),
     });
 
     modalRef.current.open({

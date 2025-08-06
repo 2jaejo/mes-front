@@ -91,7 +91,7 @@ const Main = ({ props={}, style_props={} }) => {
 
 
   return (
-    <div style={{ height: '50vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '50vh',width:'50vw', display: 'flex', flexDirection: 'column' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 

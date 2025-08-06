@@ -117,7 +117,7 @@ const Main = () => {
     console.log("useEffect");
 
     const init = {
-      code: ['cd017']
+      code: ['cd017', 'cd019']
     };
 
     axiosInstance
@@ -126,10 +126,18 @@ const Main = () => {
       selectBox.current = res.data;
     
       setColumnDefs([
-        { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        // { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
         { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
+        { headerName: "분류", field: "type_name", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center",
+          cellEditor: "agSelectCellEditor",
+          cellEditorParams: {
+            values: selectBox.current.common?.['cd019'].map((item) => item.code) ?? [],
+          },
+          valueFormatter: (params) => commonTypeFormatter(params,'cd019') ,
+          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
+        },
         { headerName: "단위", field: "base_unit", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -140,9 +148,8 @@ const Main = () => {
         },
         { headerName: "규격", field: "unit_size", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
         { headerName: "매입가", field: "buyprice", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "분류", field: "type_name", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "안전재고", field: "right_qty", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
@@ -292,9 +299,9 @@ const Main = () => {
 
             <tr>
               
-              <th className="bg-light text-end align-middle">분류</th>
+              <th className="bg-light text-end align-middle"><span className="p-0 text-danger fs-6 fw-bold">*</span>분류</th>
               <td>
-                <Form.Control 
+                {/* <Form.Control 
                   type="text"
                   name="type_name"
                   value={modalForm.type_name ?? ''}
@@ -302,7 +309,23 @@ const Main = () => {
                   size="sm" 
                   className="w-auto"
                   maxLength={11}
-                />
+                /> */}
+                <Form.Select 
+                  name="type_name" 
+                  value={modalForm.type_name ?? ''} 
+                  onChange={modalFormChange}
+                  size="sm"
+                  className="w-100"
+                >
+                  <option key="" value="">선택</option>
+                  {(selectBox.current.common?.['cd019'] || [])
+                    .filter(opt => opt.use_yn === 'Y')
+                    .map(opt => (
+                      <option key={opt.code} value={opt.code}>
+                        {opt.code_name}
+                      </option>
+                  ))}
+                </Form.Select>
               </td>
               <th className="bg-light text-end align-middle">상태</th>
               <td>
@@ -763,6 +786,11 @@ const Main = () => {
 
         if(formRef.current.base_unit === "" || formRef.current.base_unit === undefined){
           modalRef2.current.open({ title:"알림", message:"단위를 선택하세요.", cancelText:"" });
+          return;
+        }
+
+        if(formRef.current.type_name === "" || formRef.current.type_name === undefined){
+          modalRef2.current.open({ title:"알림", message:"분류를 선택하세요.", cancelText:"" });
           return;
         }
 

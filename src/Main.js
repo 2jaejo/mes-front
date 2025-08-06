@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from 'react-router-dom'; // v6: Routes와 Route 사용
 
 // 로고
@@ -6,15 +6,16 @@ import { useNavigate } from 'react-router-dom'; // v6: Routes와 Route 사용
 
 // 레이아웃
 // import Header from "./layout/Header";
-import Navi from "./layout/Navi";
+import Navi from "layout/Navi";
 // import Aside from "./layout/Aside";
 // import Article from "./layout/Article";
 // import Footer from "./layout/Footer";
 
 // 컴포넌트
 // import FloatingButton from "./components/FloatingButton";
-import TabList from "./components/TabList";
-import TabContent from "./components/TabContent";
+import TabList from "components/TabList";
+import TabContent from "components/TabContent";
+import Modal from "components/Modal";
 
 // 유틸
 import { setupAxiosInterceptor } from "utils/Axios";
@@ -33,6 +34,9 @@ function Main() {
   React.useEffect(() => {
     setupAxiosInterceptor(navigate);
   }, [navigate]);
+
+  // 모달 ref
+  const modalRef = useRef();  
 
 
   // const { sidebar, toggleSidebar } = useContext(GlobalContext);
@@ -60,13 +64,13 @@ function Main() {
     if (!exists) {
       // 탭이 15개 이상일 경우 추가 불가
       if(tabs.length > 15) {
-        alert("탭은 최대 15개까지 열 수 있습니다.");
+        modalRef.current.open({ title:"알림", message:"탭은 최대 15개까지 열 수 있습니다.", cancelText:"", confirmClass:"btn btn-primary", autoCloseDelay:2000 });
         return;
       }
 
       const content = getTabContent(menu);
       if (!content) {
-        alert("탭 내용을 불러오지 못했습니다.");
+        modalRef.current.open({ title:"알림", message:"탭 내용을 불러오지 못했습니다.", cancelText:"", confirmClass:"btn btn-primary", autoCloseDelay:2000 });
         return;
       }
       
@@ -226,6 +230,8 @@ function Main() {
 
   return (
     <div className="contianer">
+      <Modal ref={modalRef} />
+      
       {/* 사이드바 토글버튼 */}
       {/* <FloatingButton onClick={toggleSidebar} isOpen={sidebar.isOpen} state={sidebar.isDesktop}/> */}
 

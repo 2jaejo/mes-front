@@ -421,7 +421,7 @@ const Main = ({ isActive}) => {
       <div className="h-100">
         <Row  className="h-100">
 
-          <Col className="d-flex flex-column" xs={12} md={12}>
+          <Col className="pb-5 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">압출</span>
             </div>

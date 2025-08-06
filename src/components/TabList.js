@@ -13,14 +13,15 @@ const TabList = ({ tabs, activeTab, setActiveTab, removeTab, removeAllTab}) => {
 
 
   return (
-    <div className="tabs">
+    <div className="tabs d-flex flex-wrap">
       <Modal ref={modalRef} />
 
       {tabs.map((tab) => (
         <div
           key={tab.id}
-          className={`tab ${activeTab === tab.id ? 'active' : ''} overflow-hidden`}
+          className={`tab ${activeTab === tab.id ? 'active' : ''} overflow-hidden d-flex justify-content-between`}
           onClick={() => setActiveTab(tab.id)}
+          title={tab.title}
         >
           <span>{tab.title}</span>
           {tab.id === 'Home' && (
