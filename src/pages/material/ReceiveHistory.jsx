@@ -5,8 +5,8 @@ import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { MainContentStyle } from "css/CommonStyle";
-
-
+import dayjs from "dayjs";
+import { comm } from "utils/CommonFunctions";
 
 
 const Main = () => {
@@ -160,8 +160,8 @@ const Main = () => {
 
         // 그리드 설정
         setColumnDefs([
-          { headerName: "입고일시", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
-          { headerName: "입고번호", field: "receipt_id", sortable: false, editable: false, align:"center", width:200},
+          { headerName: "입고일시", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
+          { headerName: "입고번호", field: "receipt_id", sortable: false, editable: false, align:"center", width:120},
           { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
           { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
           { headerName: "입고량", field: "requested_quantity", sortable: false, editable: false, align:"right"}, 
@@ -197,8 +197,12 @@ const Main = () => {
 
   // 검색창 입력필드 변경 저장
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }; 
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
 
   // 조회
@@ -232,6 +236,16 @@ const Main = () => {
     
   };
 
+
+  const exportExcel = () =>{
+    console.log("exportExcel");
+    if (gridRef.current) {
+      gridRef.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__입고이력.csv`
+      });
+    }
+  };
+
   
   return (
     <div style={MainContentStyle}>
@@ -241,7 +255,7 @@ const Main = () => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -269,6 +283,10 @@ const Main = () => {
                         placeholder="NAME"
                         maxLength={50}
                       />
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", 0); }}>당일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -3); }}>3일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -7); }}>7일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -30); }}>30일</Button>
                     </div>
                   </td>
                   <th className="bg-light text-end align-middle">입고번호</th>
@@ -278,6 +296,7 @@ const Main = () => {
                         name="receipt_id"
                         value={form.receipt_id}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -291,6 +310,7 @@ const Main = () => {
                         name="item_code"
                         value={form.item_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="자재코드"
@@ -301,6 +321,7 @@ const Main = () => {
                         name="item_name"
                         value={form.item_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="자재명"
@@ -324,7 +345,9 @@ const Main = () => {
         <Row  className="h-100">
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
-              <span className="fw-bold">입고 이력</span>              
+              <span className="fw-bold">입고 이력</span>        
+              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+                    
             </div>
 
             <GridExample 

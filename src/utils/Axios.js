@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
   baseURL: '/', // 서버의 기본 URL
   headers: {
     'Content-Type': 'application/json', // 모든 요청에 JSON 헤더 추가
-    // 'Cache-Control': 'no-cache', // 항상 서버에서 최신 데이터 가져오기
+    'Cache-Control': 'no-cache', // 항상 서버에서 최신 데이터 가져오기
   },
   withCredentials: true, // 쿠키를 포함하여 요청에 추가
   timeout: 20000, // 응답 대기 최대 시간 20초

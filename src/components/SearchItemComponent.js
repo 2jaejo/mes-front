@@ -173,7 +173,7 @@ const Main = ({ form }) => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
 
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>

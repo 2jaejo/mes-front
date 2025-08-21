@@ -7,6 +7,7 @@ import Modal from "components/Modal";
 
 import * as XLSX from "xlsx";
 import { comm } from "utils/CommonFunctions";
+import dayjs from "dayjs";
 
 const Main = () => {
   const modalRef = useRef();  
@@ -83,9 +84,9 @@ const Main = () => {
           { headerName: "전화", field: "phone", sortable: true, editable: true, align:"center"},
           { headerName: "휴대전화", field: "mobile_phone", sortable: true, editable: true, align:"center"},
           { headerName: "팩스", field: "fax", sortable: true, editable: true, align:"center"},
-          { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center"},
+          { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center", width:120},
           { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"center"},
-          { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center"},
+          { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center", width:120},
           { headerName: "수정자", field: "updated_by", sortable: true, editable: false, align:"center"},
           { 
             headerName: "사용여부", 
@@ -696,29 +697,21 @@ const Main = () => {
   // 조회
   const getData = (params) => {
     console.log("getData");
-    
-
-    const data = {...form};
-
+  
     setLoading(true);
-    const startTime = Date.now(); // 요청 전 시간 기록
     axiosInstance
-      .post(`/api/getClient`, JSON.stringify(data))
+      .post(`/api/getClient`, JSON.stringify(form))
       .then((res) => {
-        const endTime = Date.now(); // 응답 시간을 측정
-        const responseTime = endTime - startTime; // 응답 시간 (밀리초)
-        const delay = responseTime < 300 ? 300 - responseTime : 0; // 응답 시간이 남은 시간만큼 지연
+        setRowData(res.data);
         
-        // 지연 후 응답을 출력
-        setTimeout(async () => {
-          setRowData(res.data);
-          setLoading(false);
-        }, delay);
-          
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
         modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+      })
+      .finally(()=>{
+        setLoading(false);
+
       });   
   };
 
@@ -1032,6 +1025,16 @@ const Main = () => {
   };
 
 
+  const exportExcel = () =>{
+    console.log("exportExcel");
+    if (gridRef.current) {
+      gridRef.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__매출처관리.csv`
+      });
+    }
+  };
+
+
   
   return (
     <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
@@ -1052,6 +1055,7 @@ const Main = () => {
                         name="client_code"
                         value={form.client_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder=""
@@ -1139,6 +1143,8 @@ const Main = () => {
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
               <Button size="sm" variant="primary" onClick={mappingData}>업로드 맵핑</Button>
               <Button size="sm" variant="primary" onClick={uploadExcel}>파일 업로드</Button>
+              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+              
             </div>
 
             <GridExample

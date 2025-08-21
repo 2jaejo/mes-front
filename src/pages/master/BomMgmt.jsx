@@ -5,6 +5,7 @@ import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { MainContentStyle } from "css/CommonStyle";
+import dayjs from "dayjs";
 
 const Main = () => {
 
@@ -50,30 +51,28 @@ const Main = () => {
 
   const col_a = [
     
-    { headerName: "BOM 등록수", field: "bom_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "품번", field: "item_dotno", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
-    { headerName: "상품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
-    { headerName: "상태", field: "item_status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "소비자가", field: "sellprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "매입공급가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "매입부가세", field: "vtax_buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "매입가", field: "tax_buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "과세유형", field: "tax_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "매입유형", field: "buy_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "기본매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "배송유형", field: "trans_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "팩킹구분", field: "item_plus_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "출고창고", field: "storage_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "브랜드", field: "brand_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "상품구분", field: "item_part_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "등록일", field: "reg_date", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "등록자", field: "reg_admin_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "BOM 등록수", field: "bom_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "운영상품코드", field: "item_usr_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "바코드", field: "bar_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "품번", field: "item_dotno", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
+    // { headerName: "상품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
+    // { headerName: "상태", field: "item_status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "과세유형", field: "tax_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "매입유형", field: "buy_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "기본매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "배송유형", field: "trans_type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "팩킹구분", field: "item_plus_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "출고창고", field: "storage_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "브랜드", field: "brand_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "상품구분", field: "item_part_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "소비자가", field: "sellprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "매입공급가", field: "buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "매입부가세", field: "vtax_buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "매입가", field: "tax_buyprice", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "등록일", field: "reg_date", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+    // { headerName: "등록자", field: "reg_admin_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
   ];
 
-
-  
 
   const gridRef2 = useRef();  
   const [loading2, setLoading2] = useState(false);
@@ -111,41 +110,12 @@ const Main = () => {
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
-        getData2(selectedRows[0]);
+        // getData2(selectedRows[0]);
       };
 
     });
 
   };
-
-  // 그리드 onGridReady2
-  const onGridReady2 = (params) => {
-    console.log("onGridReady2");
-
-    gridRef2.current = params.api; // Grid API 저장
-
-    // 행 클릭 이벤트
-    params.api.addEventListener("rowClicked", (ev) => {
-      console.log("rowClicked");
-      
-    });
-
-    // 셀 값 변경 이벤트
-    params.api.addEventListener("cellValueChanged", (ev) => {
-      console.log("cellValueChanged");
-      
-      setData(ev.data);
-    });
-
-    // 선택 변경 이벤트
-    params.api.addEventListener("selectionChanged", (ev) => {
-      console.log("selectionChanged");
-      
-    });
-
-  };
-  
-  
 
   
 
@@ -167,29 +137,52 @@ const Main = () => {
       selectBox.current = res.data;
 
       // 그리드 설정
-      setColumnDefs(col_a);
-
-      setColumnDefs2([
-        { headerName: "품목코드", field: "item_dotno", sortable: false, editable: false, align:"center"},
-        { headerName: "품목명", field: "item_name", sortable: false, editable: false, align:"left", width:300}, 
+      setColumnDefs([
+        { headerName: "BOM", field: "bom_cnt", sortable: false, editable: false, align:"center", width:40 },
+        { headerName: "바코드", field: "bar_code", sortable: false, editable: false, align:"center" },
+        { headerName: "품번", field: "item_dotno", sortable: true, editable: false, align:"center"},
+        { headerName: "상품명", field: "item_name", sortable: true, editable: false, align:"left", width:300}, 
         { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
         { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
-        { headerName: "수량", field: "quantity", sortable: false, editable: true, align:"right"}, 
-        { headerName: "단위", field: "unit", sortable: false, editable: true, align:"center",
+        // { headerName: "단위", field: "base_unit", sortable: false, editable: false, align:"center"},
+        { headerName: "규격", field: "unit_size", sortable: false, editable: false, align:"center"},
+        { headerName: "수량", field: "quantity", sortable: false, editable: (params)=> {return (params.data.bar_code === null)}, align:"right"}, 
+        { headerName: "단위", field: "unit", sortable: false, editable: (params)=> {return (params.data.bar_code === null)}, align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
             values: selectBox.current.common?.['cd017'].map((item) => item.code) ?? [],
           },
           valueFormatter:(params)=> commonTypeFormatter(params,'cd017'),
-          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
+          cellRenderer: (params) => { return params.value !== null ? (<div className="w-100 d-flex gap-2 justifi-content-between">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>) : null}, 
         },
-        { headerName: "순서", field: "sort", sortable: false, editable: true, align:"center"},
-        { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left"}, 
-        { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center" },
+        { headerName: "비고", field: "comment", sortable: false, editable: (params)=> { return (params.data.bar_code === null)}, align:"left", width:200}, 
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"left" },
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center" },
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center", width:120 },
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, align:"left" },
       ]);
+
+      // setColumnDefs2([
+      //   { headerName: "품번", field: "item_dotno", sortable: false, editable: false, align:"center"},
+      //   { headerName: "상품명", field: "item_name", sortable: false, editable: false, align:"left", width:300}, 
+      //   { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center"},
+      //   { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
+      //   { headerName: "수량", field: "quantity", sortable: false, editable: true, align:"right"}, 
+      //   { headerName: "단위", field: "unit", sortable: false, editable: true, align:"center",
+      //     cellEditor: "agSelectCellEditor",
+      //     cellEditorParams: {
+      //       values: selectBox.current.common?.['cd017'].map((item) => item.code) ?? [],
+      //     },
+      //     valueFormatter:(params)=> commonTypeFormatter(params,'cd017'),
+      //     cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
+      //   },
+      //   { headerName: "순서", field: "sort", sortable: false, editable: true, align:"center"},
+      //   { headerName: "비고", field: "comment", sortable: false, editable: true, align:"left"}, 
+      //   { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center" },
+      //   { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"left" },
+      //   { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center" },
+      //   { headerName: "수정자", field: "updated_by", sortable: true, editable: false, align:"left" },
+      // ]);
 
       getData();
     })
@@ -241,7 +234,7 @@ const Main = () => {
     setLoading(true);
 
     axiosInstance
-    .post(`/api/getItem`, JSON.stringify(form))
+    .post(`/api/getBom`, JSON.stringify(form))
     .then((res) => {
       setRowData(res.data);
     })
@@ -295,8 +288,8 @@ const Main = () => {
     axiosInstance
       .post("api/setBom", JSON.stringify(params))
       .then((res) => {
-        const rows = gridRef.current.getSelectedRows();
-        getData2(rows[0]);
+        
+        // getData2();
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -308,6 +301,12 @@ const Main = () => {
   // 추가
   const addData = (params) => {
     console.log("addData");
+
+    const rows = gridRef.current.getSelectedRows();
+    if(rows[0].item_dotno === null){
+      modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
+      return;
+    }
 
     // 폼 초기화
     formRef.current = DEFAULT_FORM();
@@ -363,10 +362,16 @@ const Main = () => {
   const delData = (params) => {
     console.log("delData");
     
-    const sel_rows = gridRef2.current.getSelectedRows();
-    
+    const sel_rows = gridRef.current.getSelectedRows();
+    // console.log(sel_rows);
+
     if(sel_rows.length === 0) {
       modalRef.current.open({ title:"알림", message:"선택된 항목이 없습니다.", cancelText:"" });
+      return;
+    }
+
+    if(sel_rows[0].raw_code === null || sel_rows[0].raw_code === undefined || sel_rows[0].raw_code === '') {
+      modalRef.current.open({ title:"알림", message:"BOM을 선택하세요.", cancelText:"" });
       return;
     }
     
@@ -399,6 +404,15 @@ const Main = () => {
     
   };
 
+  const exportExcel = () =>{
+    console.log("exportExcel");
+    if (gridRef.current) {
+      gridRef.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__BOM관리.csv`
+      });
+    }
+  };
+
   
   return (
     <div style={MainContentStyle}>
@@ -408,7 +422,7 @@ const Main = () => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             
 
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
@@ -422,6 +436,7 @@ const Main = () => {
                         name="item_dotno"
                         value={form.item_dotno}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="품번"
@@ -459,7 +474,9 @@ const Main = () => {
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">품목 목록</span>
-              
+              <Button size="sm" variant="success" onClick={addData}>추가</Button>
+              <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
+              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
             </div>
 
             <GridExample 
@@ -469,19 +486,20 @@ const Main = () => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
+              pagination={false}
             />
           </Col>
         </Row>
 
       </div>
 
-      <div className="h-100">
+      {/* <div className="h-100">
         <Row  className="h-100">
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">BOM</span>
-              <Button size="sm" variant="success" onClick={addData}>추가</Button>
-              <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
+             
+              
             </div>
 
             <GridExample 
@@ -496,7 +514,7 @@ const Main = () => {
           </Col>
         </Row>
 
-      </div>
+      </div> */}
     
 
     </div>
@@ -584,7 +602,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
   const col_a = [
     
     { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-    { headerName: "자재명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left", flex:1},
+    { headerName: "자재명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left", width:300},
     { headerName: "기준단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
       cellEditor: "agSelectCellEditor",
       cellEditorParams: {
@@ -593,7 +611,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
       valueFormatter: (params) => commonTypeFormatter(params, 'cd004'),
     },
     { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-    { headerName: "비고", field: "comment", sortable: true, editable: false, align:"left", minWidth:300},
+    { headerName: "비고", field: "comment", sortable: true, editable: false, align:"left", width:200},
   ];
 
   // 그리드 onGridReady
@@ -667,7 +685,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
 
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
@@ -680,6 +698,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
                         name="raw_code"
                         value={form.raw_code}
                         onChange={modalFormChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="품번"
@@ -723,7 +742,7 @@ const ModalForm = ({ form={}, onChangeHandler }) => {
               rowData={rowData}
               onGridReady={onGridReady} 
               loading={loading}
-              rowNum={true}
+              rowNum={false}
               rowSel={"multiRow"}
               pagination={true}
               // pageSize={10}

@@ -142,7 +142,7 @@ const Main = () => {
     };
 
     return (
-      <div className={"p-2"}>
+      <div className={"p-2 overflow-auto"}>
         <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
           <tbody>
             <tr>

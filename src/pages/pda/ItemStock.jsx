@@ -5,6 +5,7 @@ import axiosInstance from "utils/Axios";
 import CustomModal from "components/Modal";
 import SearchableDropdown from "components/SearchableDropdown";
 import dayjs from "dayjs";
+import {comm} from "utils/CommonFunctions";
 
 const ItemStock = ({ form }) => {
   const modalRef = useRef();  
@@ -42,9 +43,7 @@ const ItemStock = ({ form }) => {
 
   // 폼 데이터 상태
   const [formData, setFormData] = useState(DEFAULT_FORM());
-
-
-
+  
   // 폼 데이터 변경 핸들러
   const handleFormChange = (e) => {
     const { name, value } = e.target
@@ -60,6 +59,20 @@ const ItemStock = ({ form }) => {
         ['client_name']: '',
       }));
     }
+  }
+
+
+  const [formData2, setFormData2] = useState({
+    start_date:dayjs().format('YYYY-MM-DD'),
+    end_date:dayjs().format('YYYY-MM-DD'),
+  });
+  const handleFormChange2 = (e) => {
+    const { name, value } = e.target
+    setFormData2((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+
   }
 
 
@@ -132,11 +145,13 @@ const ItemStock = ({ form }) => {
       });
   };
 
+
+
   const getData2 = async () =>{
     console.log("getData2");
 
     axiosInstance
-      .post(`/api/getProductionLog`, JSON.stringify({today:today}))
+      .post(`/api/getProductionLog`, JSON.stringify(formData2))
       .then((res) => {
         
         setItems(res.data);
@@ -302,6 +317,8 @@ const ItemStock = ({ form }) => {
   const [selectedValue, setSelectedValue] = useState('');
 
   const handleSelect = (option) => {
+    console.log("handleSelect");
+
     setSelectedName(option.name);
     setSelectedValue(option.value);
     
@@ -319,7 +336,6 @@ const ItemStock = ({ form }) => {
 
       <CustomModal ref={modalRef} />
       <CustomModal ref={modalRef2} />
-
 
       {/* 조회 */}
       <Card className="mb-3 shadow-sm">
@@ -513,21 +529,38 @@ const ItemStock = ({ form }) => {
       <Card className="mt-3 shadow-sm">
         <Card.Header className="">
           <div className="d-flex gap-2 justify-content-between align-items-center">
-            <Button variant="secondary" size="sm" onClick={getData2}>
-              <i className="bi bi-arrow-clockwise"></i>
-            </Button>
+            
 
-            <Form.Control
-              type="date"
-              name="today"
-              value={today ?? ""}
-              onChange={handleFormChange}
-              placeholder=""
-              maxLength={100}
-              size="sm"
-              className="w-auto"
-              disabled
-            />
+            <div className="d-flex gap-2 align-items-center">
+              <Form.Control
+                type="date"
+                name="start_date"
+                value={formData2.start_date ?? ""}
+                onChange={handleFormChange2}
+                placeholder=""
+                maxLength={100}
+                size="sm"
+                className="w-auto"
+                
+              />
+              <span>~</span>
+              <Form.Control
+                type="date"
+                name="end_date"
+                value={formData2.end_date ?? ""}
+                onChange={handleFormChange2}
+                placeholder=""
+                maxLength={100}
+                size="sm"
+                className="w-auto"
+              />
+              <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleFormChange2, "start_date", "end_date", 0); }}>당일</Button>
+              <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleFormChange2, "start_date", "end_date", -3); }}>3일</Button>
+              <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleFormChange2, "start_date", "end_date", -7); }}>7일</Button>
+              <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleFormChange2, "start_date", "end_date", -30); }}>30일</Button>
+              <Button variant="primary" size="sm" onClick={getData2}><i className="bi bi-search"></i></Button>
+            </div>
+
             <div className="d-flex gap-2">
               <h6 className="mb-0">
                 완료 목록 ({items.length}개)

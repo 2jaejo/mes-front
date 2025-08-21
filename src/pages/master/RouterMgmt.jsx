@@ -5,6 +5,7 @@ import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { MainContentStyle } from "css/CommonStyle";
+import dayjs from "dayjs";
 
 const Main = () => {
 
@@ -427,6 +428,23 @@ const Main = () => {
     
   };
 
+  const exportExcel = () =>{
+    console.log("exportExcel");
+    if (gridRef.current) {
+      gridRef.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__라우터관리.csv`
+      });
+    }
+  };
+
+  const exportExcel2 = () =>{
+    console.log("exportExcel2");
+    if (gridRef2.current) {
+      gridRef2.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__라우터관리_상세.csv`
+      });
+    }
+  };
   
   return (
     <div style={MainContentStyle}>
@@ -448,6 +466,7 @@ const Main = () => {
                       name="router_code"
                       value={form.router_code}
                       onChange={handleChange}
+                      onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                       size="sm" 
                       className="w-auto"
                       maxLength={50}
@@ -460,6 +479,7 @@ const Main = () => {
                       name="router_name"
                       value={form.router_name}
                       onChange={handleChange}
+                      onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                       size="sm" 
                       className="w-auto"
                       maxLength={50}
@@ -509,6 +529,8 @@ const Main = () => {
               <span className="fw-bold">라우터 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
+              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+              
             </div>
 
             <GridExample 
@@ -529,6 +551,8 @@ const Main = () => {
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">라우팅 절차</span>
+              <Button size="sm" variant="success" onClick={exportExcel2}>csv 다운로드</Button>
+
             </div>
 
             <GridExample 
@@ -1001,6 +1025,7 @@ const ModalForm2 = ({ form={}, onChangeHandler }) => {
                 name="item_dotno"
                 value={modalForm.item_dotno}
                 onChange={modalFormChange}
+                onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                 size="sm" 
                 className="w-auto"
                 maxLength={50}
@@ -1013,6 +1038,7 @@ const ModalForm2 = ({ form={}, onChangeHandler }) => {
                 name="item_name"
                 value={modalForm.item_name}
                 onChange={modalFormChange}
+                onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                 size="sm" 
                 className="w-auto"
                 maxLength={50}

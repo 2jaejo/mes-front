@@ -302,7 +302,7 @@ const Main = ({ props={}, style_props={} }) => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -314,6 +314,7 @@ const Main = ({ props={}, style_props={} }) => {
                         name="raw_code"
                         value={form.raw_code}
                         onChange={formChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="품번"
@@ -376,7 +377,7 @@ const Main = ({ props={}, style_props={} }) => {
               onGridReady={onGridReady} 
               loading={loading}
               // rowNum={true}
-              rowSel={"multiRow"}
+              rowSel={"singleRow"}
               pagination={true}
               // pageSize={10}
               // pinnedBottomRowData={pinnedBottomRowData}  
@@ -467,9 +468,10 @@ const ModalComponent = ({ props={} }) => {
         selectBox.current = res.data;
 
         setColumnDefs([
-          { headerName: "재고조정량", field: "changed_quantity", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params) },
+          { headerName: "재고조정량", field: "changed_quantity", sortable: true, editable: false, align:"right", valueFormatter: (params) => moneyFormatter(params) },
           { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left" },
-          { headerName: "등록일시", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left"},
+          { headerName: "등록일시", field: "created_at", sortable: true, editable: false,  align:"left"},
+          { headerName: "조정사유", field: "remarks", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left"},
         ]);
 
         getData();
@@ -518,6 +520,7 @@ const ModalComponent = ({ props={} }) => {
       .post(`/api/setInventoryDet`, JSON.stringify(modalForm))
       .then((res) => {
         modalFormChange({target:{name:"quantity", value:""}});
+        modalFormChange({target:{name:"remarks", value:""}});
         getData();
       })
       .catch((error) => {
@@ -573,13 +576,13 @@ const ModalComponent = ({ props={} }) => {
 
 
   return (
-    <div style={{ height: '30vh', width:'24vw', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '30vh', width:'30vw', display: 'flex', flexDirection: 'column' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
       <div className="mb-2 bg-light">
         <Row className="">
-          <Col className="d-flex gap-2">
+          <Col className="d-flex gap-2 overflow-auto">
             <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -611,6 +614,23 @@ const ModalComponent = ({ props={} }) => {
                     </Button>
                   </td>
                   
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">조정사유</th>
+                  <td className="" colspan={2}>
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="text"
+                        name="remarks"
+                        value={modalForm.remarks}
+                        onChange={modalFormChange}
+                        size="sm" 
+                        className="w-100"
+                        maxLength={50}
+                      />
+                    </div>
+                  </td>
+                            
                 </tr>
 
               </tbody>

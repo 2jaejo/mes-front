@@ -141,7 +141,7 @@ const Home = ({isActive, addTab}) => {
         { headerName: "공정유형", field: "process_type", sortable: true, editable: false, align:"center", width:150, 
           valueFormatter:(params)=> commonTypeFormatter(params,'cd011')
         },
-        { headerName: "할당 품번", field: "item_code", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter", width:300 },
+        { headerName: "할당 품번", field: "item_code", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter", width:200 },
         { headerName: "할당 품명", field: "item_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter", width:300, flex:1 },
         { headerName: "작업 상태", field: "status", sortable: true, editable: false, align:"center", width:150,
           cellEditor: "agSelectCellEditor",
@@ -160,9 +160,9 @@ const Home = ({isActive, addTab}) => {
         { headerName: "품명", field: "item_name", sortable: true, editable: false, align:"left",width:500},
         { headerName: "완료수량", field: "quantity", sortable: true, editable: false, align:"right",width:140},
         { headerName: "비고", field: "remark", sortable: true, editable: false, align:"left", width:300}, 
-        { headerName: "등록일자", field: "created_at", sortable: true, editable: false, align:"left"},
+        { headerName: "등록일자", field: "created_at", sortable: true, editable: false, align:"left",width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"left"},
-        { headerName: "수정일자", field: "updated_at", sortable: true, editable: false, align:"left"},
+        { headerName: "수정일자", field: "updated_at", sortable: true, editable: false, align:"left",width:120},
         { headerName: "수록자", field: "updated_by", sortable: true, editable: false, align:"left"},
       ]);
 
@@ -199,7 +199,8 @@ const Home = ({isActive, addTab}) => {
     console.log("getData3");
 
     const data = {
-      today: dayjs().format("YYYY-MM-DD"),
+      start_date: dayjs().format("YYYY-MM-DD"),
+      end_date: dayjs().format("YYYY-MM-DD"),
       // today: '2025-07-15'
     };
 
@@ -308,7 +309,7 @@ const Home = ({isActive, addTab}) => {
           newData.push({
             name:el.process_name , 
             '양품': el.result_qty ?? 0,
-            '불량': el.defect_qty ?? 0,
+            '불량(kg)': el.defect_qty ?? 0,
             '가동시간(분)':el.prod_min ?? 0,
             '가동률(%)':rate,
             'item_name':el.item_name,
@@ -381,7 +382,7 @@ const Home = ({isActive, addTab}) => {
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
           <Bar dataKey="양품" isAnimationActive={false} yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
-          <Bar dataKey="불량" isAnimationActive={false} yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
+          <Bar dataKey="불량(kg)" isAnimationActive={false} yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
           <Bar dataKey="가동률(%)" isAnimationActive={false} yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
           <Bar dataKey="가동시간(분)" isAnimationActive={false} yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
         </BarChart>

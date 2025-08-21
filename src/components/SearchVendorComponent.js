@@ -97,7 +97,7 @@ const Main = ({ props={}, style_props={} }) => {
 
       <div className="mb-2 bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>

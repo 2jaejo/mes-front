@@ -256,7 +256,7 @@ const Main = ({props={} }) => {
           { headerName: "출고창고", field: "storage_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
           { headerName: "브랜드", field: "brand_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
           { headerName: "상품구분", field: "item_part_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-          { headerName: "등록일", field: "reg_date", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center", cellDataType: 'dateTime' },
+          { headerName: "등록일", field: "reg_date", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center", cellDataType: 'dateString' },
           { headerName: "등록자", field: "reg_admin_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
 
           // { headerName: "비고", field: "comment", sortable: true, editable: true, align:"left", flex:1},
@@ -1333,7 +1333,7 @@ const Main = ({props={} }) => {
     console.log("exportExcel");
     if (gridRef.current) {
       gridRef.current.exportDataAsCsv({
-        fileName: `export_${dayjs().format('YYYYMMDD')}_품목관리.csv`
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__품목관리.csv`
       });
     }
   };
@@ -1429,6 +1429,7 @@ const Main = ({props={} }) => {
                         name="item_dotno"
                         value={form.item_dotno}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="품번"
@@ -1484,7 +1485,7 @@ const Main = ({props={} }) => {
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">품목 리스트</span>
-              { Object.keys(props).length === 0 &&
+              { !(props?.current) &&
                 <>
                   <Button size="sm" variant="success" onClick={addData}>추가</Button>
                   <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
@@ -1501,7 +1502,7 @@ const Main = ({props={} }) => {
               onGridReady={onGridReady} 
               loading={loading}
               rowNum={true}
-              rowSel={Object.keys(props).length === 0 ? "multiRow" : "singleRow"}
+              rowSel={props?.current ? "multiRow" : "singleRow"}
               pageSize={1000}  
             />
           </Col>

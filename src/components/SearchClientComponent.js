@@ -158,7 +158,7 @@ const Main = ({ form }) => {
 
       <div className="mb-2 bg-light">
         <Row className="">
-          <Col className="d-flex gap-2">
+          <Col className="d-flex gap-2 overflow-auto">
             <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -170,6 +170,7 @@ const Main = ({ form }) => {
                         name="client_code"
                         value={form.client_code}
                         onChange={modalFormChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -185,6 +186,7 @@ const Main = ({ form }) => {
                         name="client_name"
                         value={form.client_name}
                         onChange={modalFormChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}

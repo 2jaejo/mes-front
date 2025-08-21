@@ -4,7 +4,7 @@ import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
-
+import dayjs from "dayjs";
 
 const Main = () => {
   const modalRef = useRef();  
@@ -374,7 +374,7 @@ const Main = () => {
     // 폼 초기화
     formRef.current = DEFAULT_FORM({
       equipment_type : selectBox.current.common?.['cd008'][0].code || '',
-      install_date : new Date().toISOString().split('T')[0],
+      install_date : dayjs().format('YYYY-MM-DD'),
       location : selectBox.current.common?.['cd009'][0].code || '',
       status : selectBox.current.common?.['cd007'][0].code || '',
       use_yn : selectBox.current.common?.['cd010'][0].code || '',

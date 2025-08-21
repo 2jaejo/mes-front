@@ -199,7 +199,7 @@ const Main = () => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -211,6 +211,7 @@ const Main = () => {
                         name="item_code"
                         value={form.item_code}
                         onChange={formChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="품번"

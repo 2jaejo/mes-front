@@ -9,6 +9,8 @@ import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import { MainContentStyle } from "css/CommonStyle";
 import { redirect } from 'react-router-dom';
 import SearchableDropdown from "components/SearchableDropdown";
+import SearchUserComponent from "components/SearchUserComponent";
+import SalesOrderMgmt from "../production/SalesOrderMgmt";
 
 
 const Main = ({ isActive}) => {
@@ -48,6 +50,8 @@ const Main = ({ isActive}) => {
   const groups2 = useRef([]);
   const groups3 = useRef([]);
 
+  
+
   const [items, setItems] = useState([]);
   const [items2, setItems2] = useState([]);
   const [items3, setItems3] = useState([]);
@@ -83,11 +87,14 @@ const Main = ({ isActive}) => {
 
   };
 
-  const options = {
-    start: dayjs().startOf('day').toDate(),
-    end: dayjs().add(1, 'day').endOf('day').toDate(), 
-    min: dayjs().add(-1, 'day').startOf('day').toDate(),
-    max: dayjs().add(2, 'day').endOf('day').toDate(), 
+  const [today, setToday] = useState(dayjs().format('YYYY-MM-DD'));
+
+
+  const options = useMemo(() => ({
+    start: dayjs(today).startOf('day').toDate(),
+    end: dayjs(today).add(1, 'day').endOf('day').toDate(), 
+    min: dayjs(today).add(-1, 'day').startOf('day').toDate(),
+    max: dayjs(today).add(2, 'day').endOf('day').toDate(), 
     timeAxis: { scale: 'hour', step: 2 }, // (필요시 강제 설정)
     stack: true,
     orientation: 'top',
@@ -134,7 +141,14 @@ const Main = ({ isActive}) => {
       }
     },
     
-  };
+  }), [today]);
+
+
+  const dateChange = (e) => {
+    setToday(e.target.value);
+  }; 
+
+  const [isReady, setIsReady] = useState(false);
 
   // 초기화
   useEffect(()=>{
@@ -142,9 +156,8 @@ const Main = ({ isActive}) => {
 
     if( !isActive ) return;
 
-
     axiosInstance
-      .post(`/api/getProcess`, JSON.stringify({}))
+      .post(`/api/getProcess`, JSON.stringify({type:"status"}))
       .then((res) => {
         const g1 = [];
         const g2 = [];
@@ -160,20 +173,25 @@ const Main = ({ isActive}) => {
         const transformed1 = g1.map((item, index) => ({
           id: item.process_code,
           content: item.process_name
-        }));
+        })).filter((item, index, self) =>
+          index === self.findIndex(t => t.id === item.id)
+        );
         const transformed2 = g2.map((item, index) => ({
           id: item.process_code,
           content: item.process_name
-        }));
+        })).filter((item, index, self) =>
+          index === self.findIndex(t => t.id === item.id)
+        );
         const transformed3 = g3.map((item, index) => ({
           id: item.process_code,
           content: item.process_name
-        }));
-
+        })).filter((item, index, self) =>
+          index === self.findIndex(t => t.id === item.id)
+        );
         groups.current = transformed1;
         groups2.current = transformed2;
         groups3.current = transformed3;
-
+        console.log(groups3.current);
         // // 기존 groups 와 transformed 비교
         // if (!isEqual(groups, transformed)) {
         //   console.log("groups", groups);
@@ -209,8 +227,9 @@ const Main = ({ isActive}) => {
     setItems2([]);
     setItems3([]);
 
+    setIsReady(false);
     axiosInstance
-      .post(`/api/getWorkOrder`, JSON.stringify({type:"plan"}))
+      .post(`/api/getWorkOrder`, JSON.stringify({type:"plan", date: today}))
       .then((res) => {
         const arr_item = [ ...new Set(res.data.map(item => item.item_code))];
         
@@ -221,7 +240,7 @@ const Main = ({ isActive}) => {
           const editable = {
             add: false,         // add new items by double tapping
             updateTime: true,  // drag items horizontally
-            updateGroup: false, // drag items from one group to another
+            updateGroup: true, // drag items from one group to another
             remove: false,       // delete an item by tapping the delete button top right
             overrideItems: false  // allow these options to override item.editable
           };
@@ -229,11 +248,11 @@ const Main = ({ isActive}) => {
           return ({
             id: item.idx,
             group: item.process_code,
-            content: `[지시수량: ${item.order_qty}] ${item.item_name} - ${item.process_name}`,
+            content: `${isEnd ? '작업종료':''} [지시수량: ${item.order_qty}] ${item.item_name} - ${item.process_name}`,
             start: item.start_date+' '+item.start_time,
             end: item.end_date+' '+item.end_time,
             title: `${item.process_name} - ${item.item_name} <br> [지시수량: ${item.order_qty}] <br> ${item.start_date} ${item.start_time} ~ ${item.end_date} ${item.end_time} ${isEnd ? '/ 작업종료' : ''}`,
-            className: isEnd ? 'bg-secondary' : bg[0][idx],
+            className: isEnd ? 'bg-grey' : bg[0][idx],
             editable: isEnd ? false : editable,
             data: item
           });
@@ -270,7 +289,7 @@ const Main = ({ isActive}) => {
         modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
       })
       .finally(() =>{
-        
+        setIsReady(true);
       });
     
   };
@@ -281,6 +300,7 @@ const Main = ({ isActive}) => {
 
     const params = {
       id:item.id,
+      process_code: item.group,
       start_date: dayjs(item.start).format('YYYY-MM-DD'),
       start_time: dayjs(item.start).format('HH:mm'),
       end_date: dayjs(item.end).format('YYYY-MM-DD'),
@@ -359,7 +379,7 @@ const Main = ({ isActive}) => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
   
-        const excludeKeys = ["sel_box","remark"]; 
+        const excludeKeys = ["sel_box", "remark"]; 
         const isEmptyExceptExcluded = Object.entries(propsRef.current)
           .filter(([key]) => !excludeKeys.includes(key)) 
           .some(([_, value]) => value === 0 || value === "" || value === null || value === undefined);
@@ -393,6 +413,10 @@ const Main = ({ isActive}) => {
   };
 
 
+  
+
+
+
 
   return (
     <div style={MainContentStyle}>
@@ -405,7 +429,19 @@ const Main = ({ isActive}) => {
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
-          
+
+                  <td className="">
+                    <Form.Control 
+                      type="date"
+                      name="date"
+                      value={today}
+                      onChange={dateChange}
+                      size="sm" 
+                      className="w-auto"
+                      placeholder=""
+                      maxLength={50}
+                    />
+                  </td>
                   <td className="">
                     <Button size="sm" variant="primary" onClick={getData}><i className="bi bi-arrow-clockwise"></i></Button>
                   </td>
@@ -426,26 +462,69 @@ const Main = ({ isActive}) => {
               <span className="fw-bold">압출</span>
             </div>
             <div className="mb-2 border" style={{ width: '100%', height: '100%'}}>
-              <VisTimeline groups={groups.current} items={items} options={options} onEvents={events} />
-              
+              {isActive && isReady ? (
+                <VisTimeline
+                  groups={groups.current}
+                  items={items}
+                  options={options}
+                  onEvents={events}
+                />
+              ) : (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                  <div>
+                    <button className="btn btn-primary" type="button" disabled>
+                      <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Loading...
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">성형</span>
             </div>
             <div className="mb-2 border" style={{ width: '100%', height: '100%' }}>
-            
-              <VisTimeline groups={groups2.current} items={items2} options={options} onEvents={events} />
-
+              {isActive && isReady ? (
+                <VisTimeline
+                  groups={groups2.current}
+                  items={items2}
+                  options={options}
+                  onEvents={events}
+                />
+              ) : (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                  <div>
+                    <button className="btn btn-primary" type="button" disabled>
+                      <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Loading...
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">포장</span>
             </div>
             <div className="mb-2 border" style={{ width: '100%', height: '100%' }}>
-             
-              <VisTimeline groups={groups3.current} items={items3} options={options} onEvents={events} />
-
+              {isActive && isReady ? (
+                <VisTimeline
+                  groups={groups3.current}
+                  items={items3}
+                  options={options}
+                  onEvents={events}
+                />
+              ) : (
+                <div className="d-flex justify-content-center align-items-center h-100">
+                  <div>
+                    <button className="btn btn-primary" type="button" disabled>
+                      <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Loading...
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
        
@@ -542,6 +621,7 @@ const ModalComponent = ({ props={} }) => {
     setSelectedName(option.name);
     setSelectedValue(option.value);
 
+    modalFormChange({target:{name:'order_id', value:option.sales_id}});
     modalFormChange({target:{name:'item_code', value:option.value}});
     // // form에 적용
     // setFormData((prev) => ({
@@ -551,8 +631,118 @@ const ModalComponent = ({ props={} }) => {
     
   };
 
+
+  const formRef2 = useRef();
+
+  // 조회2
+  const getData2 = (params) => {
+
+    formRef2.current = {
+      start_dt: "",
+      end_dt: "",
+      status:"",
+      sales_id:"",
+      client_code:"",
+      client_name:"",
+      sel_rows:[]
+    };
+
+
+    // formRef2.current = {
+    //   "intNowPage": 1,
+    //   "maxCnt": 0,
+    //   "dateValue": "3",
+    //   stdate: dayjs().add(-7, 'day').format('YYYY-MM-DD'),
+    //   endate: dayjs().format('YYYY-MM-DD'),
+    //   "orderValue": "",
+    //   "transType": "",
+    //   "orderStatus": "",
+    //   "shipedStatus": "",
+    //   "cancelYn": "",
+    //   "storageName": "",
+    //   "mediaOrderNo01": "",
+    //   "mediaName": "",
+    //   "invoceNo": "",
+    //   "orderCode": "",
+    //   sel_row:[],
+    // };
+
+
+    modalRef.current.open({
+      title: "수주 조회",
+      content: <SalesOrderMgmt props={formRef2} isModal={true} />,
+      // content: <ModalSalesOrderComponent props={formRef2} />,
+      onCancel: ()=>{
+        modalRef.current.close();
+      },
+      confirmText:"확인",
+      confirmClass:"btn btn-primary",
+      onConfirm: (res) => {
+        const rows = formRef2.current.sel_rows;
+        const row = rows[0];
+        const newData = rows.map(el => ({
+          ...el,
+          name : `[${el.item_dotno}] ${el.item_name}`,
+          value: `${el.item_dotno}`
+        }));
+        
+        if(!rows || rows.length === 0){
+          modalRef2.current.open({ title:"알림", message:"수주의 상세품목을 선택하세요.", cancelText:"" });
+          return;
+        }
+
+        handleSelect(newData[0], 'sales');
+        modalRef.current.close();
+
+      }, 
+    });
+    
+  };
+
+
+  const formRef4 = useRef();
+
+  // 조회4
+  const getData4 = (params) => {
+    console.log("getData4");
+    
+
+    formRef4.current = {
+      sel_row:{},
+    };
+
+    modalRef.current.open({
+      title: "사용자 조회",
+      content: <SearchUserComponent form={formRef4} />,
+      onCancel: ()=>{
+        modalRef.current.close();
+      },
+      confirmText:"확인",
+      confirmClass:"btn btn-primary",
+      onConfirm: (res) => {
+        const row = formRef4.current.sel_row;
+        
+        if(!row || Object.keys(row).length === 0){
+          modalRef2.current.open({ title:"알림", message:"사용자를 선택하세요.", cancelText:"" });
+          return;
+        }
+        
+      
+
+        modalFormChange({target:{name:'user_id', value:row.user_id}});
+        modalFormChange({target:{name:'user_nm', value:row.user_nm}});
+
+    
+
+        modalRef.current.close();
+
+      }, 
+    });
+    
+  };
+
   return (
-    <div style={{ height: '28vh', width:'28vw', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width:'auto', display: 'flex', flexDirection: 'column' }}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -561,6 +751,25 @@ const ModalComponent = ({ props={} }) => {
           <Col className="d-flex gap-2">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
+                <tr>
+                  <th className="bg-light text-end align-middle">수주번호</th>
+                  <td className="">
+                    <div className='d-flex gap-2 align-items-center'>
+                      <Form.Control 
+                        type="text"
+                        name="order_id"
+                        value={modalForm.order_id}
+                        onChange={modalFormChange}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder=""
+                        maxLength={50}
+                        disabled
+                      />
+                      <Button size="sm" variant="primary" onClick={getData2}><i className="bi bi-search"></i></Button>
+                    </div>
+                  </td>
+                </tr>
                 <tr>
                   <th className="bg-light text-end align-middle">공정</th>
                   <td className="">
@@ -653,6 +862,37 @@ const ModalComponent = ({ props={} }) => {
                         onSelect={handleSelect}
                         title={"제품 선택"}
                       />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">담당자</th>
+                  <td className="">
+                    <div className='d-flex gap-2 align-items-center'>
+                      <Form.Control 
+                        type="text"
+                        name="user_id"
+                        value={modalForm.user_id}
+                        onChange={modalFormChange}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder=""
+                        maxLength={50}
+                        disabled
+                        style={{display:'none'}}
+                      />
+                      <Form.Control 
+                        type="text"
+                        name="user_nm"
+                        value={modalForm.user_nm}
+                        onChange={modalFormChange}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder=""
+                        maxLength={50}
+                        disabled
+                      />
+                      <Button size="sm" variant="primary" onClick={getData4}><i className="bi bi-search"></i></Button>
                     </div>
                   </td>
                 </tr>

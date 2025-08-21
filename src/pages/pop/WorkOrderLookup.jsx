@@ -148,7 +148,7 @@ const Main = ({ props={}, isActive}) => {
         const rows = res.data.data;
         
         // const filtered_row = rows.find( el=> el[2] === 'B-PP-00019-C');
-        const filtered_row = rows.find( el=> el[2] === modalForm.item_code);
+        const filtered_row = rows.find( el=> el[1] === modalForm.bar_code);
         if (filtered_row){
           modalFormChange({target:{name:'result_qty', value:parseInt(filtered_row[6])}});
         }
@@ -534,7 +534,7 @@ const Main = ({ props={}, isActive}) => {
 
                     </div>
                   </td>
-                  <th className="p-4 bg-light text-end align-middle">불량수량</th>
+                  <th className="p-4 bg-light text-end align-middle">불량(kg)</th>
                   <td className="align-middle">
                     <div className="d-flex gap-2">
                       <Form.Control 

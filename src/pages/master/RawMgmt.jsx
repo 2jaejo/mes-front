@@ -6,6 +6,7 @@ import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import * as XLSX from "xlsx";
 import { comm } from "utils/CommonFunctions";
+import dayjs from "dayjs";
 
 const Main = () => {
   const modalRef = useRef();  
@@ -151,9 +152,9 @@ const Main = () => {
         { headerName: "안전재고", field: "right_qty", sortable: true, editable: true, filter: "agTextColumnFilter", align:"center" },
         { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center", width:120 },
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center", width:120 },
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         
       ]);
@@ -736,7 +737,7 @@ const Main = () => {
       .then((res) => {
         
         if(res.data.length > 0){
-          getData();
+          // getData();
         }
       })
       .catch((error) => {
@@ -1053,6 +1054,16 @@ const Main = () => {
   };
 
 
+  const exportExcel = () =>{
+    console.log("exportExcel");
+    if (gridRef.current) {
+      gridRef.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__자재관리.csv`
+      });
+    }
+  };
+
+
 
   // 그리드 onGridReady
   const onGridReady = (params) => {
@@ -1103,6 +1114,7 @@ const Main = () => {
                         name="raw_code"
                         value={form.raw_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="품번"
@@ -1162,6 +1174,8 @@ const Main = () => {
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
               <Button size="sm" variant="primary" onClick={mappingData}>업로드 맵핑</Button>
               <Button size="sm" variant="primary" onClick={uploadExcel}>파일 업로드</Button>
+              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+              
             </div>
 
             <GridExample
@@ -1170,8 +1184,8 @@ const Main = () => {
               onGridReady={onGridReady} 
               loading={loading}
               rowNum={true}
-              rowSel={"multiRow"}
-              pageSize={1000}  
+              rowSel={"singleRow"}
+              pagination={false}
             />
           </Col>
 

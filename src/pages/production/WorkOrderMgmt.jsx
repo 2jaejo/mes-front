@@ -73,12 +73,12 @@ const Main = ({ props={}, isActive}) => {
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
       
-      selectedRow.current = ev.rowIndex; 
+      // selectedRow.current = ev.rowIndex; 
 
-      const node = ev.node;
-      if (!node.isSelected()) {
-        node.setSelected(true);
-      }
+      // const node = ev.node;
+      // if (!node.isSelected()) {
+      //   node.setSelected(true);
+      // }
     });
 
     // 셀 값 변경 이벤트
@@ -127,7 +127,7 @@ const Main = ({ props={}, isActive}) => {
       // 그리드 설정
       setColumnDefs([
         { headerName: "수주번호", field: "sales_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "작업지시코드", field: "work_id", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:200 },
+        { headerName: "작업지시코드", field: "work_id", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:140 },
         { headerName: "제품코드", field: "item_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
         { headerName: "제품명", field: "item_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:300 },
         { headerName: "공정명", field: "process_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
@@ -141,7 +141,7 @@ const Main = ({ props={}, isActive}) => {
             values: selectBox.current.common?.['cd014'].map((item) => item.code) ?? [],
           },
           valueFormatter:(params)=> commonTypeFormatter(params,'cd014'),
-          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
+          cellRenderer: (params) => { return params.data.status === 'end' ? params.value  : (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
         },
         { headerName: "종료일자", field: "end_date", sortable: false, editable: (params) => params.data.editable, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "종료시간", field: "end_time", sortable: false, editable: (params) => params.data.editable, align:"center",
@@ -150,7 +150,7 @@ const Main = ({ props={}, isActive}) => {
             values: selectBox.current.common?.['cd014'].map((item) => item.code) ?? [],
           },
           valueFormatter:(params)=> commonTypeFormatter(params,'cd014'),
-          cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
+          cellRenderer: (params) => { return params.data.status === 'end' ? params.value  : (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
         },
         { headerName: "상태", field: "status", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
           cellEditor: "agSelectCellEditor",
@@ -159,12 +159,12 @@ const Main = ({ props={}, isActive}) => {
           },
           valueFormatter: (params) => commonTypeFormatter(params, 'cd016'),
         },
-        { headerName: "담당자", field: "worker_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
-        { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
-        { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "담당자", field: "worker_nm", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "비고", field: "remark", sortable: false, editable: true, align:"left", width:300},
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
+        { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
+        { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
       ]);
 
     
@@ -310,7 +310,7 @@ const Main = ({ props={}, isActive}) => {
       base_unit:'',
       purchase_unit:'',
       quantity:'',
-      request_date: new Date().toISOString().split('T')[0],
+      request_date: dayjs().format('YYYY-MM-DD'),
       stock_qty:'',
       allocated_qty:'',
     });
@@ -325,7 +325,15 @@ const Main = ({ props={}, isActive}) => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
         
-
+        const rows = formRef.current.sel_row;
+        if(rows.length === 0){
+          modalRef2.current.open({
+            title: "알림",
+            message: "추가된 공정이 없습니다.",
+            cancelText: ""
+          });
+          return;
+        }
 
         const hasEmptyFields = formRef.current.sel_row.some(row => {
           return (
@@ -420,7 +428,7 @@ const Main = ({ props={}, isActive}) => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -554,7 +562,7 @@ const Main = ({ props={}, isActive}) => {
               onGridReady={onGridReady} 
               loading={loading}
               rowNum={true}
-              rowSel={"multiRow"}
+              rowSel={"singleRow"}
               // pageSize={25}
             />
           </Col>
@@ -748,7 +756,7 @@ const ModalComponent = ({ form }) => {
           valueFormatter:(params)=> commonTypeFormatter(params,'cd011')
         },
         // { headerName: "작업자ID", field: "user_id", sortable: false, editable: false },
-        { headerName: "작업자명", field: "user_nm", sortable: false, editable: false, cellRenderer: ButtonRenderer },
+        { headerName: "작업자명", field: "user_nm", sortable: false, editable: false, align:"center", cellRenderer: ButtonRenderer },
         { headerName: "지시수량", field: "quantity", sortable: false, editable: true, align:"right",
           valueFormatter:(params)=> moneyFormatter(params)
         },
@@ -807,7 +815,7 @@ const ModalComponent = ({ form }) => {
     setLoading(true);
 
     axiosInstance
-      .post(`/api/getProcess`, JSON.stringify({}))
+      .post(`/api/getProcess`, JSON.stringify({type:'status'}))
       .then((res) => {
         setRowData(res.data);
       })
@@ -1012,7 +1020,7 @@ const ModalComponent = ({ form }) => {
       newItem.start_date = dayjs().add(1, 'day').format('YYYY-MM-DD');
       newItem.start_time = '08:00';
       newItem.end_date = dayjs().add(1, 'day').format('YYYY-MM-DD');
-      newItem.end_time = '12:00';
+      newItem.end_time = '17:00';
       newItem.remark = '';
 
       return newItem;
@@ -1026,6 +1034,9 @@ const ModalComponent = ({ form }) => {
       const nonDuplicateRows = updatedRows.filter(row => !existingIds.has(makeKey(row)));
       return [...prev, ...nonDuplicateRows];
     });
+
+    // 기존선택 해제
+    gridRef.current.deselectAll();
 
   };
 
@@ -1065,11 +1076,11 @@ const ModalComponent = ({ form }) => {
   const [selectedName, setSelectedName] = useState('');
   const [selectedValue, setSelectedValue] = useState('');
 
+
   const handleSelect = (option, type="sel") => {
     setSelectedName(option.name);
     setSelectedValue(option.value);
 
-    console.log(option);
     modalFormChange({target:{name:'order_id', value:option.sales_id}});
     modalFormChange({target:{name:'quantity', value:option.quantity}});
 
@@ -1082,16 +1093,28 @@ const ModalComponent = ({ form }) => {
     axiosInstance
       .post(`/api/getOsmStockItemStorageList`, JSON.stringify(params))
       .then((res) => {        
-        const row = res.data[0];
+
         if( type === 'sel'){
           modalFormChange({target:{name:'order_id', value:""}});
           modalFormChange({target:{name:'quantity', value:0}});
         }
 
-        modalFormChange({target:{name:'item_code', value:row.itemDotno}});
-        modalFormChange({target:{name:'item_name', value:row.itemName}});
-        modalFormChange({target:{name:'stock_qty', value:row.endQty}});
-        modalFormChange({target:{name:'allocated_qty', value:row.endShipQty}});
+        if(res.data.length > 0){
+          const row = res.data[0];
+          modalFormChange({target:{name:'item_code', value:option.item_dotno}});
+          modalFormChange({target:{name:'item_name', value:option.item_name}});
+          modalFormChange({target:{name:'stock_qty', value:row.endQty || 0}});
+          modalFormChange({target:{name:'allocated_qty', value:row.endShipQty || 0}});
+          
+        }
+        else{
+          modalRef.current.open({ title:"알림", message:"OSM에서 재고를 불러올 수 없습니다.", cancelText:"", confirmClass:"btn btn-primary", autoCloseDelay:2000 });
+          modalFormChange({target:{name:'item_code', value:option.item_dotno}});
+          modalFormChange({target:{name:'item_name', value:option.item_name}});
+          modalFormChange({target:{name:'stock_qty', value:0}});
+          modalFormChange({target:{name:'allocated_qty', value:0}});
+          
+        }
 
       })
       .catch((error) => {
@@ -1117,7 +1140,7 @@ const ModalComponent = ({ form }) => {
             <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
-                  <th className="bg-light text-end align-middle">주문번호</th>
+                  <th className="bg-light text-end align-middle">수주번호</th>
                   <td className="">
                     <Form.Control 
                       type="text"
@@ -1584,7 +1607,7 @@ const ModalSalesOrderComponent = ({ props={} }) => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>

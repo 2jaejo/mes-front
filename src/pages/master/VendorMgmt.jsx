@@ -7,6 +7,7 @@ import Modal from "components/Modal";
 
 import * as XLSX from "xlsx";
 import { comm } from "utils/CommonFunctions";
+import dayjs from "dayjs";
 
 const Main = () => {
   const modalRef = useRef();  
@@ -86,9 +87,9 @@ const Main = () => {
           { headerName: "전화", field: "phone", sortable: true, editable: true, align:"center"},
           { headerName: "휴대전화", field: "mobile_phone", sortable: true, editable: true, align:"center"},
           { headerName: "팩스", field: "fax", sortable: true, editable: true, align:"center"},
-          { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center"},
+          { headerName: "등록일", field: "created_at", sortable: true, editable: false, align:"center", width:120},
           { headerName: "등록자", field: "created_by", sortable: true, editable: false, align:"center"},
-          { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center"},
+          { headerName: "수정일", field: "updated_at", sortable: true, editable: false, align:"center", width:120},
           { headerName: "수정자", field: "updated_by", sortable: true, editable: false, align:"center"},
           { 
             headerName: "사용여부", 
@@ -1040,7 +1041,14 @@ const Main = () => {
     
   };
 
-
+  const exportExcel = () =>{
+    console.log("exportExcel");
+    if (gridRef.current) {
+      gridRef.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__매입처관리.csv`
+      });
+    }
+  };
   
   return (
     <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
@@ -1061,6 +1069,7 @@ const Main = () => {
                         name="client_code"
                         value={form.client_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -1150,6 +1159,8 @@ const Main = () => {
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
               <Button size="sm" variant="primary" onClick={mappingData}>업로드 맵핑</Button>
               <Button size="sm" variant="primary" onClick={uploadExcel}>파일 업로드</Button>
+              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+
             </div>
 
             <GridExample

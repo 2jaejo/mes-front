@@ -10,7 +10,7 @@ import SearchItemComponent from "components/SearchItemComponent";
 import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
 import OrderComponent from "./PurchaseMgmt";
-
+import dayjs from "dayjs";
 
 const Main = ({ props={} }) => {
 
@@ -580,7 +580,7 @@ const Main = ({ props={} }) => {
 
     // 폼 초기화
     formRef.current = DEFAULT_FORM({
-      request_date: new Date().toISOString().split('T')[0],
+      request_date: dayjs().format('YYYY-MM-DD'),
     });
 
     modalRef.current.open({
@@ -658,6 +658,7 @@ const Main = ({ props={} }) => {
                         name="start_date"
                         value={form.start_date}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder=""
@@ -669,6 +670,7 @@ const Main = ({ props={} }) => {
                         name="end_date"
                         value={form.end_date}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder=""
@@ -712,6 +714,7 @@ const Main = ({ props={} }) => {
                         name="receipt_id"
                         value={form.receipt_id}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -725,6 +728,7 @@ const Main = ({ props={} }) => {
                         name="client_code"
                         value={form.client_code}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="거래처코드"
@@ -735,6 +739,7 @@ const Main = ({ props={} }) => {
                         name="client_name"
                         value={form.client_name}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder="거래처명"

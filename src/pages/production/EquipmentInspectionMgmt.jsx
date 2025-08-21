@@ -104,7 +104,7 @@ const Main = () => {
       ]);
       
       setColumnDefs3([
-        { headerName: "점검일시", field: "created_at", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter"},
+        { headerName: "점검일시", field: "created_at", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter", width:120},
         { headerName: "설비코드", field: "equipment_code", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter"},
         { headerName: "설비명", field: "equipment_name", sortable: true, editable: false, align:"left", filter: "agTextColumnFilter" },
         { headerName: "설비유형", field: "equipment_type", sortable: true, editable: false, align:"center", filter: "agTextColumnFilter", 

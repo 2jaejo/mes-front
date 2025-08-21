@@ -9,7 +9,7 @@ import { MainContentStyle } from "css/CommonStyle";
 import SearchItemComponent from "components/SearchItemComponent";
 import SearchClientComponent from "components/SearchClientComponent";
 import SearchableDropdown from "components/SearchableDropdown";
-
+import dayjs from "dayjs";
 
 const Main = ({ props={}, isModal=false }) => {
 
@@ -221,7 +221,7 @@ const Main = ({ props={}, isModal=false }) => {
       // 그리드 설정
       setColumnDefs([
         { headerName: "등록일자", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
-        { headerName: "수주번호", field: "sales_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:200},
+        { headerName: "수주번호", field: "sales_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:120},
         { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:200 },
         { headerName: "수주일자", field: "order_date", sortable: true, editable: false, filter: "agDateColumnFilter", align:"center",
@@ -290,11 +290,11 @@ const Main = ({ props={}, isModal=false }) => {
         //   },
         //   valueFormatter: (params) => commonTypeFormatter(params, 'cd012'),
         // },
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned && !isModal, align:"left", width:300},
-        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned && !isModal, align:"left", width:300},
       ]);
       
       // 그리드 설정2
@@ -564,7 +564,7 @@ const Main = ({ props={}, isModal=false }) => {
 
     // 폼 초기화
     formRef.current = DEFAULT_FORM({
-      request_date: new Date().toISOString().split('T')[0],
+      request_date: dayjs().format('YYYY-MM-DD'),
     });
 
     modalRef.current.open({
@@ -592,7 +592,7 @@ const Main = ({ props={}, isModal=false }) => {
           return;
         }
 
-        const key = "total_price";
+        const key = "quantity";
         const arr = formRef.current.sel_row;
         const chk = arr.some(item => !item.hasOwnProperty(key) || item[key] === '' || item[key] === null || item[key] === undefined);
         if(chk){
@@ -657,7 +657,7 @@ const Main = ({ props={}, isModal=false }) => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -788,7 +788,7 @@ const Main = ({ props={}, isModal=false }) => {
               loading={loading}
               rowNum={true}
               rowSel={"singleRow"}
-              pageSize={10}
+              pagination={false}
               pinnedBottomRowData={pinnedBottomRowData}  
             />
           </Col>
@@ -885,14 +885,14 @@ const ModalComponent = ({ form }) => {
         const tax = supply * 0.1 ;
         const total = supply + tax ;
 
-        ev.node.setDataValue("supply_price", supply);
-        ev.node.setDataValue("tax", tax);
-        ev.node.setDataValue("total_price", total);
+        ev.node.setDataValue("supply_price", supply || "");
+        ev.node.setDataValue("tax", tax || "");
+        ev.node.setDataValue("total_price", total || "");
       }
 
       if(col === "tax"){
         const total = parseInt(ev.data.supply_price) + parseInt(ev.data.tax);
-        ev.node.setDataValue("total_price", total);
+        ev.node.setDataValue("total_price", total || "");
       }
 
     });

@@ -42,9 +42,9 @@ const Main = ({ props={}, isActive }) => {
   };
 
   // grid cell code_name 변환
-  const moneyFormatter = (params) => {
+  const moneyFormatter = (params, digit=0) => {
     if (params.value == null) return '';
-    const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+    const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: digit});
     return num;
   };
 
@@ -155,6 +155,7 @@ const Main = ({ props={}, isActive }) => {
   // 셀 렌더러
   const ButtonRenderer = (props) => {
 
+
     const handleClick = () => {
       console.log("handleClick");
 
@@ -203,21 +204,10 @@ const Main = ({ props={}, isActive }) => {
       
     };
 
-    const handleClick2 = (yn) => {
-      console.log("handleClick2");
-      const newData = {
-        ...props.data,
-        type: props.colDef.field,
-        oldValue: props.value,
-        newValue: yn,
-        [props.colDef.field]: yn,
-      };
-      
-      setData(newData);
-    };
 
     let str = '';
     let bg = '';
+    let dis = false;
 
     if (props.value === null || props.value === '') {
       if(props.colDef.field === 'start_dttm'){
@@ -231,39 +221,12 @@ const Main = ({ props={}, isActive }) => {
       return (
         <div style={{ width:'100%', display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
           <span>{props.value}</span>
-          <Button size="sm" variant={bg} onClick={handleClick}>{str}</Button>
+          <Button size="sm" variant={bg} onClick={handleClick} disabled={dis}>{str}</Button>
         </div>
       ); 
     } 
     
-    let dis = false;
-    let yn = '';
 
-    if (props.colDef.field === 'pause' ) {
-      if(props.data.start_dttm !== null && props.data.end_dttm === null){
-        if(props.value === 'Y'){
-          str = '일시정지 해제';
-          bg = 'success';
-          yn = 'N';
-        }else if(props.value === 'N'){
-          str = '일시정지 시작';
-          bg = 'success';
-          yn = 'Y';
-        }
-
-      }else{
-        dis = true;
-        str = '작업종료';
-        bg = 'secondary';
-        yn = 'N';
-      }
-
-      return (
-        <div style={{ width:'100%', display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
-          <Button size="sm" variant={bg} onClick={()=>handleClick2(yn)} disabled={dis}>{str}</Button>
-        </div>
-      ); 
-    }
 
     
     
@@ -273,10 +236,54 @@ const Main = ({ props={}, isActive }) => {
   };
 
   
-  
+  // 셀 렌더러2
+  const ButtonRenderer2 = (props) => {
 
+     const handleClick2 = (yn) => {
+      console.log("handleClick2");
+      const newData = {
+        ...props.data,
+        type: props.colDef.field,
+        oldValue: props.value,
+        newValue: yn,
+        [props.colDef.field]: yn,
+      };
+      
+      setData(newData);
+    };
 
+    
+    let str = '';
+    let bg = '';
+    let yn = '';
+    let dis = false;
 
+    if(props.data.start_dttm !== null && props.data.end_dttm === null){
+      if(props.value === 'Y'){
+        str = '일시정지 해제';
+        bg = 'success';
+        yn = 'N';
+      }else if(props.value === 'N'){
+        str = '일시정지 시작';
+        bg = 'success';
+        yn = 'Y';
+      }
+
+    }else{
+      dis = true;
+      str = '작업종료';
+      bg = 'secondary';
+      yn = 'N';
+    }
+    
+    
+    return (
+      <div style={{ width:'100%', display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center' }}>
+        <Button size="sm" variant={bg} onClick={()=>handleClick2(yn)} disabled={dis}>{str}</Button>
+      </div>
+    ); 
+
+  };
 
   // 그리드 설정 종료 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -301,14 +308,25 @@ const Main = ({ props={}, isActive }) => {
       // 그리드 설정
       setColumnDefs2([
         { headerName: "수주번호", field: "sales_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
-        { headerName: "작업지시코드", field: "work_id", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:200 },
+        { headerName: "작업지시코드", field: "work_id", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:140 },
         { headerName: "제품코드", field: "item_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
         { headerName: "제품명", field: "item_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:300 },
-        { headerName: "공정코드", field: "process_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
+        // { headerName: "공정코드", field: "process_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "공정명", field: "process_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
-        { headerName: "지시수량", field: "order_qty", sortable: false, editable: false, align:"right", cellDataType:'number',
+        { headerName: "지시시간", field: "range", sortable: false, editable: false, align:"left",width:220 },
+        { headerName: "지시수량", field: "order_qty", sortable: false, editable: false, align:"right", cellDataType:'number', width:70,
           valueFormatter:(params)=> moneyFormatter(params)
         },
+        { headerName: "작업시작", field: "start_dttm", sortable: false, editable: false, align:"center",width:120, cellRenderer: ButtonRenderer},
+        { headerName: "일시정지", field: "pause", sortable: false, editable: false, align:"center",width:120, cellRenderer: ButtonRenderer2},
+        { headerName: "작업종료", field: "end_dttm", sortable: false, editable: false, align:"center",width:120, cellRenderer: ButtonRenderer},
+        { headerName: "양품수량", field: "result_qty", sortable: false, editable: true, align:"right", cellDataType:'number',
+          valueFormatter:(params)=> moneyFormatter(params)
+        },
+        { headerName: "불량(kg)", field: "defect_qty", sortable: false, editable: true, align:"right", cellDataType:'number',
+          valueFormatter:(params)=> moneyFormatter(params, 2)
+        },
+        { headerName: "비고", field: "remark", sortable: false, editable: true, align:"left", width:300},
         { headerName: "상태", field: "status", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -332,20 +350,10 @@ const Main = ({ props={}, isActive }) => {
           },
           valueFormatter:(params)=> commonTypeFormatter(params,'cd014')
         },
-        { headerName: "담당자", field: "worker_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "작업시작", field: "start_dttm", sortable: false, editable: false, align:"left", cellRenderer: ButtonRenderer},
-        { headerName: "일시정지", field: "pause", sortable: false, editable: false, align:"left", cellRenderer: ButtonRenderer},
-        { headerName: "작업종료", field: "end_dttm", sortable: false, editable: false, align:"left", cellRenderer: ButtonRenderer},
-        { headerName: "양품수량", field: "result_qty", sortable: false, editable: true, align:"right", cellDataType:'number',
-          valueFormatter:(params)=> moneyFormatter(params)
-        },
-        { headerName: "불량수량", field: "defect_qty", sortable: false, editable: true, align:"right", cellDataType:'number',
-          valueFormatter:(params)=> moneyFormatter(params)
-        },
-        { headerName: "비고", field: "remark", sortable: false, editable: true, align:"left", width:300},
-        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "담당자", field: "worker_nm", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
       ]);
       
@@ -467,7 +475,7 @@ const Main = ({ props={}, isActive }) => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>

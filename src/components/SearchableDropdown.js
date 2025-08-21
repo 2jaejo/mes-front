@@ -20,10 +20,8 @@ const SearchableDropdown = ({ options = [], selected, onSelect, title='선택', 
 
 
   return (
-    <Dropdown  className="w-100">
-      {/* <Dropdown.Toggle variant="outline-primary" className="w-100 overflow-hidden d-flex justify-content-between align-items-center">
-        {selected || title}
-      </Dropdown.Toggle> */}
+    <Dropdown  className="w-100" style={{ minWidth: '200px', width: '100%' }}>
+
       <Dropdown.Toggle
         size={size}
         variant="outline-primary"
@@ -37,7 +35,7 @@ const SearchableDropdown = ({ options = [], selected, onSelect, title='선택', 
         </span>
       </Dropdown.Toggle>
 
-      <Dropdown.Menu style={{ minWidth: '200px', width: '100%' }}>
+      <Dropdown.Menu style={{ minWidth: '200px', width: '100%', zIndex: 9999 }}>
         <Form.Control
           autoFocus
           placeholder="검색..."
@@ -47,7 +45,35 @@ const SearchableDropdown = ({ options = [], selected, onSelect, title='선택', 
         />
         <Dropdown.Divider />
         <div style={{maxHeight:'300px', overflow:'auto'}}>
-          <Dropdown.Item size={size} key={''} onClick={() => onSelect({name:title, value:''})}>
+          <Dropdown.Item 
+            size={size} 
+            key={''} 
+            onClick={() => onSelect({
+              bar_code:"",
+              bom_cnt:"",
+              brand_name:"",
+              buy_type_name:"",
+              buyprice:"",
+              idx:"",
+              item_dotno:"",
+              item_name:"",
+              item_part_name:"",
+              item_plus_name:"",
+              item_status_name:"",
+              item_usr_code:"",
+              reg_admin_name:"",
+              reg_date:"",
+              sellprice:"",
+              storage_name:"",
+              supply_name:"",
+              tax_buyprice:"",
+              tax_type_name:"",
+              trans_type_name:"",
+              vtax_buyprice: "",
+              name:"",
+              value:"",
+            })
+          }>
             {title}
           </Dropdown.Item>
           {filteredOptions.length > 0 ? (

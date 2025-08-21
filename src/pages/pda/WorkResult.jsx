@@ -555,7 +555,7 @@ const Main = ({ props={}, isActive}) => {
                 </tr>
 
                 <tr>
-                  <th className=" bg-light text-end align-middle">불량수량</th>
+                  <th className=" bg-light text-end align-middle">불량(kg)</th>
                   <td className="align-middle">
                     <div className="d-flex gap-2">
                       <Form.Control 
@@ -604,6 +604,56 @@ const Main = ({ props={}, isActive}) => {
                     </div>
                   </td>
                   
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">시작시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="start_dttm"
+                      value={modalForm.start_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
+                </tr>
+                <tr>  
+                  <th className="bg-light text-end align-middle">생산시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="product_dttm"
+                      value={modalForm.product_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      maxLength={50}
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">종료시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="end_dttm"
+                      value={modalForm.end_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      maxLength={50}
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </Table>

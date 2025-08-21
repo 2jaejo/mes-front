@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 function getRandomNumber() {
   return Math.floor(Math.random() * 100);
 }
@@ -16,11 +18,26 @@ function snakeToCamel(str) {
   return str.toLowerCase().replace(/(_\w)/g, (match) => match[1].toUpperCase());
 }
 
+function changeDate ( handleChange, start, end, diff = 0, format = "YYYY-MM-DD" ){
+  if (typeof handleChange !== "function") {
+    console.error("handleChange is not a function");
+    return;
+  }
+
+  const today = dayjs();
+  const startDate = today.add(diff, "day").format(format);
+  const endDate = today.format(format);
+
+  handleChange({ target: { name: start, value: startDate } });
+  handleChange({ target: { name: end, value: endDate } });
+};
+
 export const comm = {
   getRandomNumber,
   convertToUpperCase,
   camelToSnake,
   snakeToCamel,
+  changeDate,
 }
 
 

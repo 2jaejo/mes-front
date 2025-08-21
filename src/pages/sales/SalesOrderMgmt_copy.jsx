@@ -10,6 +10,7 @@ import SearchItemComponent from "components/SearchItemComponent";
 import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
 
+import dayjs from "dayjs";
 
 const Main = ({ props={} }) => {
 
@@ -288,9 +289,9 @@ const Main = ({ props={} }) => {
         //   valueFormatter: (params) => commonTypeFormatter(params, 'cd012'),
         // },
         // { headerName: "담당자", field: "request_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "수정일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300},
       ]);
@@ -556,7 +557,7 @@ const Main = ({ props={} }) => {
 
     // 폼 초기화
     formRef.current = DEFAULT_FORM({
-      request_date: new Date().toISOString().split('T')[0],
+      request_date: dayjs().format('YYYY-MM-DD'),
     });
 
     modalRef.current.open({

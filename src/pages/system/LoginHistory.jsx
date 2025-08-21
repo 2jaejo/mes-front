@@ -16,8 +16,8 @@ const LoginHistory = () => {
     { headerName: "아이디", field: "user_id", sortable: true, filter: true, },
     { headerName: "아이피", field: "ip_address", sortable: true, },
     { headerName: "접속정보", field: "user_agent", sortable: true, align:"left", flex:1 },
-    { headerName: "접속시간", field: "login_dt", sortable: true, },
-    { headerName: "성공여부", field: "success", sortable: true, },
+    { headerName: "접속시간", field: "login_dt", sortable: true, width:120},
+    { headerName: "성공여부", field: "success", sortable: true,  align:"center"},
   ]);
 
 
@@ -94,6 +94,7 @@ const LoginHistory = () => {
               name="user_id" 
               value={form.user_id}
               onChange={handleChange}
+              onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
               placeholder="아이디" 
               maxLength={50}
             />
@@ -104,6 +105,7 @@ const LoginHistory = () => {
               name="ip_address"
               value={form.ip_address}
               onChange={handleChange}
+              onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
               placeholder="아이피" 
               maxLength={50}
             />

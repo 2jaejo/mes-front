@@ -7,7 +7,7 @@ import { AG_GRID_LOCALE_KR } from '@ag-grid-community/locale';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNum=false, rowSel="singleRow", onGridReady=null, pagination=true, pageSize=1000, rowDrag=false, pinnedBottomRowData=[], rowStyle=null, rowClass=null} ) => {
+const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNum=false, rowSel="singleRow", onGridReady=null, pagination=true, pageSize=1000, rowDrag=false, pinnedBottomRowData=[], rowStyle=null, rowClass=null } ) => {
 
   const theme_sm ={
     borderRadius: 0,
@@ -69,30 +69,41 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
   // 기본 설정 추가 = rowNum, editable: false일때 배경색
   const enchancedColumnDefs = useMemo(() => {
     let newColumnDefs = [];
+    let checkCol = {
+      headerName: "",
+      colId: "checkbox",
+      checkboxSelection: true,
+      headerCheckboxSelection: true,
+      headerCheckboxSelectionFilteredOnly: true, // (옵션) 필터링된 행만 전체 선택
+      // width: 20,            // 원하는 크기
+      // minWidth: 40,
+      maxWidth: 36,
+      suppressSizeToFit: true, // autoSizeStrategy 영향 안 받게
+      align:'center',
+    };
+
     let rownumCol = { 
       headerName: "No.", 
       field:"rownum",
       sortable: false, 
       valueGetter: (params) => !params.node.rowPinned ?params.node.rowIndex + 1 : '', 
-      minWidth:40,
-      maxWidth:80,
-      width: 60,
-      cellStyle: { textAlign: "center" },
-      rowDrag:rowDrag
+      rowDrag:rowDrag,
+      align:'center',
+      width: 20,        
+      minWidth: 40,
+      maxWidth: 40,
     };
 
     if(rowNum){
-      newColumnDefs = [rownumCol, ...columnDefs];
+      newColumnDefs = [ rownumCol, ...columnDefs];
     }
     else{
-      newColumnDefs = columnDefs;
+      newColumnDefs = [ ...columnDefs];
     }
 
     // editable: false = background color set , text align
-    return newColumnDefs.map((col) => ({
+    return newColumnDefs.map(({align, backgroundColor, ...col}) => ({
       ...col,
-      // 툴팁 설정
-      // tooltipField:col.field,
       cellStyle: (params) => {
         let bgColor = '';
 
@@ -112,15 +123,15 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
         }
 
         // 2. backgroundColor가 있으면 덮어쓰기
-        if (params.colDef.backgroundColor) {
-          bgColor = params.colDef.backgroundColor;
+        if (backgroundColor) {
+          bgColor = backgroundColor;
         }
 
         return {
           backgroundColor: bgColor,
           display: 'flex',
-          justifyContent: params.colDef.align || 'flex-start',
-          alignItems: params.colDef.align || 'center'
+          justifyContent: align || 'flex-center',
+          alignItems: align || 'center'
         };
       }
     }));
@@ -132,13 +143,16 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
   const defaultColDef = useMemo(() => {
     return {
       // flex: 1,
-      minWidth: 80,
-      width: 120,
+      width: 100,
+      minWidth: 40,
       filter: false,
       editable: false,
-      sortable: false,
+      sortable: true,
       unSortIcon: true, // 기본 정렬 아이콘 표시
-      align:"center"
+      cellStyle: { textAlign: "center" },
+      tooltipValueGetter: (p) => p.value,
+      // suppressSizeToFit: true,
+
     };
   }, []);
 
@@ -211,7 +225,18 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
     }
   }, [onGridReady]);
 
-
+  const autoSizeStrategy = useMemo(() => { 
+    return {
+      type: 'fitCellContents',
+      defaultMinWidth: 40,
+      // columnLimits: [
+      //   { colId: 'comments',  minWidth: 200, },
+      //   { colId: 'comment',  minWidth: 200, },
+      //   { colId: 'remarks',  minWidth: 200, },
+      //   { colId: 'remark',  minWidth: 200, },
+      // ],
+    };
+  }, []);
 
   // 스타일
   const containerStyle = useMemo(() => ({ flex: 1, width: "100%", height: "100%" }), []);
@@ -228,6 +253,8 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
           loading={loading}
           defaultColDef={defaultColDef}
           columnDefs={enchancedColumnDefs}
+          // autoSizeStrategy={autoSizeStrategy}
+          // rowSelection={rowSel === "singleRow" ? "single" : "multiple"}
           rowSelection={rowSelection}
           // getRowId={getRowId}
           rowModelType={"clientSide"}
@@ -255,6 +282,7 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
           pinnedBottomRowData={pinnedBottomRowData}
           getRowStyle={rowStyle}
           getRowClass={rowClass}
+         
         />
       </div>
     </div>

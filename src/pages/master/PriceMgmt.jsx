@@ -331,6 +331,7 @@ const Main = () => {
                     name="item_code"
                     value={modalForm.item_code}
                     onChange={handleChange}
+                    onKeyUp={(e)=>{if(e.code === 'Enter') getData4()}}
                     size="sm" 
                     className="w-auto"
                     placeholder="품번"
@@ -341,7 +342,7 @@ const Main = () => {
                     name="item_name"
                     value={modalForm.item_name}
                     onChange={handleChange}
-                    onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
+                    onKeyUp={(e)=>{if(e.code === 'Enter') getData4()}}
                     size="sm" 
                     className="w-auto"
                     placeholder="품명"
@@ -673,7 +674,7 @@ const Main = () => {
 
       <div className="mb-2 bg-light">
         <Row className="">
-          <Col className="d-flex gap-2">
+          <Col className="d-flex gap-2 overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>

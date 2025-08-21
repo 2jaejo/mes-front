@@ -13,7 +13,7 @@ import SearchUserComponent from "components/SearchUserComponent";
 import OrderComponent from "./PurchaseMgmt";
 import InventoryComponent from "../inventory/InventoryLookup";
 import dayjs from "dayjs";
-
+import { comm } from "utils/CommonFunctions";
 
 const Main = ({ props={} }) => {
 
@@ -222,8 +222,8 @@ const Main = ({ props={} }) => {
 
       // 그리드 설정
       setColumnDefs([
-        { headerName: "발주번호", field: "purchase_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:200},
-        { headerName: "입고번호", field: "receipt_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:200},
+        { headerName: "발주번호", field: "purchase_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:140},
+        { headerName: "입고번호", field: "receipt_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:140},
         { headerName: "입고일자", field: "receipt_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:300,
@@ -271,16 +271,16 @@ const Main = ({ props={} }) => {
           valueFormatter: (params) => moneyFormatter(params)
         },
         // { headerName: "담당자", field: "manager", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"left"},
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"left", width:120},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", minWidth:200},
+        { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left", width:300},
       ]);
       
       // 그리드 설정2
       setColumnDefs2([
-        { headerName: "입고번호", field: "receipt_id", sortable: false, editable: false, align:"center", width: 200},
+        { headerName: "입고번호", field: "receipt_id", sortable: false, editable: false, align:"center", width: 140},
         { headerName: "진행상태", field: "status", sortable: false, editable: false, align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -388,8 +388,10 @@ const Main = ({ props={} }) => {
 
   // 검색창 입력필드
   const [form, setForm] = useState({
-     start_date : dayjs().format('YYYY-MM-DD')
-    , end_date : dayjs().format('YYYY-MM-DD')
+     start_date : ''
+    , end_date : ''
+    //  start_date : dayjs().format('YYYY-MM-DD')
+    // , end_date : dayjs().format('YYYY-MM-DD')
     , purchase_id : ''
     , receipt_id : ''
     , client_code : ''
@@ -400,8 +402,12 @@ const Main = ({ props={} }) => {
 
   // 검색창 입력필드 변경 저장
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }; 
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
 
   // 추가 모달 입력필드 저장
@@ -551,7 +557,7 @@ const Main = ({ props={} }) => {
 
     // 폼 초기화
     formRef.current = DEFAULT_FORM({
-      receipt_date: new Date().toISOString().split('T')[0],
+      receipt_date: dayjs().format('YYYY-MM-DD'),
     });
 
     modalRef.current.open({
@@ -690,7 +696,7 @@ const Main = ({ props={} }) => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="">
+          <Col className="overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -718,6 +724,10 @@ const Main = ({ props={} }) => {
                         placeholder="거래처명"
                         maxLength={50}
                       />
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", 0); }}>당일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -3); }}>3일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -7); }}>7일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -30); }}>30일</Button>
                     </div>
                   </td>
                   {/* <th className="bg-light text-end align-middle">입고상태</th>

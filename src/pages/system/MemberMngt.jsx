@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 
 import axiosInstance from "utils/Axios";
@@ -13,6 +13,8 @@ const MemberMngt = () => {
 
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
+
+  const selectedRow = useRef(0);
 
   const [rowData, setRowData] = useState();
   const [columnDefs] = useState([
@@ -63,36 +65,42 @@ const MemberMngt = () => {
     formRef.current[name] = value;
   };
 
-
-
   const [menuList, setMenuList] = useState([]);
   const [selectedMenus, setSelectedMenus] = useState([]);
 
-  
-
+    useEffect(()=>{
+      console.log("useEffect");
+      getData();
+    },[]);
 
   // 조회
   const getData = (params) => {
     console.log("getData");
 
     setLoading(true);
-    const startTime = Date.now(); // 요청 전 시간 기록
 
     axiosInstance
     .post(`/users/getUsers`, JSON.stringify(form))
     .then((res) => {
-      const endTime = Date.now(); // 응답 시간을 측정
-      const responseTime = endTime - startTime; // 응답 시간 (밀리초)
-      const delay = responseTime < 300 ? 300 - responseTime : 0; // 응답 시간이 0.5초보다 빠르면 남은 시간만큼 지연
-      
-      // 지연 후 응답을 출력
-      setTimeout(async () => {
-        setRowData(res.data);
-        setLoading(false);
-      }, delay);
-        
+      setRowData(res.data);
+
     })
-    .catch((error) => console.error("Error fetching data:", error));
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+
+    })
+    .finally(() =>{
+      setLoading(false);
+      
+      // 그리드 행 선택
+      let sel = selectedRow.current;
+      if(typeof params === "number") sel = params;
+      gridRef.current.forEachNode((node) => {
+        if (node.rowIndex === sel) {
+          node.setSelected(true);
+        }
+      });
+    });;
     
   };
 
@@ -322,7 +330,7 @@ const MemberMngt = () => {
         // 나중에 데이터 전체 넘기고 batch 처리 필요
         selectRows.forEach( (el)=>{
           axiosInstance
-          .post(`/users/delUser/`, JSON.stringify(el))
+          .post(`/users/delUser`, JSON.stringify(el))
           .then((res) => {
             getData();
             modalRef.current.close();
@@ -330,7 +338,7 @@ const MemberMngt = () => {
           .catch((error) => {
             console.error("Error fetching data:", error);
             modalRef.current.close();
-            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
+            modalRef2.current.open({ title:"알림", message:error.response?.data?.message || error.message, cancelText:"" });
           });    
         });
       },
@@ -389,23 +397,10 @@ const MemberMngt = () => {
   // onGridReady에서 이벤트 리스너 추가
   const onGridReady = (params) => {
     gridRef.current = params.api; // Grid API 저장
-    getData();
+    
 
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
-      
-      setLoading2(true);
-
-      axiosInstance
-        .post(`/users/getUser`, JSON.stringify(ev.data))
-        .then((res) => {
-          setForm2({...res.data.user_info});
-
-          setMenuList(res.data.user_menu);
-          setSelectedMenus(res.data.user_menu.filter(menu => menu.show === 'y').map((menu) => menu.menu_id));
-          setLoading2(false);
-        })
-        .catch((error) => console.error("Error fetching data:", error));
       
     });
 
@@ -418,8 +413,21 @@ const MemberMngt = () => {
     // 선택 변경 이벤트
     params.api.addEventListener("selectionChanged", (ev) => {
       
-      const selectedRows = params.api.getSelectedRows();
-      console.log(selectedRows);
+      const selectedRows = ev.api.getSelectedRows();
+      if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
+        setLoading2(true);
+        axiosInstance
+          .post(`/users/getUser`, JSON.stringify(selectedRows[0]))
+          .then((res) => {
+            setForm2({...res.data.user_info});
+
+            setMenuList(res.data.user_menu);
+            setSelectedMenus(res.data.user_menu.filter(menu => menu.show === 'y').map((menu) => menu.menu_id));
+            setLoading2(false);
+          })
+          .catch((error) => console.error("Error fetching data:", error));
+      };
+
     });
 
   };
@@ -436,6 +444,7 @@ const MemberMngt = () => {
               name="user_id"
               value={form.user_id}
               onChange={handleChange}
+              onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
               size="sm" 
               className="w-auto"
               placeholder="아이디"
@@ -447,6 +456,7 @@ const MemberMngt = () => {
               name="user_nm"
               value={form.user_nm}
               onChange={handleChange}
+              onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
               size="sm" 
               className="w-auto"
               placeholder="이름"
@@ -486,11 +496,13 @@ const MemberMngt = () => {
 
               {loading2 ? (
 
-                <div className="d-flex justify-content-center align-items-center h-100 w-100">
-                  <div className="spinner-border text-dark" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                <div className="d-flex justify-content-center align-items-center h-100">
+                  <div>
+                    <button className="btn btn-primary" type="button" disabled>
+                      <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Loading...
+                    </button>
                   </div>
-                  <span className="p-2 fs-5 text-dark">Loading...</span>
                 </div>
 
               ) : (
@@ -605,11 +617,13 @@ const MemberMngt = () => {
 
               {loading2 ? (
 
-                <div className="d-flex justify-content-center align-items-center h-100 w-100">
-                  <div className="spinner-border text-dark" role="status">
-                    <span className="visually-hidden">Loading...</span>
+                <div className="d-flex justify-content-center align-items-center h-100">
+                  <div>
+                    <button className="btn btn-primary" type="button" disabled>
+                      <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                      Loading...
+                    </button>
                   </div>
-                  <span className="p-2 fs-5 text-dark">Loading...</span>
                 </div>
 
               ) : (

@@ -335,3 +335,21 @@ li.expanded {
 .dropdown-toggle::after {
   display: none !important;
 }
+
+
+/* styles.css */
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin-top: 10mm; 
+    margin-bottom: 0mm; 
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+}

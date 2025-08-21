@@ -4,7 +4,7 @@ import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
-
+import dayjs from "dayjs";
 
 const Main = () => {
 
@@ -31,12 +31,12 @@ const Main = () => {
     params.api.addEventListener("rowClicked", (ev) => {
       console.log("rowClicked");
       
-      setSelectedRow(ev.rowIndex); 
+      // setSelectedRow(ev.rowIndex); 
 
-      const node = ev.node;
-      if (!node.isSelected()) {
-        node.setSelected(true);
-      }
+      // const node = ev.node;
+      // if (!node.isSelected()) {
+      //   node.setSelected(true);
+      // }
     });
 
     // 셀 값 변경 이벤트
@@ -445,6 +445,14 @@ const Main = () => {
     
   };
 
+  const exportExcel = () =>{
+    console.log("exportExcel");
+    if (gridRef.current) {
+      gridRef.current.exportDataAsCsv({
+        fileName: `export_${dayjs().format('YYYYMMDD')}_동일프라텍__공정관리.csv`
+      });
+    }
+  };
   
   return (
     <div style={{ height: '87vh', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
@@ -453,7 +461,7 @@ const Main = () => {
 
       <div className="bg-light">
         <Row className="">
-          <Col className="d-flex gap-2">
+          <Col className="d-flex gap-2 overflow-auto">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
@@ -487,6 +495,7 @@ const Main = () => {
                       name="process_code"
                       value={form.process_code}
                       onChange={handleChange}
+                      onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                       size="sm" 
                       className="w-auto"
                       maxLength={50}
@@ -499,6 +508,7 @@ const Main = () => {
                       name="process_name"
                       value={form.process_name}
                       onChange={handleChange}
+                      onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                       size="sm" 
                       className="w-auto"
                       maxLength={50}
@@ -548,6 +558,8 @@ const Main = () => {
               <span className="fw-bold">공정 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
+              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+
             </div>
 
             <GridExample 

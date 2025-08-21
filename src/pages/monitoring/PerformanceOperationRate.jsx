@@ -55,6 +55,8 @@ const Main = ({isActive}) => {
 
   }
 
+  
+
   // 초기화
   useEffect(()=>{
     console.log("useEffect");
@@ -65,10 +67,10 @@ const Main = ({isActive}) => {
   },[isActive]);
 
 
-  useEffect(()=>{
-    console.log("useEffect2");
-    getData();
-  },[formData]);
+  // useEffect(()=>{
+  //   console.log("useEffect2");
+  //   getData();
+  // },[formData]);
 
 
 
@@ -91,7 +93,7 @@ const Main = ({isActive}) => {
           newData.push({
             name:el.process_name , 
             '양품': el.result_qty ?? 0,
-            '불량': el.defect_qty ?? 0,
+            '불량(kg)': el.defect_qty ?? 0,
             '가동시간(분)':el.prod_min ?? 0,
             '가동률(%)':rate,
             'item_name':el.item_name,
@@ -161,7 +163,7 @@ const Main = ({isActive}) => {
   // };
   const ExampleBarChart = () => {
     return (
-      <ResponsiveContainer width="100%" height={'100%'}>
+      <ResponsiveContainer width="100%" height='100%'>
         <BarChart
           data={data}
           margin={{ top: 5, right: 5, left: 5, bottom: 0 }}
@@ -174,7 +176,7 @@ const Main = ({isActive}) => {
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
           <Bar dataKey="양품" isAnimationActive={false} yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
-          <Bar dataKey="불량" isAnimationActive={false} yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
+          <Bar dataKey="불량(kg)" isAnimationActive={false} yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
           <Bar dataKey="가동률(%)" isAnimationActive={false} yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
           <Bar dataKey="가동시간(분)" isAnimationActive={false} yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
         </BarChart>
@@ -221,7 +223,9 @@ const Main = ({isActive}) => {
         </Row>
       </div>
 
-      <ExampleBarChart />
+      {isActive &&
+        <ExampleBarChart />
+      }
     </div>
   );
 }

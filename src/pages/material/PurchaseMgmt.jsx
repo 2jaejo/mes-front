@@ -12,9 +12,16 @@ import SearchClientComponent from "components/SearchClientComponent";
 import SearchUserComponent from "components/SearchUserComponent";
 import InventoryComponent from "../inventory/InventoryLookup";
 
+import ReactDOMServer from "react-dom/server";
+import PrintOrderPage from "components/PrintOrderPage";
+
+import { useReactToPrint } from "react-to-print"
+
+import dayjs from "dayjs";
 
 const Main = ({ props={}, style_props={} }) => {
 
+ 
   // 컴포넌트로 사용했을때 ref 받기
   const [modalForm, setModalForm] = useState(props.current);
   const modalFormChange = (e) => {
@@ -32,6 +39,15 @@ const Main = ({ props={}, style_props={} }) => {
 
   // selectbox
   const selectBox = useRef({}); 
+
+  // print
+  const contentRef = useRef(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+  const printRef = useRef();
+  const [printState, setPrintState] = useState({});
+
+  const [printOrder, setPrintOrder] = useState();
+  const [printItems, setPrintItems] = useState();
   
   // grid cell code_name 변환
   const categoryAFormatter = (params) => {
@@ -106,6 +122,8 @@ const Main = ({ props={}, style_props={} }) => {
       
       const selectedRows = ev.api.getSelectedRows();
       if( ev.source !== 'rowDataChanged' && selectedRows.length > 0 ){
+        setPrintOrder(selectedRows[0]);
+
         getData2(selectedRows[0]);
         modalFormChange({ target: {name:"sel_row", value:selectedRows[0]} });
       };
@@ -333,9 +351,9 @@ const Main = ({ props={}, style_props={} }) => {
 
       // 그리드 설정
       setColumnDefs([
-        { headerName: "발주번호", field: "purchase_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:200},
-        { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
-        { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" , width:200},
+        { headerName: "발주번호", field: "purchase_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:140},
+        { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, align:"center", width:80 },
+        { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" , width:140},
         { headerName: "발주일자", field: "order_date", sortable: true, editable: false, filter: "agDateColumnFilter", align:"center",
           cellRendererSelector: (params) => {
             if (params.node.rowPinned) {
@@ -372,39 +390,38 @@ const Main = ({ props={}, style_props={} }) => {
             values: selectBox.current.common?.['cd012']?.map((item) => item.code) ?? [],
           },
           valueFormatter: (params) => commonTypeFormatter(params, 'cd012'),
+          cellRendererSelector: (params) => {
+            if (params.node.rowPinned) {
+              return {
+                component: ()=>{
+                  return (
+                    <span></span>
+                  );
+                },
+                
+              };
+            }
+            return undefined;
+          },
           cellRenderer: (params) => { return (<div className="d-flex gap-2">{params.valueFormatted} <i className="bi bi-caret-down-fill"></i></div>)}, 
         },
         // { headerName: "주문", field: "order_chk", sortable: true, editable: false, align:"left", cellRenderer: ButtonRenderer},
         // { headerName: "마감", field: "close_chk", sortable: true, editable: false, align:"left", cellRenderer: ButtonRenderer},
         // { headerName: "담당자", field: "request_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "비고", field: "comment", sortable: false, editable: (params) => !props.current && !params.node.rowPinned, align:"left", width:300},
       ]);
                           
       // 그리드 설정2
       setColumnDefs2([
-        { headerName: "발주번호", field: "purchase_id", sortable: false, editable: false, align:"center", width:200},
-        { headerName: "진행상태", field: "status", sortable: false, editable: false, align:"center",
-          valueFormatter: (params) => {
-            if( params.data.received_qty == 0){
-              return '입고대기중';
-            }else if(params.data.quantity > params.data.received_qty){
-              return '부분입고';
-            }else if(params.data.quantity <= params.data.received_qty){
-              return '입고완료';
-            }else{
-              return '';
-            }
-
-          },
-        },
-        { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center", width:200},
+        { headerName: "발주번호", field: "purchase_id", sortable: false, editable: false, align:"center", width:140},
+        { headerName: "자재코드", field: "raw_code", sortable: false, editable: false, align:"center", width:140},
         { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
+        { headerName: "규격", field: "unit_size", sortable: false, editable: false, align:"center"}, 
         { headerName: "기준단위", field: "base_unit", sortable: false, editable: false, align:"center"},
-        { headerName: "구매단위", field: "unit_size", sortable: false, editable: false, align:"center"}, 
         { headerName: "발주수량", field: "quantity", sortable: false, 
           align:"right", 
           editable: !props.current ,
@@ -454,6 +471,21 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
+        { headerName: "납기일", field: "due_date", sortable: true, editable: (params) => !props.current && !params.node.rowPinned, filter: "agDateColumnFilter",  align:"center", cellDataType:'dateString'},
+        { headerName: "진행상태", field: "status", sortable: false, editable: false, align:"center",
+          valueFormatter: (params) => {
+            if( params.data.received_qty == 0){
+              return '입고대기중';
+            }else if(params.data.quantity > params.data.received_qty){
+              return '부분입고';
+            }else if(params.data.quantity <= params.data.received_qty){
+              return '입고완료';
+            }else{
+              return '';
+            }
+
+          },
+        },
         { headerName: "입고수량", field: "received_qty", sortable: false, 
           align:"right", 
           editable: false, 
@@ -472,7 +504,6 @@ const Main = ({ props={}, style_props={} }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         }, 
-        { headerName: "납기예정일", field: "due_date", sortable: true, editable: (params) => !props.current && !params.node.rowPinned, filter: "agDateColumnFilter",  align:"center", cellDataType:'dateString'},
         { headerName: "비고", field: "comment", sortable: false, editable: (params) => !props.current && !params.node.rowPinned, align:"left", width:300}, 
       ]);
 
@@ -516,6 +547,8 @@ const Main = ({ props={}, style_props={} }) => {
 
   // 검색창 입력필드
   const [form, setForm] = useState({
+    //  start_date : dayjs().add(-7, 'day').format('YYYY-MM-DD')
+    // , end_date : dayjs().format('YYYY-MM-DD')
      start_date : ''
     , end_date : ''
     , purchase_id : ''
@@ -532,6 +565,13 @@ const Main = ({ props={}, style_props={} }) => {
     formR.current[e.target.name] = e.target.value;
   };
 
+
+  const changeDate = (params) =>{
+    console.log('changeDate');
+    handleChange({target:{name:'start_date', value:dayjs().add(params, 'day').format('YYYY-MM-DD')}});
+    handleChange({target:{name:'end_date', value:dayjs().format('YYYY-MM-DD')}});
+
+  }
 
 
   // 조회
@@ -575,18 +615,19 @@ const Main = ({ props={}, style_props={} }) => {
     setLoading2(true);
 
     axiosInstance
-    .post(`/api/getOrderDet`, JSON.stringify(params))
-    .then((res) => {
-      setRowData2(res.data);
-    
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-      modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
-    })
-    .finally(() =>{
-      setLoading2(false);
-    });
+      .post(`/api/getOrderDet`, JSON.stringify(params))
+      .then((res) => {
+        setRowData2(res.data);
+
+        setPrintItems(res.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+      })
+      .finally(() =>{
+        setLoading2(false);
+      });
     
   };
 
@@ -628,7 +669,7 @@ const Main = ({ props={}, style_props={} }) => {
 
     // 폼 초기화
     formRef.current = DEFAULT_FORM({
-      order_date: new Date().toISOString().split('T')[0],
+      order_date: dayjs().format('YYYY-MM-DD'),
 
     });
 
@@ -702,6 +743,23 @@ const Main = ({ props={}, style_props={} }) => {
     });
 
   };
+
+
+  
+
+  const print = () => {
+    console.log("print");
+
+    const rows = gridRef.current.getSelectedRows();
+    if(rows.length <= 0) {
+      modalRef.current.open({ title:"알림", message:"발주를 선택하세요.", cancelText:"" });
+      return;
+    }
+    
+    printRef.current = rows[0];
+    
+    reactToPrintFn();
+  }
   
   return (
     <div style={{...MainContentStyle, ...style_props}}>
@@ -711,8 +769,8 @@ const Main = ({ props={}, style_props={} }) => {
 
       <div className="bg-light" >
         <Row className="">
-          <Col className="">
-            <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
+          <Col className="overflow-auto">
+            <Table bordered hover style={{ width: 'auto', tableLayout: 'auto', overflow:'auto' }} className="m-0">
               <tbody>
                 <tr>
                   <th className="bg-light text-end align-middle">발주일자</th>
@@ -723,6 +781,7 @@ const Main = ({ props={}, style_props={} }) => {
                         name="start_date"
                         value={form.start_date}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder=""
@@ -734,11 +793,16 @@ const Main = ({ props={}, style_props={} }) => {
                         name="end_date"
                         value={form.end_date}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         placeholder=""
                         maxLength={50}
                       />
+                      <Button size="sm" variant="secondary" onClick={()=> { changeDate(0); }}>당일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { changeDate(-3); }}>3일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { changeDate(-7); }}>7일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { changeDate(-30); }}>30일</Button>
                     </div>
                   </td>
                   <th className="bg-light text-end align-middle">발주상태</th>
@@ -824,8 +888,15 @@ const Main = ({ props={}, style_props={} }) => {
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">발주 목록</span>
-              {(Object.keys(props).length === 0) &&
-                <Button size="sm" variant="success" onClick={addData}>추가</Button>
+              {(Object.keys(props).length === 0) && 
+                <>
+                  <Button size="sm" variant="success" onClick={addData}>추가</Button>
+                  <Button size="sm" variant="secondary" onClick={print}>발주서 인쇄</Button>
+                  <div className="print-only" ref={contentRef}>
+                    <PrintOrderPage order={printOrder} items={printItems} />
+                  </div>
+
+                </>
               }
             </div>
 
@@ -970,7 +1041,7 @@ const ModalComponent = ({ form }) => {
         { headerName: "품명", field: "raw_name", sortable: false, editable: false, align:"left", width:300 },
         { headerName: "단위", field: "base_unit", sortable: false, editable: false, align:"center"},
         { headerName: "규격", field: "unit_size", sortable: false, editable: false, align:"center"},
-        { headerName: "납기예정일", field: "due_date", sortable: false, editable: true, align:"center", cellDataType:'dateString',},
+        { headerName: "납기일", field: "due_date", sortable: false, editable: true, align:"center", cellDataType:'dateString',},
         { headerName: "발주수량", field: "quantity", sortable: false, editable: true, align:"right", cellDataType: 'number',
           valueFormatter: (params) => moneyFormatter(params)
         },

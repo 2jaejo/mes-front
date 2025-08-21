@@ -10,8 +10,9 @@ import Modal from "../components/Modal";
 import { ThemeContext } from "utils/ThemeContext";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('admin');
-  const [password, setPassword] = useState('admin');
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const modalRef = useRef();  
@@ -249,9 +250,14 @@ const LoginForm = () => {
         }
 
         axiosInstance
-          .post("/users/addUser", JSON.stringify(formRef.current))
+          .post("/auth/join", JSON.stringify(formRef.current))
           .then((res) => {
             modalRef.current.close();
+            modalRef2.current.open({
+              title:"알림",
+              message: "회원가입을 완료하였습니다.",
+              cancelText:""
+            });
           })
           .catch((error) => console.error("Error fetching data:", error));   
       },
@@ -288,8 +294,8 @@ const LoginForm = () => {
             />
           </div>
           <div className="d-flex justify-content-around align-items-center gap-2">
-            <button type="button" className={styles.buttonJoin} onClick={joinUs}>회원가입</button>
-            <button type="submit" className={styles.buttonLogin}>확인</button>
+            {/* <button type="button" className={styles.buttonJoin} onClick={joinUs}>회원가입</button> */}
+            <button type="submit" className={styles.buttonLogin}>로그인</button>
           </div>
           {errorMessage && <p className="p-2 text-danger">{errorMessage}</p>}
         </form>

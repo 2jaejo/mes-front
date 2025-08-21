@@ -9,6 +9,7 @@ import { MainContentStyle } from "css/CommonStyle";
 import SearchUserComponent from "components/SearchUserComponent";
 import InventoryComponent from "../inventory/InventoryLookup";
 import dayjs from "dayjs";
+import {comm} from "utils/CommonFunctions";
 
 const Main = () => {
 
@@ -205,7 +206,7 @@ const Main = () => {
 
       // 그리드 설정
       setColumnDefs([
-        { headerName: "출고번호", field: "return_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width: 200},
+        { headerName: "출고번호", field: "return_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width: 140},
         { headerName: "출고일자", field: "return_date", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
         { headerName: "품목(수)", field: "item_count", sortable: true, editable: false, align:"right",
           cellRendererSelector: (params) => {
@@ -223,16 +224,16 @@ const Main = () => {
           valueFormatter: (params) => moneyFormatter(params)
         },
         // { headerName: "담당자", field: "manager", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center"},
+        { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
-        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "수정자", field: "updated_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "비고", field: "comment", sortable: false, editable: (params) => !params.node.rowPinned, align:"left",  width:300},
       ]);
       
       // 그리드 설정2
       setColumnDefs2([
-        { headerName: "출고번호", field: "return_id", sortable: false, editable: false, align:"center", width: 200},
+        { headerName: "출고번호", field: "return_id", sortable: false, editable: false, align:"center", width: 140},
         { headerName: "진행상태", field: "status", sortable: false, editable: false, align:"center",
           cellEditor: "agSelectCellEditor",
           cellEditorParams: {
@@ -279,8 +280,10 @@ const Main = () => {
 
   // 검색창 입력필드
   const [form, setForm] = useState({
-     start_date : dayjs().format('YYYY-MM-DD')
-    , end_date : dayjs().format('YYYY-MM-DD')
+    //  start_date : dayjs().format('YYYY-MM-DD')
+    // , end_date : dayjs().format('YYYY-MM-DD')
+     start_date : ''
+    , end_date : ''
     , return_id : ''
     , client_code : ''
     , client_name : ''
@@ -291,8 +294,12 @@ const Main = () => {
 
   // 검색창 입력필드 변경 저장
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }; 
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
 
   // 추가 모달 입력필드 저장
@@ -478,12 +485,12 @@ const Main = () => {
           return ;
         }
         
-        const chk2 = arr.some( item => item.quantity < item.release_qty);
-        if(chk2){
-          modalRef2.current.open({ title:"알림", message:"재고수량보다 많이 출고 할 수 없습니다.", cancelText:"" });
-          return ;
+        // const chk2 = arr.some( item => item.quantity < item.release_qty);
+        // if(chk2){
+        //   modalRef2.current.open({ title:"알림", message:"재고수량보다 많이 출고 할 수 없습니다.", cancelText:"" });
+        //   return ;
 
-        }
+        // }
    
         modalRef.current.update({isLoading:true});
         axiosInstance
@@ -582,6 +589,10 @@ const Main = () => {
                         placeholder="NAME"
                         maxLength={50}
                       />
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", 0); }}>당일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -3); }}>3일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -7); }}>7일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { comm.changeDate(handleChange, "start_date", "end_date", -30); }}>30일</Button>
                     </div>
                   </td>
                   <th className="bg-light text-end align-middle">출고 번호</th>
@@ -591,6 +602,7 @@ const Main = () => {
                         name="return_id"
                         value={form.return_id}
                         onChange={handleChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
                         size="sm" 
                         className="w-auto"
                         maxLength={50}
@@ -634,7 +646,7 @@ const Main = () => {
 
       </div>
 
-      <div className="h-50">
+      <div className="h-100">
         <Row  className="h-100">
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
@@ -747,7 +759,7 @@ const ModalComponent = ({ form }) => {
         { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", width:200 },
         { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },       
-        { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        // { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
         { headerName: "재고수량", field: "quantity", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
         // { headerName: "재고비율", field: "stock_ratio", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params, '%')},
         // { headerName: "부족수량", field: "chk_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
@@ -849,11 +861,11 @@ const ModalComponent = ({ form }) => {
           return;
         }
         
-        const chk2 = sel_rows.some(el => el.quantity <= 0 );
-        if( chk2 ){
-          modalRef2.current.open({ title:"알림", message:"재고수량이 없습니다.", cancelText:"" });
-          return;
-        }
+        // const chk2 = sel_rows.some(el => el.quantity <= 0 );
+        // if( chk2 ){
+        //   modalRef2.current.open({ title:"알림", message:"재고수량이 없습니다.", cancelText:"" });
+        //   return;
+        // }
 
         setRowData(prevData => {
           const newData = [...prevData, ...sel_rows];

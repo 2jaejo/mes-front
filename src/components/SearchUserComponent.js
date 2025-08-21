@@ -117,7 +117,7 @@ const Main = ({ form }) => {
 
       <div className="mb-2 bg-light">
         <Row className="">
-          <Col className="d-flex gap-2">
+          <Col className="d-flex gap-2 overflow-auto">
             <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr>
