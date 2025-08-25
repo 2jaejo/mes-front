@@ -815,7 +815,7 @@ const ModalComponent = ({ form }) => {
     setLoading(true);
 
     axiosInstance
-      .post(`/api/getProcess`, JSON.stringify({type:'status'}))
+      .post(`/api/getProcess`, JSON.stringify({}))
       .then((res) => {
         setRowData(res.data);
       })

@@ -220,7 +220,7 @@ const Main = ({ props={}, isModal=false }) => {
 
       // 그리드 설정
       setColumnDefs([
-        { headerName: "등록일자", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        { headerName: "등록일자", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "수주번호", field: "sales_id", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"center", width:120},
         { headerName: "거래처코드", field: "client_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "거래처명", field: "client_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left", width:200 },
@@ -299,7 +299,7 @@ const Main = ({ props={}, isModal=false }) => {
       
       // 그리드 설정2
       setColumnDefs2([
-        { headerName: "수주번호", field: "sales_id", sortable: false, editable: false, align:"center", width:200},
+        { headerName: "수주번호", field: "sales_id", sortable: false, editable: false, align:"center", width:120},
         // { headerName: "진행상태", field: "status", sortable: false, editable: true, align:"center",
         //   cellEditor: "agSelectCellEditor",
         //   cellEditorParams: {
@@ -391,6 +391,27 @@ const Main = ({ props={}, isModal=false }) => {
           valueFormatter: (params) => moneyFormatter(params)
         }, 
         // { headerName: "입고검사여부", field: "incoming_inspection", sortable: false, editable: false, align:"center"}, 
+        { headerName: "작업지시", field: "order_yn", sortable: false, editable: false, align:"center",
+          // backgroundColor: "#a7d1ff29",
+          cellRenderer: 'agCheckboxCellRenderer',
+          cellRendererParams: {
+            disabled: true,
+          },
+          // Y/N 값을 true/false로 변환하여 체크박스 표시
+          valueGetter: (params) => {
+            return params.data.order_yn === 'Y';
+          },
+
+          // 체크박스 변경 시 true/false → Y/N 으로 반영
+          valueSetter: (params) => {
+            const newValue = params.newValue ? 'Y' : 'N';
+            if (params.data.order_yn !== newValue) {
+              params.data.order_yn = newValue;
+              return true; // 값이 바뀐 경우만 true
+            }
+            return false; // 변경 없음
+          },
+        },
         { headerName: "출고수량", field: "delivery_qty", sortable: false, 
           align:"right", 
           editable: (params) => !params.node.rowPinned && !isModal, 

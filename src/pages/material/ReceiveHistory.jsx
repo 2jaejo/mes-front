@@ -166,7 +166,8 @@ const Main = () => {
           { headerName: "자재명", field: "raw_name", sortable: false, editable: false, align:"left", width:300}, 
           { headerName: "입고량", field: "requested_quantity", sortable: false, editable: false, align:"right"}, 
           { headerName: "환산입고량", field: "changed_quantity", sortable: false, editable: false, align:"right"}, 
-          { headerName: "등록자", field: "created_by", sortable: false, editable: false, align:"left"},         
+          { headerName: "등록자", field: "created_by", sortable: false, editable: false, align:"left"},        
+          { headerName: "비고", field: "remarks", sortable: false, editable: false, align:"left", width:300},  
         ]);
         
 

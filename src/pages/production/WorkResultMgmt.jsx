@@ -378,7 +378,7 @@ const Main = ({ props={}, isActive }) => {
     , item_name:''
     , client_code : ''
     , client_name : ''
-    , status : ''
+    , status : 'Y'
   });
 
   // 검색창 입력필드 변경 저장
@@ -534,6 +534,21 @@ const Main = ({ props={}, isActive }) => {
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
               <tbody>
                 <tr> */}
+                  <th className="bg-light text-end align-middle">작업상태</th>
+                  <td className="">
+                    <Form.Select 
+                      name="status" 
+                      value={form.status} 
+                      onChange={handleChange}
+                      size="sm"
+                      className="w-auto"
+                    >
+                      <option value="Y">작업중</option>
+                      <option value="N">작업종료</option>
+                      <option value="">전체</option>
+                    </Form.Select>
+                  </td>
+
                   <th className="bg-light text-end align-middle">작업지시코드</th>
                   <td className="">
                       <Form.Control 
