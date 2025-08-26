@@ -448,20 +448,27 @@ const Main = ({ props={}, isActive }) => {
     
   };
 
+  const call_status = useRef(false);
 
   // 수정
   const setData = (params) => {
     console.log("setData");
+    if( call_status.current ) return;
 
+    call_status.current = true;
     axiosInstance
-      .post("api/setWorkResult", JSON.stringify(params))
-      .then((res) => {
-        getData();
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
-      });   
+    .post("api/setWorkResult", JSON.stringify(params))
+    .then((res) => {
+      getData();
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+    })
+    .finally(() =>{
+      call_status.current = false;
+    });
+
   };
 
  

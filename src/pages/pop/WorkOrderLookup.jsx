@@ -164,22 +164,34 @@ const Main = ({ props={}, isActive}) => {
     
   };
 
+
+  const call_status = useRef(false);
+
   // 수정
   const setData = (params) => {
     console.log("setData");
     if( formRef.current.process_code === '' || formRef.current.process_code === undefined) return ;
 
+    if( call_status.current ) return;
+
+    call_status.current = true;
     axiosInstance
-      .post("api/setWorkResult", JSON.stringify(params))
-      .then((res) => {
-        modalRef.current.open({ title:"알림", message:"적용되었습니다.", cancelText:"" });
-        getData();
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
-      });   
+    .post("api/setWorkResult", JSON.stringify(params))
+    .then((res) => {
+      modalRef.current.open({ title:"알림", message:"적용되었습니다.", cancelText:"" });
+
+      getData();
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+    })
+    .finally(() =>{
+      call_status.current = false;
+    });
+
   };
+
 
 
   // 적용

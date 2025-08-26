@@ -376,8 +376,10 @@ const Home = ({isActive, addTab}) => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 10 }}/>
+          {/* <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
+          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/> */}
           <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
-          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/>
+          <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0, 1440]} allowDataOverflow tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/>
           {/* <Tooltip /> */}
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
