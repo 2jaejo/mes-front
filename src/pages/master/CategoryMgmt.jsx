@@ -4,6 +4,7 @@ import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
+import { MainContentStyle } from "css/CommonStyle";
 
 
 const Main = () => {
@@ -733,7 +734,7 @@ const Main = () => {
 
   
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 

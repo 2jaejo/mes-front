@@ -314,16 +314,16 @@ const Main = ({ props={}, isActive }) => {
         // { headerName: "공정코드", field: "process_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center" },
         { headerName: "공정명", field: "process_name", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
         { headerName: "지시시간", field: "range", sortable: false, editable: false, align:"left",width:220 },
-        { headerName: "지시수량", field: "order_qty", sortable: false, editable: false, align:"right", cellDataType:'number', width:70,
-          valueFormatter:(params)=> moneyFormatter(params)
-        },
         { headerName: "작업시작", field: "start_dttm", sortable: false, editable: false, align:"center",width:120, cellRenderer: ButtonRenderer},
         { headerName: "일시정지", field: "pause", sortable: false, editable: false, align:"center",width:120, cellRenderer: ButtonRenderer2},
         { headerName: "작업종료", field: "end_dttm", sortable: false, editable: false, align:"center",width:120, cellRenderer: ButtonRenderer},
-        { headerName: "양품수량", field: "result_qty", sortable: false, editable: true, align:"right", cellDataType:'number',
+        { headerName: "지시수량", field: "order_qty", sortable: false, editable: false, align:"right", cellDataType:'number', width:70,
           valueFormatter:(params)=> moneyFormatter(params)
         },
-        { headerName: "불량(kg)", field: "defect_qty", sortable: false, editable: true, align:"right", cellDataType:'number',
+        { headerName: "양품수량(ea)", field: "result_qty", sortable: false, editable: true, align:"right", cellDataType:'number',
+          valueFormatter:(params)=> moneyFormatter(params)
+        },
+        { headerName: "불량(g)", field: "defect_qty", sortable: false, editable: true, align:"right", cellDataType:'number',
           valueFormatter:(params)=> moneyFormatter(params, 2)
         },
         { headerName: "비고", field: "remark", sortable: false, editable: true, align:"left", width:300},
@@ -334,22 +334,22 @@ const Main = ({ props={}, isActive }) => {
           },
           valueFormatter: (params) => commonTypeFormatter(params, 'cd016'),
         },
-        { headerName: "시작일자", field: "start_date", sortable: false, editable: false, filter: "agDateColumnFilter",  align:"center"},
-        { headerName: "시작시간", field: "start_time", sortable: false, editable: false, align:"center",
-          cellEditor: "agSelectCellEditor",
-          cellEditorParams: {
-            values: selectBox.current.common?.['cd014'].map((item) => item.code) ?? [],
-          },
-          valueFormatter:(params)=> commonTypeFormatter(params,'cd014')
-        },
-        { headerName: "종료일자", field: "end_date", sortable: false, editable: false, filter: "agDateColumnFilter",  align:"center"},
-        { headerName: "종료시간", field: "end_time", sortable: false, editable: false, align:"center",
-          cellEditor: "agSelectCellEditor",
-          cellEditorParams: {
-            values: selectBox.current.common?.['cd014'].map((item) => item.code) ?? [],
-          },
-          valueFormatter:(params)=> commonTypeFormatter(params,'cd014')
-        },
+        // { headerName: "시작일자", field: "start_date", sortable: false, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        // { headerName: "시작시간", field: "start_time", sortable: false, editable: false, align:"center",
+        //   cellEditor: "agSelectCellEditor",
+        //   cellEditorParams: {
+        //     values: selectBox.current.common?.['cd014'].map((item) => item.code) ?? [],
+        //   },
+        //   valueFormatter:(params)=> commonTypeFormatter(params,'cd014')
+        // },
+        // { headerName: "종료일자", field: "end_date", sortable: false, editable: false, filter: "agDateColumnFilter",  align:"center"},
+        // { headerName: "종료시간", field: "end_time", sortable: false, editable: false, align:"center",
+        //   cellEditor: "agSelectCellEditor",
+        //   cellEditorParams: {
+        //     values: selectBox.current.common?.['cd014'].map((item) => item.code) ?? [],
+        //   },
+        //   valueFormatter:(params)=> commonTypeFormatter(params,'cd014')
+        // },
         { headerName: "담당자", field: "worker_nm", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},

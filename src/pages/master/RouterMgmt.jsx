@@ -529,7 +529,7 @@ const Main = () => {
               <span className="fw-bold">라우터 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
-              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+              <Button size="sm" variant="secondary" onClick={exportExcel}>csv 다운로드</Button>
               
             </div>
 

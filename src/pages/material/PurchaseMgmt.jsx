@@ -45,9 +45,9 @@ const Main = ({ props={}, style_props={} }) => {
   const reactToPrintFn = useReactToPrint({ contentRef });
   const printRef = useRef();
   const [printState, setPrintState] = useState({});
-
   const [printOrder, setPrintOrder] = useState();
   const [printItems, setPrintItems] = useState();
+  
   
   // grid cell code_name 변환
   const categoryAFormatter = (params) => {

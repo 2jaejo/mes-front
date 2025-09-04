@@ -5,6 +5,8 @@ import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { Row, Col, Form, Button } from 'react-bootstrap';
 
+import { MainContentStyle } from "css/CommonStyle";
+
 const LoginHistory = () => {
   const gridRef = useRef();  
   const modalRef = useRef();  
@@ -81,7 +83,7 @@ const LoginHistory = () => {
 
   
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
 
       <div className="p-2 mb-2 border bg-light">
        

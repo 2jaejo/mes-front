@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axiosInstance from "utils/Axios";
 import Modal from "components/Modal";
 import { Row, Col, Form, Button, Table } from 'react-bootstrap';
+import { MainContentStyle } from "css/CommonStyle";
 
 const MyPage = () => {
   const modalRef = useRef();  
@@ -53,7 +54,7 @@ const MyPage = () => {
 
  
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
 
       <div className="p-2 mb-2 border bg-light">
      

@@ -191,7 +191,7 @@ const Main = ({ isActive}) => {
         groups.current = transformed1;
         groups2.current = transformed2;
         groups3.current = transformed3;
-        console.log(groups3.current);
+        // console.log(groups3.current);
         // // 기존 groups 와 transformed 비교
         // if (!isEqual(groups, transformed)) {
         //   console.log("groups", groups);
@@ -296,7 +296,7 @@ const Main = ({ isActive}) => {
 
   const setData = (item) =>{
     console.log("setData");
-    console.log(item);
+    // console.log(item);
 
     const params = {
       id:item.id,
@@ -379,7 +379,7 @@ const Main = ({ isActive}) => {
       confirmClass:"btn btn-success",
       onConfirm: (res) => {
   
-        const excludeKeys = ["sel_box", "remark"]; 
+        const excludeKeys = ["order_id", "sel_box", "remark"]; 
         const isEmptyExceptExcluded = Object.entries(propsRef.current)
           .filter(([key]) => !excludeKeys.includes(key)) 
           .some(([_, value]) => value === 0 || value === "" || value === null || value === undefined);

@@ -565,7 +565,7 @@ const Main = ({ props={}, isActive}) => {
                 </tr>
 
                 <tr>
-                  <th className=" bg-light text-end align-middle">불량(kg)</th>
+                  <th className=" bg-light text-end align-middle">불량(g)</th>
                   <td className="align-middle">
                     <div className="d-flex gap-2">
                       <Form.Control 

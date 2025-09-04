@@ -138,7 +138,7 @@ const Main = () => {
 
       // 그리드 설정
       setColumnDefs([
-        { headerName: "BOM", field: "bom_cnt", sortable: false, editable: false, align:"center", width:40 },
+        { headerName: "BOM", field: "bom_cnt", sortable: false, editable: false, align:"center", width:60 },
         { headerName: "바코드", field: "bar_code", sortable: false, editable: false, align:"center" },
         { headerName: "품번", field: "item_dotno", sortable: true, editable: false, align:"center"},
         { headerName: "상품명", field: "item_name", sortable: true, editable: false, align:"left", width:300}, 
@@ -476,7 +476,7 @@ const Main = () => {
               <span className="fw-bold">품목 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
-              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+              <Button size="sm" variant="secondary" onClick={exportExcel}>csv 다운로드</Button>
             </div>
 
             <GridExample 

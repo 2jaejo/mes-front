@@ -5,6 +5,7 @@ import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import dayjs from "dayjs";
+import { MainContentStyle } from "css/CommonStyle";
 
 const Main = () => {
 
@@ -455,7 +456,7 @@ const Main = () => {
   };
   
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+    <div style={MainContentStyle}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -558,7 +559,7 @@ const Main = () => {
               <span className="fw-bold">공정 목록</span>
               <Button size="sm" variant="success" onClick={addData}>추가</Button>
               <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
-              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+              <Button size="sm" variant="secondary" onClick={exportExcel}>csv 다운로드</Button>
 
             </div>
 

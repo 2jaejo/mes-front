@@ -7,6 +7,7 @@ import Modal from "components/Modal";
 import * as XLSX from "xlsx";
 import { comm } from "utils/CommonFunctions";
 import dayjs from "dayjs";
+import { MainContentStyle } from "css/CommonStyle";
 
 const Main = ({props={} }) => {
 
@@ -318,7 +319,7 @@ const Main = ({props={} }) => {
     };
 
     return (
-      <div className="p-2" style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+      <div className="p-2" style={{ maxHeight: 'calc(100vh - 220px)', overflowY: 'auto' }}>
         <Table bordered style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
           <tbody>
             <tr>
@@ -1371,7 +1372,7 @@ const Main = ({props={} }) => {
 
   
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
@@ -1491,7 +1492,7 @@ const Main = ({props={} }) => {
                   <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
                   <Button size="sm" variant="primary" onClick={mappingData}>업로드 맵핑</Button>
                   <Button size="sm" variant="primary" onClick={uploadExcel}>파일 업로드</Button>
-                  <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+                  <Button size="sm" variant="secondary" onClick={exportExcel}>csv 다운로드</Button>
                 </>
               }
             </div>

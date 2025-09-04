@@ -5,6 +5,7 @@ import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import dayjs from "dayjs";
+import { MainContentStyle } from "css/CommonStyle";
 
 const Main = () => {
   const modalRef = useRef();  
@@ -507,7 +508,7 @@ const Main = () => {
   
   
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 

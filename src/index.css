@@ -170,6 +170,7 @@ code {
 
 
 
+
 /* 메뉴 항목 */
 .aside ul {
   list-style: none;
@@ -262,10 +263,10 @@ li.expanded {
   flex:1;
   width: 100%;
   overflow: auto;
-  border: 1px solid #ddd;
   padding: 1rem;
   margin-top: 1px;
   background: #ffffff;
+  /* border: 1px solid #ddd; */
   /* border-radius: 0px 5px 5px 5px; */
   min-height: inherit; 
 }

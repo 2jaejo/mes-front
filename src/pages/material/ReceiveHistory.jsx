@@ -347,7 +347,7 @@ const Main = () => {
           <Col className="h-100 d-flex flex-column" xs={12} md={12}>
             <div className="mb-1 d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold">입고 이력</span>        
-              <Button size="sm" variant="success" onClick={exportExcel}>csv 다운로드</Button>
+              <Button size="sm" variant="secondary" onClick={exportExcel}>csv 다운로드</Button>
                     
             </div>
 

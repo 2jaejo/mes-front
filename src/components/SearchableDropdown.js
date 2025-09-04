@@ -20,7 +20,7 @@ const SearchableDropdown = ({ options = [], selected, onSelect, title='선택', 
 
 
   return (
-    <Dropdown  className="w-100" style={{ minWidth: '200px', width: '100%' }}>
+    <Dropdown className="w-100" style={{ minWidth: '200px', width: '100%'}}>
 
       <Dropdown.Toggle
         size={size}
@@ -37,6 +37,7 @@ const SearchableDropdown = ({ options = [], selected, onSelect, title='선택', 
 
       <Dropdown.Menu style={{ minWidth: '200px', width: '100%', zIndex: 9999 }}>
         <Form.Control
+          type='text'
           autoFocus
           placeholder="검색..."
           onChange={(e) => setSearchTerm(e.target.value)}

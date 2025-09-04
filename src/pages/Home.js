@@ -8,6 +8,7 @@ import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 import dayjs from 'dayjs'
 import CustomModal from "components/Modal";
 import GridExample from "components/GridExample";
+import Copyright from "components/Copyright";
 import isEqual from 'lodash/isEqual';
 
 
@@ -106,6 +107,13 @@ const Home = ({isActive, addTab}) => {
     return item ? item.code_name : params.value; 
   };
 
+  const refresh = () => {
+    console.log("refresh");
+    getData();
+    getData2();
+    getData3();
+  };
+
 
   // 최초 실행된 후만 refresh 루프 실행
   const startRefreshLoop = async () => {
@@ -187,12 +195,7 @@ const Home = ({isActive, addTab}) => {
 
 
 
-  const refresh = () => {
-    console.log("refresh");
-    getData();
-    getData2();
-    getData3();
-  };
+
 
   //조회3
   const getData3 = async () =>{
@@ -308,8 +311,8 @@ const Home = ({isActive, addTab}) => {
 
           newData.push({
             name:el.process_name , 
-            '양품': el.result_qty ?? 0,
-            '불량(kg)': el.defect_qty ?? 0,
+            '양품(ea)': el.result_qty ?? 0,
+            '불량(g)': el.defect_qty ?? 0,
             '가동시간(분)':el.prod_min ?? 0,
             '가동률(%)':rate,
             'item_name':el.item_name,
@@ -378,13 +381,13 @@ const Home = ({isActive, addTab}) => {
           <XAxis dataKey="name" axisLine={{ stroke: '#aaa' }}  tickLine={false}  tick={{ fontSize: 10 }}/>
           {/* <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
           <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/> */}
-          <YAxis dataKey="양품" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
+          <YAxis dataKey="양품(ea)" yAxisId="left" type="number" domain={[0, dataMax => Math.ceil(Math.max(100, dataMax * 1.1))]} allowDataOverflow tickLine={false} label={{ value: '수량', angle: 0, position: 'insideTopLeft', offset: 20}}/>
           <YAxis dataKey="가동시간(분)" yAxisId="right" orientation="right" type="number" domain={[0, 1440]} allowDataOverflow tickLine={false} label={{ value: '(분)', angle: 0, position: 'insideTopRight', offset: 20}}/>
           {/* <Tooltip /> */}
           <Tooltip content={<CustomTooltip />}/>
           <Legend />
-          <Bar dataKey="양품" isAnimationActive={false} yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
-          <Bar dataKey="불량(kg)" isAnimationActive={false} yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
+          <Bar dataKey="양품(ea)" isAnimationActive={false} yAxisId="left" fill="green" activeBar={<Rectangle fill="green" stroke="green" />} />
+          <Bar dataKey="불량(g)" isAnimationActive={false} yAxisId="left" fill="red" activeBar={<Rectangle fill="red" stroke="red" />} />
           <Bar dataKey="가동률(%)" isAnimationActive={false} yAxisId="right" fill="orange" activeBar={<Rectangle fill="orange" stroke="orange" />} />
           <Bar dataKey="가동시간(분)" isAnimationActive={false} yAxisId="right" fill="blue" activeBar={<Rectangle fill="blue" stroke="blue" />} />
         </BarChart>
@@ -487,6 +490,8 @@ const Home = ({isActive, addTab}) => {
           </Card>
         </Col>
       </Row>
+
+      <Copyright />
 
     </div>
   );

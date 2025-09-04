@@ -89,9 +89,9 @@ const GridExample = ( {themeSize="sm", columnDefs, rowData, loading=false, rowNu
       valueGetter: (params) => !params.node.rowPinned ?params.node.rowIndex + 1 : '', 
       rowDrag:rowDrag,
       align:'center',
-      width: 20,        
+      width: 65,        
       minWidth: 40,
-      maxWidth: 40,
+      maxWidth: 80,
     };
 
     if(rowNum){

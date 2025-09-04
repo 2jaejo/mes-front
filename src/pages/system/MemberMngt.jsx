@@ -4,6 +4,7 @@ import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
+import { MainContentStyle } from "css/CommonStyle";
 
 
 const MemberMngt = () => {
@@ -57,6 +58,7 @@ const MemberMngt = () => {
     phone: '',
     addr: '',
     birthday: '',
+    grade:'',
   });
 
   const formRef = useRef(DEFAULT_FORM());
@@ -109,7 +111,7 @@ const MemberMngt = () => {
   const UserForm = ({ onChangeHandler }) => {
     console.log("UserForm");
 
-    const [userForm, setUserForm] = useState({});
+    const [userForm, setUserForm] = useState({grade:'1'});
 
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -238,6 +240,24 @@ const MemberMngt = () => {
                 />
               </td>
             </tr>
+            {/* <tr>
+              <th className="bg-light text-end align-middle">등급</th>
+              <td className="d-flex align-items-center">
+                <Form.Control
+                  type="range"
+                  name="grade"
+                  value={userForm.grade ?? ''}
+                  onChange={handleChange}
+                  size="md" 
+                  className="w-auto"
+                  min="1"
+                  max="9"
+                  maxLength={50}
+                  style={{padding:'0px', background: 'lightgray', borderRadius: '5px', height: '5px', outline: 'none' }}
+                />
+                <span className="ms-2">{userForm.grade ?? ''}</span>
+              </td>
+            </tr> */}
             
           </tbody>
         </Table>
@@ -434,7 +454,7 @@ const MemberMngt = () => {
 
   
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
 
       <div className="p-2 mb-2 border bg-light">
         <Row className="">

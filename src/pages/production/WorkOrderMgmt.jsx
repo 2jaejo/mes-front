@@ -458,12 +458,12 @@ const Main = ({ props={}, isActive}) => {
                       />
                     </div>
                   </td>
-                  {/* <th className="bg-light text-end align-middle">상태</th>
+                  <th className="bg-light text-end align-middle">상태</th>
                   <td className="">
                     <div className="d-flex gap-2">
                       <Form.Select 
-                        name="item_type" 
-                        value={form.item_type} 
+                        name="status" 
+                        value={form.status} 
                         onChange={handleChange}
                         size="sm"
                         className="w-auto"
@@ -479,7 +479,7 @@ const Main = ({ props={}, isActive}) => {
                         ))}
                       </Form.Select>               
                     </div>
-                  </td> */}
+                  </td> 
                   
                 {/* </tr>
               </tbody>

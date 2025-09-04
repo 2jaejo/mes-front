@@ -4,6 +4,7 @@ import axiosInstance from "utils/Axios";
 import Modal from "components/Modal";
 import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 import { ThemeContext } from "utils/ThemeContext";
+import { MainContentStyle } from "css/CommonStyle";
 
 const ScreenMngt = () => {
   const modalRef = useRef();  
@@ -38,7 +39,7 @@ const ScreenMngt = () => {
 
  
   return (
-    <div style={{ height: '87vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={MainContentStyle}>
 
       <div className="p-2 mb-2 border bg-light">
      
