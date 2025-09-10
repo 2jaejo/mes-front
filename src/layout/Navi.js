@@ -50,7 +50,7 @@ const Navi = ({menu, addTab}) => {
                 aria-expanded={hoveredIndex === index ? "true" : "false"}
                 onClick={(e) => e.preventDefault()}
               >
-                <span style={{fontSize:'1rem', fontWeight:500, letterSpacing:'1px', color:theme.color}}>{menu.title}</span>
+                <span style={{fontSize:'1rem', fontWeight:600, letterSpacing:'1px', color:theme.color}}>{menu.title}</span>
               </a>
               <ul
                 className={`dropdown-menu show`}

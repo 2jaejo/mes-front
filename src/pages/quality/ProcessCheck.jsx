@@ -656,7 +656,7 @@ const Main = () => {
       <Modal ref={modalRef} />
       <Modal ref={modalRef2} />
 
-      <div className="mb-2 bg-light">
+      <div className="bg-light">
         <Row className="">
           <Col className="">
             <Table bordered hover style={{ width: 'auto', tableLayout: 'auto' }} className="m-0">
