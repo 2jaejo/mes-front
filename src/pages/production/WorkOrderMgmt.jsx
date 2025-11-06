@@ -313,6 +313,7 @@ const Main = ({ props={}, isActive}) => {
       request_date: dayjs().format('YYYY-MM-DD'),
       stock_qty:'',
       allocated_qty:'',
+      needed_qty:'',
     });
 
     modalRef.current.open({
@@ -376,7 +377,7 @@ const Main = ({ props={}, isActive}) => {
   };
 
 
-   // 삭제2
+  // 삭제2
   const delData2 = (params) => {
     console.log("delData");
 
@@ -417,6 +418,7 @@ const Main = ({ props={}, isActive}) => {
 
      
   };
+
 
   
   
@@ -631,10 +633,27 @@ const ModalComponent = ({ form }) => {
   };
 
   // grid cell code_name 변환
-  const moneyFormatter = (params) => {
+  const moneyFormatter = (params, suffix = '') => {
     if (params.value == null) return '';
-    const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+    let num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 6});
+    if (suffix !== '') num += suffix;
     return num;
+  };
+
+  const getRowClass = (params) => {
+    const r_qty = params.data.right_qty;
+    const ratio = params.data.stock_ratio;
+    if(r_qty !== 0 && ratio < 30){
+      return 'bg-red';
+    }else if (r_qty !== 0 && ratio >= 30 && ratio < 60){
+      return 'bg-orange';
+    }else if (r_qty !== 0 && ratio >= 60 && ratio < 80){
+      return 'bg-yellow';
+    }else if (r_qty !== 0 && ratio >= 80 && ratio < 100){
+      return 'bg-green';
+    }
+
+    return '';
   };
 
   const ButtonRenderer = (props) => {
@@ -671,6 +690,11 @@ const ModalComponent = ({ form }) => {
   const [rowData2, setRowData2] = useState([]);
   const [columnDefs2, setColumnDefs2] = useState([]);
 
+  const gridRef3 = useRef();  
+  const [loading3, setLoading3] = useState(false);
+  const [rowData3, setRowData3] = useState([]);
+  const [columnDefs3, setColumnDefs3] = useState([]);
+
 
   // 그리드 onGridReady
   const onGridReady = (params) => {
@@ -702,6 +726,30 @@ const ModalComponent = ({ form }) => {
   const onGridReady2 = (params) => {
     console.log("onGridReady2");
     gridRef2.current = params.api; // Grid API 저장
+
+    // 행 클릭 이벤트
+    params.api.addEventListener("rowClicked", (ev) => {
+      console.log("rowClicked");
+      
+    });
+
+    // 선택 변경 이벤트
+    params.api.addEventListener("selectionChanged", (ev) => {
+      console.log("selectionChanged");
+      
+    });
+
+    // 셀 값 변경 이벤트
+    params.api.addEventListener("cellValueChanged", (ev) => {
+      console.log("cellValueChanged");
+      
+    });
+  };
+
+  // 그리드 onGridReady3
+  const onGridReady3 = (params) => {
+    console.log("onGridReady3");
+    gridRef3.current = params.api; // Grid API 저장
 
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
@@ -779,6 +827,20 @@ const ModalComponent = ({ form }) => {
         { headerName: "비고", field: "comment2", sortable: false, editable: true, align:"left", width:300 },
       ]);
 
+
+      setColumnDefs3([
+        { headerName: "품번", field: "raw_code", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:100 },
+        { headerName: "품명", field: "raw_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
+        { headerName: "단위", field: "base_unit", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "규격", field: "unit_size", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "재고수량", field: "stock_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "안전재고", field: "right_qty", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "재고비율", field: "stock_ratio", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params, '%')},
+        { headerName: "부족수량", field: "chk_cnt", sortable: true, editable: false, filter: "agTextColumnFilter", align:"right", valueFormatter: (params) => moneyFormatter(params)},
+        { headerName: "분류", field: "type_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "상태", field: "status_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "매입처", field: "supply_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+      ]);
   
 
       getData();
@@ -934,6 +996,7 @@ const ModalComponent = ({ form }) => {
         modalFormChange({target:{name:'item_name', value:row.itemName}});
         modalFormChange({target:{name:'stock_qty', value:row.endQty}});
         modalFormChange({target:{name:'allocated_qty', value:row.endShipQty}});
+        modalFormChange({target:{name:'needed_qty', value: 0}});
 
         // 품목 변경시 기존 지시대기 목록 삭제
         // setRowData2([]);
@@ -1091,6 +1154,17 @@ const ModalComponent = ({ form }) => {
     };
 
     axiosInstance
+      .post(`/api/getInventory2`, JSON.stringify(params))
+      .then((res) => {        
+        setRowData3(res.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        modalRef.current.open({ title:error.code, message:error.message, cancelText:"", confirmClass:"btn btn-danger" });
+      })
+
+
+    axiosInstance
       .post(`/api/getOsmStockItemStorageList`, JSON.stringify(params))
       .then((res) => {        
 
@@ -1099,12 +1173,16 @@ const ModalComponent = ({ form }) => {
           modalFormChange({target:{name:'quantity', value:0}});
         }
 
+
+
         if(res.data.length > 0){
           const row = res.data[0];
+
           modalFormChange({target:{name:'item_code', value:option.item_dotno}});
           modalFormChange({target:{name:'item_name', value:option.item_name}});
           modalFormChange({target:{name:'stock_qty', value:row.endQty || 0}});
           modalFormChange({target:{name:'allocated_qty', value:row.endShipQty || 0}});
+          modalFormChange({target:{name:'needed_qty', value: (option.quantity && option.quantity - row.endShipQty > 0) ? option.quantity - row.endShipQty : 0}});
           
         }
         else{
@@ -1113,6 +1191,7 @@ const ModalComponent = ({ form }) => {
           modalFormChange({target:{name:'item_name', value:option.item_name}});
           modalFormChange({target:{name:'stock_qty', value:0}});
           modalFormChange({target:{name:'allocated_qty', value:0}});
+          modalFormChange({target:{name:'needed_qty', value:0}});
           
         }
 
@@ -1240,6 +1319,19 @@ const ModalComponent = ({ form }) => {
                       disabled
                       /> 
                   </td>
+                  <th className="bg-light text-end align-middle">필요생산수량</th>
+                  <td className="">
+                    <Form.Control 
+                      type="text"
+                      name="needed_qty"
+                      value={modalForm.needed_qty}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      maxLength={50}
+                      disabled
+                      /> 
+                  </td>
                 </tr>
                 
               </tbody>
@@ -1248,11 +1340,32 @@ const ModalComponent = ({ form }) => {
 
           </Col>
         </Row>
+
+
       </div>
 
       <div className="h-100">
-        <Row  className="h-100">
-          <Col className="h-100 d-flex flex-column" xs={12} md={2}>
+        <Row className="h-25" style={{height:'100px'}}>
+          <Col className="d-flex flex-column" xs={12} md={12}>
+            <div className="d-flex gap-2 justify-content-start align-items-center">
+              <span className="fw-bold my-2">자재 재고</span>
+            </div>
+            <GridExample
+              columnDefs={columnDefs3}
+              rowData={rowData3}
+              onGridReady={onGridReady3} 
+              loading={loading3}
+              rowNum={true}
+              rowSel={"singleRow"}
+              // pageSize={10}  
+              pagination={false}
+              rowClass={getRowClass}
+            />
+          </Col>
+        </Row>
+
+        <Row  className="h-75 mt-2">
+          <Col className="h-100 d-flex flex-column gap-1" xs={12} md={2}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">공정 목록</span>
               <Button size="sm" variant="primary" onClick={addData}>선택 추가</Button>
@@ -1270,7 +1383,7 @@ const ModalComponent = ({ form }) => {
             />
           </Col>
 
-          <Col className="h-100 pt-2 d-flex flex-column" xs={12} md={10}>
+          <Col className="h-100 d-flex flex-column gap-1" xs={12} md={10}>
             <div className="d-flex gap-2 justify-content-start align-items-center">
               <span className="fw-bold my-2">작업지시 목록</span>
               <Button size="sm" variant="danger" onClick={delData}>선택 삭제</Button>

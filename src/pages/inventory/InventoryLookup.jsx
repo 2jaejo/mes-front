@@ -148,9 +148,6 @@ const Main = ({ props={}, style_props={} }) => {
 
     const handleClick = (params) => {
       console.log("handleClick");
-      console.log(props.colDef);
-      console.log(props.data);
-      console.log(params);
 
       propsRef.current = {
         raw_code: props.data.raw_code,

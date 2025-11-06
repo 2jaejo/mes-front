@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import { Row, Col, Form, Button, Table } from 'react-bootstrap';
 
 import axiosInstance from "utils/Axios";
@@ -49,6 +49,17 @@ const Main = ({ props={}, isActive }) => {
   const selectBox = useRef({}); 
 
   
+  const [pinnedBottomRowData, setPinnedBottomRowData] = useState([
+    {
+      start_dttm: '',
+      end_dttm: '',
+      order_qty: '',
+      result_qty: '',
+      defect_qty: '',
+    }
+  ]);
+
+  
   // 그리드 설정
   const gridRef = useRef();  
   const [columnDefs, setColumnDefs] = useState([]);
@@ -97,6 +108,7 @@ const Main = ({ props={}, isActive }) => {
   const onGridReady2 = (params) => {
     gridRef2.current = params.api; // Grid API 저장
 
+    
     // 행 클릭 이벤트
     params.api.addEventListener("rowClicked", (ev) => {
       
@@ -116,12 +128,43 @@ const Main = ({ props={}, isActive }) => {
       console.log(selectedRows);
     });
 
+    // 필터 변경 이벤트
+    params.api.addEventListener("filterChanged", (ev) => {
+      console.log("filterChanged");
+
+      const order_arr = [];
+      const result_arr = [];
+      const defect_arr = [];
+    
+      params.api.forEachNodeAfterFilterAndSort((node) => {
+        if (node.data && node.data["order_qty"] != null) {
+          order_arr.push(node.data["order_qty"]);
+        }
+        if (node.data && node.data["result_qty"] != null) {
+          result_arr.push(node.data["result_qty"]);
+        }
+        if (node.data && node.data["defect_qty"] != null) {
+          defect_arr.push(node.data["defect_qty"]);
+        }
+      });
+
+      setPinnedBottomRowData([
+        {
+          start_dttm: '',
+          end_dttm: '',
+          order_qty: order_arr.reduce((sum, current) => sum + Number(current), 0),
+          result_qty: result_arr.reduce((sum, current) => sum + Number(current), 0),
+          defect_qty: defect_arr.reduce((sum, current) => sum + Number(current), 0),
+        }
+      ]);
+    });
+
   };
 
   // grid cell code_name 변환
-  const moneyFormatter = (params) => {
+  const moneyFormatter = (params, disit=2) => {
     if (params.value == null) return '';
-    const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+    const num = Number(params.value).toLocaleString('ko-KR', {maximumFractionDigits: disit});
     return num;
   };
 
@@ -141,6 +184,43 @@ const Main = ({ props={}, isActive }) => {
     searchFormChange({ target:{ name:"start_date", value:dayjs(dt).startOf('month').format('YYYY-MM-DD') } });
     searchFormChange({ target:{ name:"end_date", value:dayjs(dt).endOf('month').format('YYYY-MM-DD') } });
   }
+
+  const changeDate = (params) =>{
+    console.log('changeDate');
+    searchFormChange({target:{name:'start_date', value:dayjs().add(params, 'day').format('YYYY-MM-DD')}});
+    searchFormChange({target:{name:'end_date', value:dayjs().format('YYYY-MM-DD')}});
+
+  }
+
+  const rowPin = (params, type='sum') => {
+    const arr_values = [];
+    params.api.forEachNodeAfterFilterAndSort((node) => {
+      if (node.data && node.data[params.column.colId] != null) {
+        arr_values.push(node.data[params.column.colId]);
+      }
+    });
+
+    let result = null;
+    const sum = arr_values.reduce((sum, current) => sum + Number(current), 0);
+    const cnt = arr_values.length;
+    const avg = sum / cnt;
+  
+    if(type === 'sum'){
+      result = sum;
+    }
+    else if(type === 'avg'){
+      result = avg;
+    }
+    else if(type === 'cnt'){
+      result = cnt;
+    }
+    else{
+
+    }
+
+    return result;
+  }
+
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,10 +258,24 @@ const Main = ({ props={}, isActive }) => {
         // { headerName: "작업지시코드", field: "work_id", sortable: false, editable: false, filter: "agTextColumnFilter", align:"center", width:140 },
         // { headerName: "제품코드", field: "item_code", sortable: false, editable: false, filter: "agTextColumnFilter", align:"left" },
         { headerName: "공정명", field: "process_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center"},
-        { headerName: "제품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", width:300 },
+        { headerName: "제품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", width:300},
         // { headerName: "지시시간", field: "range", sortable: true, editable: false, align:"left",width:220 },
         { headerName: "작업시작", field: "start_dttm", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center",width:120},
-        { headerName: "작업종료", field: "end_dttm", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center",width:120},
+        { headerName: "작업종료", field: "end_dttm", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center",width:120,
+          cellRendererSelector: (params) => {
+            if (params.node.rowPinned) {
+              return {
+                component: ()=>{
+                  return (
+                    <span>합계</span>
+                  );
+                }
+              };
+            }
+            return undefined;
+          },
+          
+        },
         { headerName: "지시수량", field: "order_qty", sortable: false, editable: false, align:"right", cellDataType:'number', width:70,
           valueFormatter:(params)=> moneyFormatter(params)
         },
@@ -205,6 +299,8 @@ const Main = ({ props={}, isActive }) => {
   },[isActive]);
 
 
+
+
   const getData = (params) => {
     console.log("getData");
 
@@ -219,6 +315,8 @@ const Main = ({ props={}, isActive }) => {
       } 
 
       setRowData(res.data);
+
+      
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
@@ -250,6 +348,36 @@ const Main = ({ props={}, isActive }) => {
     .post(`/api/getWorkResult`, JSON.stringify(searchRef.current))
     .then((res) => {
       setRowData2(res.data);
+
+      const order_arr = [];
+      const result_arr = [];
+      const defect_arr = [];
+
+      res.data.forEach((node) => {
+        if (node && node["order_qty"] != null) {
+          order_arr.push(node["order_qty"]);
+        }
+        if (node && node["result_qty"] != null) {
+          result_arr.push(node["result_qty"]);
+        }
+        if (node && node["defect_qty"] != null) {
+          defect_arr.push(node["defect_qty"]);
+        }
+      });
+
+      console.log(order_arr);
+      console.log(result_arr);
+      console.log(defect_arr);
+
+      setPinnedBottomRowData([
+        {
+          start_dttm: '',
+          end_dttm: '',
+          order_qty: order_arr.reduce((sum, current) => sum + Number(current), 0),
+          result_qty: result_arr.reduce((sum, current) => sum + Number(current), 0),
+          defect_qty: defect_arr.reduce((sum, current) => sum + Number(current), 0),
+        }
+      ]);
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
@@ -276,7 +404,7 @@ const Main = ({ props={}, isActive }) => {
                 <tr>
 
                   <th className="bg-light text-end align-middle">생산월</th>
-                  <td className="">
+                  {/* <td className="">
                     <div className="d-flex gap-2 align-items-center">
                       <Form.Control 
                         type="month"
@@ -310,6 +438,37 @@ const Main = ({ props={}, isActive }) => {
                         maxLength={50}
                         hidden
                       />
+                    </div>
+                  </td> */}
+                  <td className="">
+                    <div className="d-flex gap-2 align-items-center">
+                      <Form.Control 
+                        type="date"
+                        name="start_date"
+                        value={searchForm.start_date}
+                        onChange={searchFormChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder=""
+                        maxLength={50}
+                      />
+                      <span className="fw-bold"> ~ </span>
+                      <Form.Control 
+                        type="date"
+                        name="end_date"
+                        value={searchForm.end_date}
+                        onChange={searchFormChange}
+                        onKeyUp={(e)=>{if(e.code === 'Enter') getData()}}
+                        size="sm" 
+                        className="w-auto"
+                        placeholder=""
+                        maxLength={50}
+                      />
+                      <Button size="sm" variant="secondary" onClick={()=> { changeDate(0); }}>당일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { changeDate(-3); }}>3일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { changeDate(-7); }}>7일</Button>
+                      <Button size="sm" variant="secondary" onClick={()=> { changeDate(-30); }}>30일</Button>
                     </div>
                   </td>
 
@@ -390,6 +549,7 @@ const Main = ({ props={}, isActive }) => {
               rowNum={true}
               rowSel={"singleRow"}
               pagination={true}
+              pinnedBottomRowData={pinnedBottomRowData} 
             />
           </Col>
 

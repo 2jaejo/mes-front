@@ -114,8 +114,8 @@ const Main = () => {
       setColumnDefs([
         { headerName: "검사일", field: "chk_date", align:"center" },
         { headerName: "검사시간", field: "chk_time", align:"center" },
-        { headerName: "품명", field: "item_name", align:"left", minWidth:300 },
-        { headerName: "공정", field: "process_name", align:"center" },
+        { headerName: "품명", field: "item_name", align:"left", filter: "agTextColumnFilter", minWidth:300 },
+        { headerName: "공정", field: "process_name", align:"center", filter: "agTextColumnFilter" },
         { headerName: "비고", field: "chk_remarks", align:"left", width:300 },
 
         { headerName: "냉각수 온도(℃)", field: "temp_water", sortable:false, align:"right"},

@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axiosInstance from "utils/Axios";
 
 
-const Main = ({ info, items, items2, items3, items4 }) => {
+const Main = ({ info, items, items2, items3, items4, items5 }) => {
   // const mst = useRef(props.current);
   // const [info, setInfo] = useState(null);
   // const [items, setItems] = useState([]);
@@ -57,18 +57,25 @@ const Main = ({ info, items, items2, items3, items4 }) => {
     const total = (items || []).reduce((sum, i) => sum + i.total_price, 0);
     setPriceSum(total);
   }, [items]);
-
+  
+  useEffect(() => {
+    
+  }, [items2]);
   // if (!order) return <div className="p-4">로딩중...</div>;
 
+  // {JSON.stringify(info) || ""}
+  // {JSON.stringify(items) || ""}
+  // {JSON.stringify(items2) || ""}
+  // {JSON.stringify(items3) || ""}
+  // {JSON.stringify(items4) || ""} 
+  
   return (
     <div className="wrap p-4">
       <h1 className="title py-2 fw-bolder" style={{ letterSpacing:'10px', fontSize: '34px', textAlign:'center'}}>일일생산일보</h1>
 
-      {JSON.stringify(info) || ""}
-      {JSON.stringify(items) || ""}
-      {JSON.stringify(items2) || ""}
-      {JSON.stringify(items3) || ""}
-      {JSON.stringify(items4) || ""}
+       
+        
+      
 
 
       {/* 발주서 헤더 */}
@@ -100,7 +107,7 @@ const Main = ({ info, items, items2, items3, items4 }) => {
           <tr>
         
             <th className="py-1">날짜</th>
-            <td className="py-1">{today}</td>
+            <td className="py-1">{info}</td>
             <th className="py-1">전화</th>
             <td className="py-1">031-941-1540</td>
           </tr>
@@ -149,23 +156,23 @@ const Main = ({ info, items, items2, items3, items4 }) => {
           </tr>
         </thead>
         <tbody>
-          {items && items.map((item, idx) => (
+          {items2 && items2.map((item, idx) => (
             <tr key={idx}>
               <td className="py-1 text-center">{idx + 1}</td>
-              <td className="py-1 ">{item.raw_name}</td>
-              <td className="py-1 text-center">{item.due_date}</td>
-              <td className="py-1 text-center">{item.unit_size}</td>
-              <td className="py-1 text-end">{item.quantity?.toLocaleString()}</td>
-              <td className="py-1 text-end">{item.unit_price?.toLocaleString()}</td>
-              <td className="py-1 text-end">{item.total_price?.toLocaleString()}</td>
-              <td>{item.remarks}</td>
-              <td>{item.remarks}</td>
+              <td className="py-1 ">{item.process_name}</td>
+              <td className="py-1 text-center">{item.item_name}</td>
+              <td className="py-1 text-center">{item.start_dttm}</td>
+              <td className="py-1 text-end">{item.end_dttm}</td>
+              <td className="py-1 text-end">{item.order_qty}</td>
+              <td className="py-1 text-end">{item.result_qty}</td>
+              <td className="py-1 text-end">{item.defect_qty}</td>
+              <td className="py-1 text-start">{item.remark}</td>
             </tr>
           ))}
 
-          {items && [...Array((Array.isArray(items) ? items.length : 0) < 3 ? 3 - (Array.isArray(items) ? items.length : 0) : 0)].map((_, idx) => (
-            <tr key={items.length + idx}>
-              <td className="py-1 text-center">{items.length + idx + 1}</td>
+          {items2 && [...Array((Array.isArray(items2) ? items2.length : 0) < 3 ? 3 - (Array.isArray(items2) ? items2.length : 0) : 0)].map((_, idx) => (
+            <tr key={items2.length + idx}>
+              <td className="py-1 text-center">{items2.length + idx + 1}</td>
               <td className="py-1"></td>
               <td className="py-1"></td>
               <td className="py-1 text-end"></td>
@@ -207,20 +214,20 @@ const Main = ({ info, items, items2, items3, items4 }) => {
           </tr>
         </thead>
         <tbody>
-          {items2 && items2.map((item, idx) => (
+          {items3 && items3.map((item, idx) => (
             <tr key={idx}>
               <td className="py-1 text-center">{idx + 1}</td>
-              <td className="py-1 ">{item.raw_name}</td>
-              <td className="py-1 text-center">{item.due_date}</td>
-              <td className="py-1 text-center">{item.unit_size}</td>
-              <td className="py-1 text-end">{item.quantity?.toLocaleString()}</td>
-              <td className="py-1 text-end">{item.unit_price?.toLocaleString()}</td>
+              <td className="py-1 ">{item.bar_code}</td>
+              <td className="py-1 text-center">{item.item_dotno}</td>
+              <td className="py-1 text-center">{item.item_name}</td>
+              <td className="py-1 text-end">{item.quantity}</td>
+              <td className="py-1 text-end">{item.remark}</td>
             </tr>
           ))}
 
-          {items2 && [...Array((Array.isArray(items2) ? items2.length : 0) < 3 ? 3 - (Array.isArray(items2) ? items2.length : 0) : 0)].map((_, idx) => (
-            <tr key={items2.length + idx}>
-              <td className="py-1 text-center">{items2.length + idx + 1}</td>
+          {items3 && [...Array((Array.isArray(items3) ? items3.length : 0) < 3 ? 3 - (Array.isArray(items3) ? items3.length : 0) : 0)].map((_, idx) => (
+            <tr key={items3.length + idx}>
+              <td className="py-1 text-center">{items3.length + idx + 1}</td>
               <td className="py-1"></td>
               <td className="py-1"></td>
               <td className="py-1 text-end"></td>
@@ -257,35 +264,32 @@ const Main = ({ info, items, items2, items3, items4 }) => {
             <th className="py-1 text-center" style={{minWidth:'6rem'}}>자재명</th>
             <th className="py-1 text-center" style={{minWidth:'3rem'}}>입/출고</th>
             <th className="py-1 text-center" style={{minWidth:'3rem'}}>변경수량</th>
-            <th className="py-1 text-center" style={{minWidth:'3rem'}}>환산후 변경수량</th>
             <th className="py-1 text-center" style={{minWidth:'6rem'}}>비고</th>
           </tr>
         </thead>
         <tbody>
-          {items3 && items3.map((item, idx) => (
+          {items4 && items4.map((item, idx) => (
             <tr key={idx}>
               <td className="py-1 text-center">{idx + 1}</td>
-              <td className="py-1 ">{item.raw_name}</td>
-              <td className="py-1 text-center">{item.due_date}</td>
-              <td className="py-1 text-center">{item.unit_size}</td>
-              <td className="py-1 text-end">{item.quantity?.toLocaleString()}</td>
-              <td className="py-1 text-end">{item.unit_price?.toLocaleString()}</td>
-              <td className="py-1 text-end">{item.total_price?.toLocaleString()}</td>
-              <td>{item.remarks}</td>
+              <td className="py-1 ">{item.receipt_date}</td>
+              <td className="py-1 text-center">{item.receipt_id}</td>
+              <td className="py-1 text-center">{item.raw_code}</td>
+              <td className="py-1 text-end">{item.raw_name}</td>
+              <td className="py-1 text-center">{item.change_type == 'IN' ? '입고' : '출고'}</td>
+              <td className="py-1 text-end">{item.changed_quantity}</td>
               <td>{item.remarks}</td>
             </tr>
           ))}
 
-          {items3 && [...Array((Array.isArray(items3) ? items3.length : 0) < 3 ? 3 - (Array.isArray(items3) ? items3.length : 0) : 0)].map((_, idx) => (
-            <tr key={items3.length + idx}>
-              <td className="py-1 text-center">{items3.length + idx + 1}</td>
+          {items4 && [...Array((Array.isArray(items4) ? items4.length : 0) < 3 ? 3 - (Array.isArray(items4) ? items4.length : 0) : 0)].map((_, idx) => (
+            <tr key={items4.length + idx}>
+              <td className="py-1 text-center">{items4.length + idx + 1}</td>
               <td className="py-1"></td>
               <td className="py-1"></td>
               <td className="py-1 text-end"></td>
               <td className="py-1"></td>
               <td className="py-1 text-end"></td>
               <td className="py-1 text-end"></td>
-              <td className="py-1"></td>
               <td className="py-1"></td>
             </tr>
           ))}
@@ -311,8 +315,8 @@ const Main = ({ info, items, items2, items3, items4 }) => {
         <tbody>
           <tr>
             <td className="text-start h-100">
-              <div style={{minHeight:80, height:'100%'}}>
-                <textarea style={{width:'100%', height:'100%', border:'none', resize:'none', outline:'none'}} readOnly value={items4 || "123"} />
+              <div style={{minHeight:40, height:'100%'}}>
+                <textarea style={{width:'100%', height:'100%', border:'none', resize:'none', outline:'none'}} readOnly value={items5 || ""} />
               </div>
             </td>
           </tr>

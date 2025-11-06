@@ -12,7 +12,7 @@ import SearchableDropdown from "components/SearchableDropdown";
 
 import PrintProductionDayPage from "components/PrintProductionDayPage";
 import { useReactToPrint } from "react-to-print"
-import { get } from "lodash";
+import { get, set } from "lodash";
 
 const Main = ({ props={}, isActive }) => {
 
@@ -49,23 +49,18 @@ const Main = ({ props={}, isActive }) => {
   const printRef = useRef();
   const [printState, setPrintState] = useState({});
   const [printOrder, setPrintOrder] = useState();
+  
   const [printItems, setPrintItems] = useState();
   const [printItems2, setPrintItems2] = useState();
   const [printItems3, setPrintItems3] = useState();
   const [printItems4, setPrintItems4] = useState();
+  const [printItems5, setPrintItems5] = useState();
 
   const reactToPrintFn = useReactToPrint({ contentRef });
 
   const print = () => {
     console.log("print");
 
-    console.log(printRef.current);
-    console.log(printOrder);
-    console.log(printItems);
-
-    console.log(printItems2);
-    console.log(printItems3);
-    console.log(printItems4);
 
     // const rows = gridRef2.current.getSelectedRows();
     // if(rows.length <= 0) {
@@ -147,6 +142,16 @@ const Main = ({ props={}, isActive }) => {
       console.log(selectedRows);
     });
 
+    // 정렬 변경 이벤트
+    params.api.addEventListener("sortChanged", (ev) => {
+      console.log("sortChanged");
+      const newSortedData = [];
+      params.api.forEachNodeAfterFilterAndSort((node) => newSortedData.push(node.data));
+
+      // rowData를 새 정렬 순서로 갱신
+      setPrintItems2([...newSortedData]);
+    });
+
   };
   // 그리드 설정3
   const gridRef3 = useRef();  
@@ -177,6 +182,16 @@ const Main = ({ props={}, isActive }) => {
       
       const selectedRows = params.api.getSelectedRows();
       console.log(selectedRows);
+    });
+
+    // 정렬 변경 이벤트
+    params.api.addEventListener("sortChanged", (ev) => {
+      console.log("sortChanged");
+      const newSortedData = [];
+      params.api.forEachNodeAfterFilterAndSort((node) => newSortedData.push(node.data));
+
+      // rowData를 새 정렬 순서로 갱신
+      setPrintItems3([...newSortedData]);
     });
 
   };
@@ -210,6 +225,16 @@ const Main = ({ props={}, isActive }) => {
       
       const selectedRows = params.api.getSelectedRows();
       console.log(selectedRows);
+    });
+
+    // 정렬 변경 이벤트
+    params.api.addEventListener("sortChanged", (ev) => {
+      console.log("sortChanged");
+      const newSortedData = [];
+      params.api.forEachNodeAfterFilterAndSort((node) => newSortedData.push(node.data));
+
+      // rowData를 새 정렬 순서로 갱신
+      setPrintItems4([...newSortedData]);
     });
 
   };
@@ -567,7 +592,7 @@ const Main = ({ props={}, isActive }) => {
               {/* <Button size="sm" variant="secondary" onClick={exportExcel}>csv 다운로드</Button> */}
               <Button size="sm" variant="secondary" onClick={print}>일일생산일보 인쇄</Button>
               <div className="print-only" ref={contentRef}>
-                <PrintProductionDayPage info={printOrder} items={printItems2} items2={printItems3} items3={printItems4} item4={printItems4} />
+                <PrintProductionDayPage info={searchRef.current.month} items={printItems} items2={printItems2} items3={printItems3} items4={printItems4} items5={printItems5} />
               </div>
 
             </div>
@@ -649,8 +674,8 @@ const Main = ({ props={}, isActive }) => {
                   as="textarea"
                   rows={7}
                   placeholder="여기에 입력하세요..."
-                  value={printItems4}
-                  onChange={(e) => setPrintItems4(e.target.value)}
+                  value={printItems5}
+                  onChange={(e) => setPrintItems5(e.target.value)}
                   style={{ resize: "none" }} // 크기 조절 불가능
                 />
               </Form.Group>

@@ -114,6 +114,7 @@ const Main = () => {
       setColumnDefs([
         { headerName: "검사일", field: "chk_date", sortable: true, editable: false, align:"center" },
         { headerName: "검사시간", field: "chk_time", sortable: true, editable: false, align:"center" },
+        { headerName: "공정", field: "process_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left"},
         { headerName: "품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
         { headerName: "검사자", field: "chk_user", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left"},
         { headerName: "검사결과", field: "chk_status", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
@@ -202,6 +203,7 @@ const Main = () => {
     const [options2, setOptions2] = useState([]);
     const [selectedName2, setSelectedName2] = useState('');
     const [selectedValue2, setSelectedValue2] = useState('');
+    
     const handleSelect2 = (option, type="sel") => {
       setSelectedName2(option.name);
       setSelectedValue2(option.value);
@@ -220,6 +222,40 @@ const Main = () => {
           }));
           
           setOptions2(newData);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+        })
+        .finally(() =>{
+          // setBarcode('');
+
+        });
+
+    },[]);
+
+    const [options3, setOptions3] = useState([]);
+    const [selectedName3, setSelectedName3] = useState('');
+    const [selectedValue3, setSelectedValue3] = useState('');
+
+    const handleSelect3 = (option, type="sel") => {
+      setSelectedName3(option.name);
+      setSelectedValue3(option.value);
+      modalFormChange({target:{name:'chk_process', value:option.process_name}});
+    };
+
+    useEffect(()=>{
+      axiosInstance
+        .post(`/api/getProcess`, JSON.stringify({type:'list'}))
+        .then((res) => {
+
+          const newData = res.data.map(el => ({
+            ...el,
+            name : `[${el.process_code}] ${el.process_name}`,
+            value: `${el.process_code}`
+          }));
+          
+          setOptions3(newData);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -262,6 +298,19 @@ const Main = () => {
                     maxLength={1}
                   />
                 </div>
+              </td>
+            </tr>
+
+            <tr>
+              <th className="bg-light text-end align-middle">공정</th>
+              <td>
+                <SearchableDropdown
+                  options={options3}
+                  selected={selectedName3}
+                  onSelect={handleSelect3}
+                  title={"공정 선택"}
+                  size="sm"
+                />
               </td>
             </tr>
 
@@ -381,6 +430,11 @@ const Main = () => {
 
         if(formRef.current.chk_date === "" || formRef.current.chk_date === undefined || formRef.current.chk_time === "" || formRef.current.chk_time === undefined){
           modalRef2.current.open({ title:"알림", message:"검사일시를 입력하세요.", cancelText:"" });
+          return;
+        }
+
+        if(formRef.current.chk_process === "" || formRef.current.chk_process === undefined){
+          modalRef2.current.open({ title:"알림", message:"공정을 선택하세요.", cancelText:"" });
           return;
         }
 

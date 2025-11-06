@@ -283,13 +283,15 @@ const Main = ({ props={}, isModal=false }) => {
           },
           valueFormatter: (params) => moneyFormatter(params)
         },
-        // { headerName: "수주상태", field: "status", sortable: true, editable: (params) => !params.node.rowPinned, filter: "agTextColumnFilter",  align:"center",
-        //   cellEditor: "agSelectCellEditor",
-        //   cellEditorParams: {
-        //     values: selectBox.current.common?.['cd012']?.map((item) => item.code) ?? [],
-        //   },
-        //   valueFormatter: (params) => commonTypeFormatter(params, 'cd012'),
-        // },
+        { headerName: "수주상태", field: "status", sortable: false, editable: false, filter: "agTextColumnFilter",  align:"center",
+          valueFormatter: (params) => {
+            if (params.node.rowPinned) {
+              return '';
+            }
+
+            return params.value === '1' ? '진행' : '마감';
+          },
+        },
         { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter",  align:"left"},
         { headerName: "수정일", field: "updated_at", sortable: true, editable: false, filter: "agDateColumnFilter",  align:"center", width:120},
@@ -448,7 +450,7 @@ const Main = ({ props={}, isModal=false }) => {
     , purchase_id : ''
     , client_code : ''
     , client_name : ''
-    , status : ''
+    , status : '1'
   });
 
 
@@ -633,7 +635,11 @@ const Main = ({ props={}, isModal=false }) => {
   const delData = (params) => {
     console.log("delData");
     const sel_rows = gridRef.current.getSelectedRows();
-    console.log(sel_rows);
+    
+    if(sel_rows.length === 0) {
+      modalRef.current.open({ title:"알림", message:"선택된 항목이 없습니다.", cancelText:"" });
+      return;
+    }
 
     modalRef.current.open({
       title: "수주 삭제",
@@ -647,6 +653,41 @@ const Main = ({ props={}, isModal=false }) => {
 
         axiosInstance
           .post(`/api/delSalesOrder`, JSON.stringify(sel_rows))
+          .then((res) => {
+            getData();
+            modalRef.current.close();
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            modalRef2.current.open({ title:"알림", message:error.message, cancelText:"" });
+          });   
+
+      },
+    });
+
+  };
+
+  const closeSalesOrder = (params) => {
+    console.log("closeSalesOrder");
+
+    const sel_rows = gridRef.current.getSelectedRows();
+    if(sel_rows.length === 0) {
+      modalRef.current.open({ title:"알림", message:"선택된 항목이 없습니다.", cancelText:"" });
+      return;
+    }
+
+    modalRef.current.open({
+      title: "수주 마감",
+      message: "마감하시겠습니까?",
+      onCancel: ()=>{
+        modalRef.current.close();
+      },
+      confirmText:"마감",
+      confirmClass:"btn btn-danger",
+      onConfirm: (res) => {
+
+        axiosInstance
+          .post(`/api/closeSalesOrder`, JSON.stringify(sel_rows))
           .then((res) => {
             getData();
             modalRef.current.close();
@@ -742,6 +783,24 @@ const Main = ({ props={}, isModal=false }) => {
                         maxLength={50}
                       />
                   </td>
+
+                  <th className="bg-light text-end align-middle">상태</th>
+                  <td className="">
+                    <Form.Select 
+                      name="status" 
+                      value={form.status} 
+                      onChange={handleChange}
+                      size="sm"
+                      className="w-auto"
+                      style={{minWidth:100}}
+                    >
+                      <option value="1" selected={true}>진행</option>
+                      <option value="2">마감</option>
+                      <option value="">전체</option>
+                      
+                    </Form.Select>               
+                  </td>
+
                   <th className="bg-light text-end align-middle">거래처</th>
                   <td className="">
                     <div className="d-flex gap-2">
@@ -790,6 +849,7 @@ const Main = ({ props={}, isModal=false }) => {
                 <>
                   <Button size="sm" variant="success" onClick={addData}>추가</Button>
                   <Button size="sm" variant="danger" onClick={delData}>삭제</Button>
+                  <Button size="sm" variant="danger" onClick={closeSalesOrder}>수주마감</Button>
                 </>
               }
             </div>

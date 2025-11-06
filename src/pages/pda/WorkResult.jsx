@@ -686,6 +686,361 @@ const Main = ({ props={}, isActive}) => {
 
       </div>
 
+
+
+      {/* 제품검사기록 */}
+      {/* <div className="bg-light w-100">
+        <Row className="h-100">
+          <Col className="h-100 d-flex flex-column gap-2">
+            <div className="d-flex gap-2">
+              <span className="pt-2 fw-bold ">작업 수량</span>
+            </div>
+      
+            <Table bordered hover style={{ width: '100%' }} className="m-0">
+         
+              <tbody>
+                <tr>
+                  <th width="30%" className=" bg-light text-end align-middle">지시수량</th>
+                  <td width="auto" className="align-middle">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="number"
+                        name="order_qty"
+                        value={modalForm.order_qty ?? ""}
+                        onChange={modalFormChange}
+                        size="sm" 
+                        className="w-50"
+                        maxLength={50}
+                        disabled={true}
+                      />
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th className=" bg-light text-end align-middle">양품수량</th>
+                  <td className="align-middle">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="number"
+                        name="result_qty"
+                        value={modalForm.result_qty ?? ""}
+                        onChange={modalFormChange}
+                        onKeyUp={((e)=>{
+                          if(e.code === 'Enter'){
+                            e.target.blur();
+                            setQty("result_qty");
+                          }
+                        })}
+                        size="sm" 
+                        className="w-50"
+                      />
+                      <Button size="sm" variant="primary" onClick={()=>setQty("result_qty")}>적용</Button>
+                      {modalForm.process_code.includes('RT1') && 
+                        <Button size="sm" variant="outline-primary" onClick={getData2} disabled={sheetLoading}>
+                          
+                          {sheetLoading ? (
+                            <>
+                              <Spinner size="sm" className="" />
+                            </>
+                          ) : (
+                            <>
+                              <i className="bi bi-cloud-download"></i>
+                            </>
+                          )}
+                        </Button>
+                      }
+
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th className=" bg-light text-end align-middle">불량(g)</th>
+                  <td className="align-middle">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="number"
+                        name="defect_qty"
+                        value={modalForm.defect_qty ?? ""}
+                        onChange={modalFormChange}
+                        onKeyUp={((e)=>{
+
+                          if(e.code === 'Enter'){
+                            e.target.blur();
+                            setQty("defect_qty");
+                          }
+                        })}
+                        size="sm" 
+                        className="w-50"
+                        maxLength={50}
+                      />
+                      <Button size="sm" variant="primary" onClick={()=>setQty("defect_qty")}>적용</Button>
+
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th className=" bg-light text-end align-middle">불량사유</th>
+                  <td className="align-middle">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="text"
+                        name="remark"
+                        value={modalForm.remark ?? ""}
+                        onChange={modalFormChange}
+                        onKeyUp={((e)=>{
+                          if(e.code === 'Enter'){
+                            e.target.blur();
+                            setQty("remark");
+                          }
+                        })}
+                        size="sm" 
+                        className="w-50"
+                        maxLength={50}
+                      />
+                      <Button size="sm" variant="primary" onClick={()=>setQty("remark")}>적용</Button>
+
+                    </div>
+                  </td>
+                  
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">시작시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="start_dttm"
+                      value={modalForm.start_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
+                </tr>
+                <tr>  
+                  <th className="bg-light text-end align-middle">생산시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="product_dttm"
+                      value={modalForm.product_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      maxLength={50}
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">종료시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="end_dttm"
+                      value={modalForm.end_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      maxLength={50}
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+
+          </Col>
+        </Row>
+      </div>    */}
+
+
+
+      {/* 공정관리기록 */}
+      {/* <div className="bg-light w-100">
+        <Row className="h-100">
+          <Col className="h-100 d-flex flex-column gap-2">
+            <div className="d-flex gap-2">
+              <span className="pt-2 fw-bold ">작업 수량</span>
+            </div>
+      
+            <Table bordered hover style={{ width: '100%' }} className="m-0">
+         
+              <tbody>
+                <tr>
+                  <th width="30%" className=" bg-light text-end align-middle">지시수량</th>
+                  <td width="auto" className="align-middle">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="number"
+                        name="order_qty"
+                        value={modalForm.order_qty ?? ""}
+                        onChange={modalFormChange}
+                        size="sm" 
+                        className="w-50"
+                        maxLength={50}
+                        disabled={true}
+                      />
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th className=" bg-light text-end align-middle">양품수량</th>
+                  <td className="align-middle">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="number"
+                        name="result_qty"
+                        value={modalForm.result_qty ?? ""}
+                        onChange={modalFormChange}
+                        onKeyUp={((e)=>{
+                          if(e.code === 'Enter'){
+                            e.target.blur();
+                            setQty("result_qty");
+                          }
+                        })}
+                        size="sm" 
+                        className="w-50"
+                      />
+                      <Button size="sm" variant="primary" onClick={()=>setQty("result_qty")}>적용</Button>
+                      {modalForm.process_code.includes('RT1') && 
+                        <Button size="sm" variant="outline-primary" onClick={getData2} disabled={sheetLoading}>
+                          
+                          {sheetLoading ? (
+                            <>
+                              <Spinner size="sm" className="" />
+                            </>
+                          ) : (
+                            <>
+                              <i className="bi bi-cloud-download"></i>
+                            </>
+                          )}
+                        </Button>
+                      }
+
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th className=" bg-light text-end align-middle">불량(g)</th>
+                  <td className="align-middle">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="number"
+                        name="defect_qty"
+                        value={modalForm.defect_qty ?? ""}
+                        onChange={modalFormChange}
+                        onKeyUp={((e)=>{
+
+                          if(e.code === 'Enter'){
+                            e.target.blur();
+                            setQty("defect_qty");
+                          }
+                        })}
+                        size="sm" 
+                        className="w-50"
+                        maxLength={50}
+                      />
+                      <Button size="sm" variant="primary" onClick={()=>setQty("defect_qty")}>적용</Button>
+
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th className=" bg-light text-end align-middle">불량사유</th>
+                  <td className="align-middle">
+                    <div className="d-flex gap-2">
+                      <Form.Control 
+                        type="text"
+                        name="remark"
+                        value={modalForm.remark ?? ""}
+                        onChange={modalFormChange}
+                        onKeyUp={((e)=>{
+                          if(e.code === 'Enter'){
+                            e.target.blur();
+                            setQty("remark");
+                          }
+                        })}
+                        size="sm" 
+                        className="w-50"
+                        maxLength={50}
+                      />
+                      <Button size="sm" variant="primary" onClick={()=>setQty("remark")}>적용</Button>
+
+                    </div>
+                  </td>
+                  
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">시작시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="start_dttm"
+                      value={modalForm.start_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
+                </tr>
+                <tr>  
+                  <th className="bg-light text-end align-middle">생산시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="product_dttm"
+                      value={modalForm.product_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      maxLength={50}
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th className="bg-light text-end align-middle">종료시간</th>
+                  <td className="align-middle">
+                    <div className="">
+                      <Form.Control 
+                      type="text"
+                      name="end_dttm"
+                      value={modalForm.end_dttm ?? ""}
+                      onChange={modalFormChange}
+                      size="sm" 
+                      className="w-100"
+                      maxLength={50}
+                      disabled={true}
+                    />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+
+          </Col>
+        </Row>
+      </div>    */}
+
+
     </div>
   );
 }

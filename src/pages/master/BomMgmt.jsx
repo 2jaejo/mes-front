@@ -303,7 +303,8 @@ const Main = () => {
     console.log("addData");
 
     const rows = gridRef.current.getSelectedRows();
-    if(rows[0].item_dotno === null){
+
+    if(!rows || rows.length === 0) {
       modalRef2.current.open({ title:"알림", message:"품목을 선택하세요.", cancelText:"" });
       return;
     }

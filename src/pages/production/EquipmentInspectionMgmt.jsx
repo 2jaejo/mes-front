@@ -5,7 +5,7 @@ import axiosInstance from "utils/Axios";
 import GridExample from "components/GridExample";
 import Modal from "components/Modal";
 import { ContentSteeringController } from "hls.js";
-
+import { MainContentStyle } from "css/CommonStyle";
 
 const Main = () => {
   const modalRef = useRef();  
