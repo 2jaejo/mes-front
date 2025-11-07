@@ -117,7 +117,10 @@ const Main = () => {
         { headerName: "공정", field: "process_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left"},
         { headerName: "품명", field: "item_name", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", minWidth:300 },
         { headerName: "검사자", field: "chk_user", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left"},
-        { headerName: "검사결과", field: "chk_status", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        // { headerName: "검사결과", field: "chk_status", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center" },
+        { headerName: "내경(mm)", field: "chk_diameter", sortable: true, editable: false, align:"center", width:120, align:"right" },
+        { headerName: "길이(mm)", field: "chk_length", sortable: true, editable: false, align:"center", width:120, align:"right" },
+        { headerName: "중량(g)", field: "chk_weight", sortable: true, editable: false, align:"center", width:120, align:"right" },
         { headerName: "비고", field: "chk_remarks", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left", width:300 },
         { headerName: "등록일", field: "created_at", sortable: true, editable: false, filter: "agTextColumnFilter", align:"center", width:120 },
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left" },
@@ -241,7 +244,7 @@ const Main = () => {
     const handleSelect3 = (option, type="sel") => {
       setSelectedName3(option.name);
       setSelectedValue3(option.value);
-      modalFormChange({target:{name:'chk_process', value:option.process_name}});
+      modalFormChange({target:{name:'chk_process', value:option.process_code}});
     };
 
     useEffect(()=>{
@@ -272,7 +275,7 @@ const Main = () => {
 
 
     return (
-      <div style={{ height: '30vh', width:'30vw', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: '40vh', width:'30vw', display: 'flex', flexDirection: 'column' }}>
         <Table bordered style={{ width: '100%', tableLayout: 'auto' }} className="m-0">
           <tbody>
             <tr>
@@ -341,7 +344,7 @@ const Main = () => {
             </tr>
 
             
-            <tr>
+            {/* <tr>
               <th className="bg-light text-end align-middle">상태</th>
               <td>
                 <Form.Select 
@@ -356,6 +359,52 @@ const Main = () => {
                   <option value="N">불합격</option>
                   
                 </Form.Select>
+              </td>
+              
+            </tr> */}
+
+            <tr>
+              <th className="bg-light text-end align-middle">내경(mm)</th>
+              <td>
+                <Form.Control 
+                  type="text"
+                  name="chk_diameter"
+                  value={modalForm.chk_diameter ?? ''}
+                  onChange={modalFormChange}
+                  size="sm" 
+                  className="w-100"
+                  maxLength={100}
+                />
+              </td>
+              
+            </tr>
+            <tr>
+              <th className="bg-light text-end align-middle">길이(mm)</th>
+              <td>
+                <Form.Control 
+                  type="text"
+                  name="chk_length"
+                  value={modalForm.chk_length ?? ''}
+                  onChange={modalFormChange}
+                  size="sm" 
+                  className="w-100"
+                  maxLength={100}
+                />
+              </td>
+              
+            </tr>
+            <tr>
+              <th className="bg-light text-end align-middle">중량(g)</th>
+              <td>
+                <Form.Control 
+                  type="text"
+                  name="chk_weight"
+                  value={modalForm.chk_weight ?? ''}
+                  onChange={modalFormChange}
+                  size="sm" 
+                  className="w-100"
+                  maxLength={100}
+                />
               </td>
               
             </tr>
@@ -448,8 +497,10 @@ const Main = () => {
           return;
         }
 
-        if(formRef.current.chk_status === "" || formRef.current.chk_status === undefined){
-          modalRef2.current.open({ title:"알림", message:"검사상태를 선택하세요.", cancelText:"" });
+        if(formRef.current.chk_diameter === "" || formRef.current.chk_diameter === undefined ||
+          formRef.current.chk_length === "" || formRef.current.chk_length === undefined ||
+          formRef.current.chk_weight === "" || formRef.current.chk_weight === undefined){
+          modalRef2.current.open({ title:"알림", message:"제품 측정값을 입력하세요.", cancelText:"" });
           return;
         }
         

@@ -116,6 +116,7 @@ const Main = () => {
         { headerName: "검사시간", field: "chk_time", align:"center" },
         { headerName: "품명", field: "item_name", align:"left", filter: "agTextColumnFilter", minWidth:300 },
         { headerName: "공정", field: "process_name", align:"center", filter: "agTextColumnFilter" },
+        { headerName: "검사자", field: "chk_user", align:"center", filter: "agTextColumnFilter" },
         { headerName: "비고", field: "chk_remarks", align:"left", width:300 },
 
         { headerName: "냉각수 온도(℃)", field: "temp_water", sortable:false, align:"right"},
@@ -127,7 +128,7 @@ const Main = () => {
         { headerName: "스크류 속도(rpm)", field: "speed_screw", sortable:false, align:"right", width:120},
         { headerName: "인출기 속도(rpm)", field: "speed_out", sortable:false, align:"right", width:120},
         { headerName: "컷팅기 속도(rpm)", field: "speed_cut", sortable:false, align:"right", width:120},
-        { headerName: "다이스 간격(mm)", field: "interval_dies", sortable:false, align:"right", width:120},
+        { headerName: "에어플로우메타(lpm)", field: "interval_dies", sortable:false, align:"right", width:140},
         
         { headerName: "등록일", field: "created_at", align:"center", width:120 },
         { headerName: "등록자", field: "created_by", align:"left" },
@@ -189,6 +190,7 @@ const Main = () => {
     const [options, setOptions] = useState([]);
     const [selectedName, setSelectedName] = useState('');
     const [selectedValue, setSelectedValue] = useState('');
+
     const handleSelect = (option, type="sel") => {
       setSelectedName(option.name);
       setSelectedValue(option.value);
@@ -222,6 +224,7 @@ const Main = () => {
     const [options2, setOptions2] = useState([]);
     const [selectedName2, setSelectedName2] = useState('');
     const [selectedValue2, setSelectedValue2] = useState('');
+
     const handleSelect2 = (option, type="sel") => {
       setSelectedName2(option.name);
       setSelectedValue2(option.value);
@@ -237,6 +240,41 @@ const Main = () => {
             ...el,
             name : `${el.process_name}`,
             value: `${el.process_code}`
+          }));
+          
+          setOptions2(newData);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          modalRef.current.open({ title:"오류", message:error.message, cancelText:"" });
+        })
+        .finally(() =>{
+          // setBarcode('');
+
+        });
+
+    },[]);
+
+
+    const [options3, setOptions3] = useState([]);
+    const [selectedName3, setSelectedName3] = useState('');
+    const [selectedValue3, setSelectedValue3] = useState('');
+
+    const handleSelect3 = (option, type="sel") => {
+      setSelectedName3(option.name);
+      setSelectedValue3(option.value);
+      modalFormChange({target:{name:'chk_user', value:option.user_nm}});
+    };
+
+    useEffect(()=>{
+      axiosInstance
+        .post(`/users/getUsers`, JSON.stringify({grade:'8'}))
+        .then((res) => {
+          
+          const newData = res.data.map(el => ({
+            ...el,
+            name : `[${el.user_id}] ${el.user_nm}`,
+            value: `${el.user_nm}`
           }));
           
           setOptions2(newData);
@@ -312,6 +350,21 @@ const Main = () => {
                   selected={selectedName2}
                   onSelect={handleSelect2}
                   title={"공정 선택"}
+                  size="sm"
+                />
+              </td>
+              <th className="bg-light text-end align-middle"></th>
+              <td></td>
+            </tr>
+
+            <tr>
+              <th className="bg-light text-end align-middle">검사자</th>
+              <td colspan="3">
+                <SearchableDropdown
+                  options={options3}
+                  selected={selectedName3}
+                  onSelect={handleSelect3}
+                  title={"검사자 선택"}
                   size="sm"
                 />
               </td>
