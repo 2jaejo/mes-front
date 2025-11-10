@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import { MainContentStyle, MainContentStyle2 } from "css/CommonStyle";
 import SearchableDropdown from "components/SearchableDropdown";
 
-const Main = () => {
+const Main = ({ isActive }) => {
   const modalRef = useRef();  
   const modalRef2 = useRef();  
 
@@ -126,7 +126,7 @@ const Main = () => {
         { headerName: "등록자", field: "created_by", sortable: true, editable: false, filter: "agTextColumnFilter", align:"left" },
       ]);
 
-      getData();
+      
 
     })
     .catch((error) => {
@@ -135,6 +135,16 @@ const Main = () => {
     });    
 
   },[]);
+
+  // 초기화
+  useEffect(()=>{
+    
+    if( !isActive ) return;
+    
+    console.log("useEffect - isActive");
+    getData();
+      
+  },[isActive]);
 
 
   
